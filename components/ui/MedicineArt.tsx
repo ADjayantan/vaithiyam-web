@@ -10,12 +10,12 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { getMedicineInitials, type SeedMedicine } from '@/lib/medicineData';
 
 const toneClass: Record<SeedMedicine['artTone'], string> = {
-  emerald: 'linear-gradient(145deg, rgba(31,138,98,0.18), rgba(223,248,246,0.88))',
-  teal:    'linear-gradient(145deg, rgba(24,169,165,0.22), rgba(255,255,255,0.78))',
-  gold:    'linear-gradient(145deg, rgba(244,213,129,0.48), rgba(255,255,255,0.74))',
-  cyan:    'linear-gradient(145deg, rgba(223,248,246,0.96), rgba(31,138,98,0.12))',
-  leaf:    'linear-gradient(145deg, rgba(57,143,89,0.2), rgba(248,242,227,0.86))',
-  coral:   'linear-gradient(145deg, rgba(198,91,71,0.18), rgba(244,213,129,0.28))',
+  emerald: 'linear-gradient(145deg, #b8e8d0 0%, #e4faf1 45%, #a8dfc4 100%)',
+  teal:    'linear-gradient(145deg, #a8e4e2 0%, #d8f8f6 45%, #90d8d6 100%)',
+  gold:    'linear-gradient(145deg, #f5d87a 0%, #fef4d0 45%, #edd068 100%)',
+  cyan:    'linear-gradient(145deg, #a8e8f0 0%, #d8f8fc 45%, #88dce8 100%)',
+  leaf:    'linear-gradient(145deg, #b0dca8 0%, #e0f4dc 45%, #98d090 100%)',
+  coral:   'linear-gradient(145deg, #f4b8a8 0%, #fce8e0 45%, #eca090 100%)',
 };
 
 const traditionIcon: Record<SeedMedicine['tradition'], IconDefinition> = {
@@ -25,9 +25,9 @@ const traditionIcon: Record<SeedMedicine['tradition'], IconDefinition> = {
 };
 
 const traditionColor: Record<SeedMedicine['tradition'], string> = {
-  siddha:   'rgba(31, 138, 98, 0.72)',
-  ayurveda: 'rgba(34, 96, 56, 0.72)',
-  natural:  'rgba(57, 143, 89, 0.68)',
+  siddha:   '#0f6e42',
+  ayurveda: '#8a6000',
+  natural:  '#4a7a2e',
 };
 
 export function MedicineArt({
