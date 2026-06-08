@@ -25,18 +25,18 @@ function getToken(): string | null {
 
 /* ─── category colour + icon map ──────────────────────────────────────────── */
 const CAT_META: Record<string, { icon: IconDefinition; bg: string; fg: string }> = {
-  'siddha':           { icon: faLeaf,          bg: '#e3f7ed', fg: '#1b8a58' },
-  'ayurveda':         { icon: faWandSparkles,  bg: '#fdf5d0', fg: '#b07800' },
-  'natural-wellness': { icon: faFlask,         bg: '#d9f5f4', fg: '#0f8a86' },
-  'digestive-care':   { icon: faAppleWhole,    bg: '#fff0e6', fg: '#c45e00' },
-  'skin-care':        { icon: faWandSparkles,  bg: '#fce8f0', fg: '#b03070' },
-  'hair-care':        { icon: faDroplet,       bg: '#ede8ff', fg: '#6d28d9' },
-  'immunity-support': { icon: faShieldHalved,  bg: '#dbeafe', fg: '#1d4ed8' },
-  'general-wellness': { icon: faHeartPulse,    bg: '#fde8e8', fg: '#be123c' },
-  'pain-relief':      { icon: faBolt,          bg: '#ffedd5', fg: '#c2410c' },
-  'fever-care':       { icon: faTemperatureHalf, bg: '#e0e7ff', fg: '#4338ca' },
+  'siddha':           { icon: faLeaf,            bg: 'rgba(61,138,92,0.20)',   fg: '#7EC89A' },
+  'ayurveda':         { icon: faWandSparkles,    bg: 'rgba(212,137,10,0.18)', fg: '#E8A820' },
+  'natural-wellness': { icon: faFlask,           bg: 'rgba(77,184,168,0.18)', fg: '#4DB8A8' },
+  'digestive-care':   { icon: faAppleWhole,      bg: 'rgba(200,100,60,0.16)', fg: '#F0956A' },
+  'skin-care':        { icon: faWandSparkles,    bg: 'rgba(220,100,160,0.14)', fg: '#F080C0' },
+  'hair-care':        { icon: faDroplet,         bg: 'rgba(139,92,246,0.18)', fg: '#A78BFA' },
+  'immunity-support': { icon: faShieldHalved,    bg: 'rgba(59,130,246,0.16)', fg: '#93C5FD' },
+  'general-wellness': { icon: faHeartPulse,      bg: 'rgba(244,63,94,0.16)',  fg: '#FB7185' },
+  'pain-relief':      { icon: faBolt,            bg: 'rgba(251,146,60,0.16)', fg: '#FCA86A' },
+  'fever-care':       { icon: faTemperatureHalf, bg: 'rgba(99,102,241,0.18)', fg: '#A5B4FC' },
 };
-const DEFAULT_CAT = { icon: faLeaf, bg: '#e3f7ed', fg: '#1b8a58' };
+const DEFAULT_CAT = { icon: faLeaf, bg: 'rgba(61,138,92,0.20)', fg: '#7EC89A' };
 
 interface Category { id: string; nameTa: string; nameEn: string; slug: string }
 
@@ -128,7 +128,7 @@ export function LandingPage() {
       </motion.div>
 
       {/* ── CATEGORY GRID ─────────────────────────────────────────── */}
-      <section className="vt-section" style={{ background: 'var(--vt-card)' }}>
+      <section className="vt-section" style={{ background: 'var(--vt-deep)', borderTop: '1px solid rgba(61,138,92,0.10)', borderBottom: '1px solid rgba(61,138,92,0.10)' }}>
         <div className="vt-container">
           <motion.div
             className="vt-section-header"
@@ -171,7 +171,7 @@ export function LandingPage() {
                     >
                       <FontAwesomeIcon icon={meta.icon} style={{ width: 24, height: 24 }} />
                     </span>
-                    <strong style={{ color: 'var(--vt-forest-900)', fontFamily: 'var(--vt-font-display)', fontSize: '1rem', lineHeight: 1.45, letterSpacing: 0 }}>
+                    <strong style={{ color: 'var(--vt-cream-50)', fontFamily: 'var(--vt-font-display)', fontSize: '1rem', lineHeight: 1.45, letterSpacing: 0 }}>
                       {cat.nameTa}
                     </strong>
                     <span style={{ fontSize: 'var(--vt-text-xs)', color: 'var(--vt-muted)', fontWeight: 600 }}>
@@ -193,7 +193,7 @@ export function LandingPage() {
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <section className="vt-section" style={{ background: 'var(--vt-cream-100)' }}>
+          <section className="vt-section" style={{ background: 'var(--vt-void)' }}>
             <div className="vt-container">
               <div className="vt-section-header">
                 <div>
@@ -204,7 +204,7 @@ export function LandingPage() {
                   See all <FontAwesomeIcon icon={faArrowRight} style={{ width: 14 }} />
                 </Link>
               </div>
-              <div className="vt-hscroll">
+              <div className="vt-fk-grid">
                 {bestsellers.map(product => (
                   <ProductCard key={product.id} product={product} onAddToCart={addToCart} onWishlist={addToWishlist} />
                 ))}
