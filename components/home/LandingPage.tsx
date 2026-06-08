@@ -277,24 +277,34 @@ function HeroSection() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="vt-hero-eyebrow">
-            <FontAwesomeIcon icon={faWandSparkles} style={{ width: 15 }} aria-hidden />
-            சித்த மருத்துவம் · ஆயுர்வேதம் · இயற்கை மருந்துகள்
+            <span style={{ display:'block', width:28, height:1, background:'var(--vt-saffron)', flexShrink:0 }} />
+            Antigravity Wellness
+            <span style={{ fontFamily:'var(--vt-font-display)', fontStyle:'italic', color:'rgba(245,237,214,0.5)', letterSpacing:'0.05em', fontSize:'0.85rem' }}>
+              சித்த மருத்துவம் · ஆயுர்வேதம்
+            </span>
           </span>
           <h1 className="vt-hero-h1">
-            Authentic Siddha &amp; Ayurveda<br />
-            <span className="vt-hero-h1-accent">Medicine</span> — Tamil First
+            Authentic<br />Siddha &amp;<br />
+            <span className="vt-hero-h1-accent">
+              <span className="vt-hero-h1-float">Ayurveda</span>
+            </span>
+            <strong>Medicine</strong>
           </h1>
           <p className="vt-hero-copy">
-            Verified traditional medicines with Tamil-first labels, prescription-aware checkout, and educational safety information. Not a substitute for medical advice.
+            Verified traditional medicines with Tamil-first labels,
+            prescription-aware checkout, and educational safety information.
+            Ancient wisdom. Elevated.
           </p>
           <div className="vt-hero-actions">
             <ButtonLink href="/products" variant="gold">
-              Shop Medicines <FontAwesomeIcon icon={faArrowRight} style={{ width: 16 }} />
+              🌿 Shop Medicines
             </ButtonLink>
             <ButtonLink href="/prescriptions" variant="ghost">
               <FontAwesomeIcon icon={faFileArrowUp} style={{ width: 16 }} /> Upload Rx
             </ButtonLink>
           </div>
+
+          {/* Trust badges */}
           <div className="vt-hero-trust">
             {[
               [faShieldHalved, 'Prescription-aware'],
@@ -307,6 +317,24 @@ function HeroSection() {
               </span>
             ))}
           </div>
+
+          {/* Stats */}
+          <div className="vt-hero-stats">
+            <div className="vt-hero-stat">
+              <span className="vt-hero-stat-num">2,400<span>+</span></span>
+              <span className="vt-hero-stat-label">Products</span>
+            </div>
+            <div className="vt-hero-stat-divider" />
+            <div className="vt-hero-stat">
+              <span className="vt-hero-stat-num">100<span>%</span></span>
+              <span className="vt-hero-stat-label">Verified</span>
+            </div>
+            <div className="vt-hero-stat-divider" />
+            <div className="vt-hero-stat">
+              <span className="vt-hero-stat-num">24<span>h</span></span>
+              <span className="vt-hero-stat-label">Dispatch</span>
+            </div>
+          </div>
         </motion.div>
 
         <motion.div
@@ -315,35 +343,58 @@ function HeroSection() {
           transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           aria-hidden
         >
-        {/* Hero floating product cards with icon + glow */}
+        {/* Hero floating product cards */}
         {[
-          { icon: faMortarPestle, iconColor: '#00c8c2', badge: 'Siddha',   nameTa: 'அஸ்வகந்தா சூர்ணம்', sub: 'Ashwagandha Churnam · 100g', price: '₹185', mrp: '₹220', off: '16%', glow: 'rgba(0, 200, 194, 0.25)',   delay: 0   },
-          { icon: faLeaf,         iconColor: '#f4d581', badge: 'Ayurveda', nameTa: 'திரிபல சூரணம்',       sub: 'Triphala Churnam · 100g',    price: '₹180', mrp: '₹220', off: '18%', glow: 'rgba(244, 213, 129, 0.22)', delay: 0.8 },
-          { icon: faSeedling,     iconColor: '#a78bfa', badge: 'Natural',  nameTa: 'நெல்லிக்காய் ஜூஸ்',  sub: 'Amla Juice · 500ml',          price: '₹95',  mrp: '₹120', off: '21%', glow: 'rgba(167, 139, 250, 0.22)', delay: 1.4 },
-        ].map((card, i) => (
+          {
+            icon: '🪴', iconColor: '#00c8c2', iconBg: 'rgba(0,200,194,0.18)',
+            badge: 'Siddha', badgeColor: '#00c8c2',
+            nameTa: 'அஸ்வகந்தா சூர்ணம்', sub: 'Ashwagandha Churnam · 100g',
+            price: '₹185', mrp: '₹220', off: '16%',
+            glow: 'rgba(0,200,194,0.22)', delay: 0,
+          },
+          {
+            icon: '🌿', iconColor: '#f0c84a', iconBg: 'rgba(240,200,74,0.18)',
+            badge: 'Ayurveda', badgeColor: '#f0c84a',
+            nameTa: 'திரிபல சூரணம்', sub: 'Triphala Churnam · 100g',
+            price: '₹180', mrp: '₹220', off: '18%',
+            glow: 'rgba(240,200,74,0.20)', delay: 0.8,
+          },
+          {
+            icon: '🌱', iconColor: '#a78bfa', iconBg: 'rgba(167,139,250,0.18)',
+            badge: 'Natural', badgeColor: '#a78bfa',
+            nameTa: 'நெல்லிக்காய் ஜூஸ்', sub: 'Amla Juice · 500ml',
+            price: '₹95', mrp: '₹120', off: '21%',
+            glow: 'rgba(167,139,250,0.20)', delay: 1.4,
+          },
+        ].map((card) => (
           <motion.div
             key={card.nameTa}
-            className={`vt-hero-float-card${i === 1 ? ' vt-hero-float-card-2' : ''}`}
+            className="vt-hero-float-card"
             style={{ '--card-glow': card.glow } as React.CSSProperties}
-            animate={{ y: [0, -8, 0] }}
+            animate={{ y: [0, -6, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: card.delay }}
           >
-            <span className="vt-hero-fc-badge" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <FontAwesomeIcon icon={card.icon} style={{ width: 13, height: 13, color: card.iconColor }} />
-              {card.badge}
+            {/* Icon column */}
+            <span className="vt-hero-fc-icon" style={{ background: card.iconBg, fontSize: '1.6rem' }}>
+              {card.icon}
             </span>
-            <strong className="vt-hero-fc-name">{card.nameTa}</strong>
-            <span className="vt-hero-fc-sub">{card.sub}</span>
-            <div className="vt-hero-fc-price">
-              <span>{card.price}</span>
-              <span className="vt-mrp" style={{ fontSize: '0.82rem' }}>{card.mrp}</span>
-              <span className="vt-discount-badge">{card.off} off</span>
+            {/* Info column */}
+            <div className="vt-hero-fc-info">
+              <span className="vt-hero-fc-badge" style={{ color: card.badgeColor }}>
+                {card.badge}
+              </span>
+              <strong className="vt-hero-fc-name">{card.nameTa}</strong>
+              <span className="vt-hero-fc-sub">{card.sub}</span>
+              <div className="vt-hero-fc-price">
+                <span>{card.price}</span>
+                <span className="vt-mrp">{card.mrp}</span>
+                <span className="vt-hero-fc-off">{card.off} off</span>
+              </div>
             </div>
           </motion.div>
         ))}
           <span className="vt-hero-leaf vt-hero-leaf-1" />
           <span className="vt-hero-leaf vt-hero-leaf-2" />
-          <span className="vt-hero-leaf vt-hero-leaf-3" />
         </motion.div>
       </div>
     </section>

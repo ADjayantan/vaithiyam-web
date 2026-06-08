@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>வைத்தியம் — Antigravity Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --void:       #030C07;
+  --deep:       #071411;
+  --forest:     #0D2218;
+  --canopy:     #1A3D2A;
+  --sage:       #2E6845;
+  --herb:       #3D8A5C;
+  --saffron:    #D4890A;
+  --turmeric:   #E8A820;
+  --cream:      #F5EDD6;
+  --mist:       #EEE8D9;
+  --gold-glow:  rgba(212,137,10,0.18);
+  --glass:      rgba(13,34,24,0.55);
+  --glass-b:    rgba(255,255,255,0.04);
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--void);
+  color: var(--cream);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  cursor: default;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 2px; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.6;
+}
+
+/* ─── PARTICLES ─────────────────────────────────────────── */
+.particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.particle {
+  position: absolute; bottom: -20px; border-radius: 50%;
+  background: var(--herb); opacity: 0;
+  animation: ascend linear infinite;
+}
+.particle:nth-child(1)  { left:5%;   width:3px;  height:3px; animation-duration:8s;   animation-delay:0s;    opacity:0.4; }
+.particle:nth-child(2)  { left:12%;  width:2px;  height:2px; animation-duration:10s;  animation-delay:1s;    opacity:0.3; }
+.particle:nth-child(3)  { left:20%;  width:4px;  height:4px; animation-duration:7s;   animation-delay:2s;    opacity:0.35; }
+.particle:nth-child(4)  { left:30%;  width:2px;  height:2px; animation-duration:11s;  animation-delay:0.5s;  opacity:0.25; }
+.particle:nth-child(5)  { left:42%;  width:3px;  height:3px; animation-duration:9s;   animation-delay:3s;    opacity:0.4; }
+.particle:nth-child(6)  { left:55%;  width:5px;  height:5px; animation-duration:6s;   animation-delay:1.5s;  opacity:0.2; background:var(--saffron); }
+.particle:nth-child(7)  { left:64%;  width:2px;  height:2px; animation-duration:12s;  animation-delay:4s;    opacity:0.3; }
+.particle:nth-child(8)  { left:72%;  width:3px;  height:3px; animation-duration:8.5s; animation-delay:2.5s;  opacity:0.35; }
+.particle:nth-child(9)  { left:82%;  width:2px;  height:2px; animation-duration:10s;  animation-delay:0.8s;  opacity:0.25; background:var(--turmeric); }
+.particle:nth-child(10) { left:90%;  width:4px;  height:4px; animation-duration:7.5s; animation-delay:3.5s;  opacity:0.3; }
+.particle:nth-child(11) { left:8%;   width:2px;  height:2px; animation-duration:14s;  animation-delay:6s;    opacity:0.2; }
+.particle:nth-child(12) { left:48%;  width:3px;  height:3px; animation-duration:9.5s; animation-delay:5s;    opacity:0.3; background:var(--saffron); }
+.particle:nth-child(13) { left:35%;  width:2px;  height:2px; animation-duration:11.5s;animation-delay:7s;    opacity:0.25; }
+.particle:nth-child(14) { left:76%;  width:4px;  height:4px; animation-duration:8s;   animation-delay:4.5s;  opacity:0.2; }
+.particle:nth-child(15) { left:96%;  width:2px;  height:2px; animation-duration:13s;  animation-delay:2s;    opacity:0.3; }
+@keyframes ascend {
+  0%   { transform:translateY(0) translateX(0) scale(1); opacity:0; }
+  10%  { opacity:var(--op,0.4); }
+  90%  { opacity:var(--op,0.4); }
+  100% { transform:translateY(-110vh) translateX(30px) scale(0.3); opacity:0; }
+}
+
+.herb-float {
+  position: absolute; font-size: 1.4rem; opacity: 0.12;
+  animation: floatHerb ease-in-out infinite; pointer-events: none;
+  filter: saturate(0) brightness(2);
+}
+.herb-float:nth-child(1) { top:15%; left:6%;  animation-duration:6s;   animation-delay:0s; }
+.herb-float:nth-child(2) { top:35%; left:88%; animation-duration:7s;   animation-delay:1s; font-size:1.8rem; }
+.herb-float:nth-child(3) { top:60%; left:4%;  animation-duration:5.5s; animation-delay:2s; }
+.herb-float:nth-child(4) { top:75%; left:80%; animation-duration:8s;   animation-delay:0.5s; font-size:1.1rem; }
+.herb-float:nth-child(5) { top:25%; left:50%; animation-duration:6.5s; animation-delay:3s; font-size:2rem; opacity:0.06; }
+.herb-float:nth-child(6) { top:50%; left:70%; animation-duration:7.5s; animation-delay:1.5s; }
+@keyframes floatHerb {
+  0%,100% { transform:translateY(0px) rotate(-5deg) scale(1); }
+  33%     { transform:translateY(-18px) rotate(5deg) scale(1.05); }
+  66%     { transform:translateY(-8px) rotate(-2deg) scale(0.97); }
+}
+
+/* ─── NAVBAR ───────────────────────────────────────────── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 20px;
+  padding: 0 36px; height: 62px;
+  background: rgba(3,12,7,0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(61,138,92,0.12);
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0; }
+.nav-logo-icon {
+  width:32px; height:32px;
+  background: linear-gradient(135deg, var(--herb), var(--saffron));
+  border-radius: 8px; display:flex; align-items:center; justify-content:center;
+  font-size:1rem; box-shadow:0 0 16px rgba(212,137,10,0.3);
+}
+.nav-logo-text { display:flex; flex-direction:column; line-height:1; }
+.nav-logo-tamil { font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--cream); font-weight:600; }
+.nav-logo-sub   { font-size:0.62rem; color:var(--herb); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; }
+
+.nav-search { flex:1; max-width:480px; margin:0 auto; position:relative; }
+.nav-search input {
+  width:100%; background:rgba(255,255,255,0.05);
+  border:1px solid rgba(61,138,92,0.2); border-radius:999px;
+  padding:8px 20px 8px 40px; color:var(--cream);
+  font-family:'Outfit',sans-serif; font-size:0.82rem; outline:none; transition:all 0.3s;
+}
+.nav-search input::placeholder { color:rgba(245,237,214,0.35); }
+.nav-search input:focus { border-color:var(--herb); background:rgba(255,255,255,0.07); box-shadow:0 0 0 3px rgba(61,138,92,0.1); }
+.nav-search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:rgba(245,237,214,0.4); font-size:0.85rem; }
+
+.nav-actions { display:flex; align-items:center; gap:8px; }
+.nav-btn {
+  width:36px; height:36px; border-radius:10px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(61,138,92,0.15);
+  color:rgba(245,237,214,0.7); display:flex; align-items:center; justify-content:center;
+  font-size:0.9rem; cursor:pointer; transition:all 0.25s;
+}
+.nav-btn:hover { background:rgba(61,138,92,0.2); color:var(--cream); border-color:var(--herb); }
+.nav-btn.cart-btn {
+  background:linear-gradient(135deg, var(--sage), var(--herb));
+  border-color:transparent; color:white; position:relative;
+}
+.cart-badge {
+  position:absolute; top:-4px; right:-4px;
+  width:14px; height:14px; background:var(--saffron); border-radius:50%;
+  font-size:0.6rem; font-weight:600; display:flex; align-items:center; justify-content:center; color:var(--void);
+}
+
+/* ─── HERO ──────────────────────────────────────────────── */
+.hero {
+  position:relative; min-height:100vh;
+  display:flex; align-items:center;
+  padding:90px 36px 60px; overflow:hidden;
+  background:
+    radial-gradient(ellipse 70% 80% at 20% 60%, rgba(13,34,24,0.9) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 30%, rgba(212,137,10,0.06) 0%, transparent 60%),
+    linear-gradient(160deg, var(--deep) 0%, var(--void) 55%, #050B03 100%);
+}
+.hero::before {
+  content:''; position:absolute; top:10%; left:-5%;
+  width:600px; height:600px;
+  background:radial-gradient(circle, rgba(30,61,42,0.5) 0%, transparent 70%);
+  border-radius:50%; animation:blobPulse 8s ease-in-out infinite;
+}
+.hero::after {
+  content:''; position:absolute; bottom:5%; right:-10%;
+  width:500px; height:500px;
+  background:radial-gradient(circle, rgba(212,137,10,0.07) 0%, transparent 70%);
+  border-radius:50%; animation:blobPulse 10s ease-in-out infinite reverse;
+}
+@keyframes blobPulse {
+  0%,100% { transform:scale(1) translate(0,0); }
+  50%     { transform:scale(1.15) translate(20px,-15px); }
+}
+
+.hero-content { position:relative; z-index:2; max-width:620px; }
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--saffron); font-weight:500; margin-bottom:24px;
+  animation:fadeUp 0.8s ease both;
+}
+.hero-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--saffron); }
+.hero-eyebrow-tamil { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.85rem; letter-spacing:0.05em; color:rgba(245,237,214,0.5); }
+
+.hero-headline {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.2rem, 6vw, 5.6rem); font-weight:300; line-height:1.08;
+  color:var(--cream); margin-bottom:10px; animation:fadeUp 0.8s 0.15s ease both;
+}
+.hero-headline strong { font-weight:600; display:block; color:var(--cream); }
+.hero-headline .accent { color:var(--saffron); font-style:italic; }
+.hero-headline .floating-word { display:inline-block; animation:wordFloat 4s ease-in-out infinite; }
+@keyframes wordFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.hero-sub {
+  font-size:0.92rem; color:rgba(245,237,214,0.55); line-height:1.7;
+  max-width:400px; margin:22px 0 36px; animation:fadeUp 0.8s 0.3s ease both;
+}
+.hero-ctas { display:flex; gap:14px; flex-wrap:wrap; animation:fadeUp 0.8s 0.45s ease both; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:8px; padding:13px 28px;
+  background:linear-gradient(135deg, var(--sage) 0%, var(--herb) 100%);
+  border:none; border-radius:999px; color:white;
+  font-family:'Outfit',sans-serif; font-size:0.87rem; font-weight:500;
+  cursor:pointer; text-decoration:none; transition:all 0.3s;
+  box-shadow:0 8px 32px rgba(45,104,69,0.4); position:relative; overflow:hidden;
+}
+.btn-primary::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, transparent, rgba(255,255,255,0.08));
+  opacity:0; transition:opacity 0.3s;
+}
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(45,104,69,0.5); }
+.btn-primary:hover::before { opacity:1; }
+.btn-ghost {
+  display:inline-flex; align-items:center; gap:8px; padding:12px 24px;
+  background:transparent; border:1px solid rgba(61,138,92,0.35); border-radius:999px;
+  color:rgba(245,237,214,0.7); font-family:'Outfit',sans-serif; font-size:0.87rem;
+  cursor:pointer; text-decoration:none; transition:all 0.3s;
+}
+.btn-ghost:hover { border-color:var(--herb); color:var(--cream); background:rgba(61,138,92,0.08); transform:translateY(-2px); }
+
+.hero-stats { display:flex; gap:32px; margin-top:52px; animation:fadeUp 0.8s 0.6s ease both; }
+.stat { display:flex; flex-direction:column; gap:2px; }
+.stat-num { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:600; color:var(--cream); line-height:1; }
+.stat-num span { color:var(--saffron); }
+.stat-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.12em; color:rgba(245,237,214,0.4); }
+.stat-divider { width:1px; background:rgba(61,138,92,0.25); height:40px; align-self:center; }
+
+/* Hero product cards */
+.hero-products {
+  position:absolute; right:5%; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:14px; z-index:2;
+}
+.hero-product-card {
+  width:240px; background:var(--glass); backdrop-filter:blur(20px);
+  border:1px solid rgba(61,138,92,0.2); border-radius:16px;
+  padding:16px; display:flex; gap:12px; align-items:center;
+  transition:all 0.4s; cursor:pointer;
+}
+.hero-product-card:nth-child(1) { animation:cardFloat1 5s ease-in-out infinite; }
+.hero-product-card:nth-child(2) { animation:cardFloat2 6s ease-in-out infinite; margin-left:20px; }
+.hero-product-card:nth-child(3) { animation:cardFloat3 5.5s ease-in-out infinite; }
+.hero-product-card:hover { border-color:rgba(61,138,92,0.5); background:rgba(13,34,24,0.8); }
+@keyframes cardFloat1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes cardFloat2 { 0%,100%{transform:translateY(-6px)} 50%{transform:translateY(8px)} }
+@keyframes cardFloat3 { 0%,100%{transform:translateY(-3px)} 50%{transform:translateY(-15px)} }
+
+.card-icon { width:44px; height:44px; flex-shrink:0; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+.card-icon.siddha   { background:rgba(61,138,92,0.2); }
+.card-icon.ayurveda { background:rgba(212,137,10,0.15); }
+.card-icon.natural  { background:rgba(46,104,69,0.25); }
+.card-info { flex:1; min-width:0; }
+.card-system      { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--herb); font-weight:500; }
+.card-name        { font-size:0.85rem; color:var(--cream); font-weight:500; margin:2px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.card-name-tamil  { font-family:'Cormorant Garamond',serif; font-size:0.95rem; }
+.card-price-row   { display:flex; align-items:center; gap:6px; }
+.card-price       { font-size:0.92rem; font-weight:600; color:var(--cream); }
+.card-was         { font-size:0.72rem; color:rgba(245,237,214,0.35); text-decoration:line-through; }
+.card-off         { font-size:0.68rem; color:var(--turmeric); font-weight:500; background:rgba(212,137,10,0.12); padding:1px 5px; border-radius:4px; }
+
+/* ─── TRUST MARQUEE ────────────────────────────────────── */
+.marquee-wrap {
+  background:rgba(13,34,24,0.5);
+  border-top:1px solid rgba(61,138,92,0.12); border-bottom:1px solid rgba(61,138,92,0.12);
+  padding:14px 0; overflow:hidden; position:relative; z-index:3;
+}
+.marquee-track { display:flex; gap:48px; width:max-content; animation:marqueeMov 28s linear infinite; }
+@keyframes marqueeMov { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.marquee-item { display:flex; align-items:center; gap:9px; white-space:nowrap; font-size:0.78rem; font-weight:500; color:rgba(245,237,214,0.65); letter-spacing:0.05em; }
+.marquee-dot  { width:5px; height:5px; border-radius:50%; background:var(--herb); flex-shrink:0; }
+
+/* ─── SECTIONS ──────────────────────────────────────────── */
+.section { padding:90px 36px; }
+.section-tag { display:inline-block; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.2em; color:var(--herb); font-weight:600; margin-bottom:14px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.15; color:var(--cream); margin-bottom:8px; }
+.section-title strong { font-weight:600; }
+.section-sub { font-size:0.88rem; color:rgba(245,237,214,0.45); max-width:420px; line-height:1.7; margin-bottom:48px; }
+
+/* ─── PRODUCTS ──────────────────────────────────────────── */
+.products-section {
+  background:radial-gradient(ellipse 60% 50% at 80% 20%, rgba(212,137,10,0.04) 0%, transparent 60%), var(--void);
+}
+.products-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; }
+.view-all-link { display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--herb); text-decoration:none; border-bottom:1px solid rgba(61,138,92,0.3); padding-bottom:2px; transition:all 0.25s; }
+.view-all-link:hover { color:var(--cream); border-color:var(--cream); }
+
+.products-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:18px; }
+.product-card {
+  background:var(--glass); border:1px solid rgba(61,138,92,0.14);
+  border-radius:20px; overflow:hidden; cursor:pointer;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1); position:relative;
+}
+.product-card:hover {
+  transform:translateY(-10px); border-color:rgba(61,138,92,0.35);
+  box-shadow:0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(61,138,92,0.1);
+}
+.product-img { height:150px; display:flex; align-items:center; justify-content:center; font-size:2.8rem; position:relative; overflow:hidden; }
+.product-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 50%, rgba(7,20,17,0.6) 100%); }
+.bg-siddha   { background:linear-gradient(135deg, rgba(13,34,24,0.8), rgba(30,61,42,0.6)); }
+.bg-ayurveda { background:linear-gradient(135deg, rgba(14,22,9,0.8), rgba(45,60,10,0.5)); }
+.bg-natural  { background:linear-gradient(135deg, rgba(10,25,20,0.8), rgba(25,50,38,0.6)); }
+
+.product-badge { position:absolute; top:10px; left:10px; z-index:2; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.1em; padding:3px 8px; border-radius:6px; font-weight:600; }
+.badge-siddha   { background:rgba(61,138,92,0.25); color:#7EC89A; border:1px solid rgba(61,138,92,0.3); }
+.badge-ayurveda { background:rgba(180,140,20,0.2); color:#C8A840; border:1px solid rgba(180,140,20,0.3); }
+.badge-natural  { background:rgba(40,120,80,0.2); color:#60B890; border:1px solid rgba(40,120,80,0.3); }
+
+.product-body { padding:16px; }
+.product-name-tamil { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--cream); font-weight:600; line-height:1.3; margin-bottom:2px; }
+.product-name-en    { font-size:0.72rem; color:rgba(245,237,214,0.4); margin-bottom:12px; }
+.product-footer     { display:flex; align-items:center; justify-content:space-between; }
+.product-pricing    { display:flex; align-items:baseline; gap:6px; }
+.product-price      { font-size:1rem; font-weight:600; color:var(--cream); }
+.product-was        { font-size:0.72rem; color:rgba(245,237,214,0.3); text-decoration:line-through; }
+.product-discount   { font-size:0.65rem; background:rgba(212,137,10,0.15); color:var(--turmeric); padding:2px 6px; border-radius:5px; border:1px solid rgba(212,137,10,0.2); font-weight:500; }
+.product-add {
+  width:32px; height:32px; background:rgba(61,138,92,0.2); border:1px solid rgba(61,138,92,0.3);
+  border-radius:10px; color:var(--herb); font-size:1.1rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all 0.25s; flex-shrink:0;
+}
+.product-add:hover { background:var(--herb); color:white; border-color:var(--herb); transform:scale(1.08); }
+
+/* ─── CATEGORIES ────────────────────────────────────────── */
+.categories-section { background:var(--deep); border-top:1px solid rgba(61,138,92,0.08); border-bottom:1px solid rgba(61,138,92,0.08); }
+.categories-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; }
+.category-card {
+  background:rgba(13,34,24,0.6); border:1px solid rgba(61,138,92,0.14); border-radius:16px;
+  padding:20px 16px; display:flex; flex-direction:column; align-items:center; gap:10px;
+  text-align:center; cursor:pointer; transition:all 0.35s cubic-bezier(0.23,1,0.32,1); text-decoration:none;
+}
+.category-card:hover { transform:translateY(-8px); background:rgba(30,61,42,0.5); border-color:rgba(61,138,92,0.35); box-shadow:0 16px 40px rgba(0,0,0,0.3), 0 0 20px rgba(61,138,92,0.06); }
+.cat-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; transition:transform 0.35s; }
+.category-card:hover .cat-icon { transform:translateY(-4px) scale(1.05); }
+.cat-name-tamil { font-family:'Cormorant Garamond',serif; font-size:0.92rem; color:var(--cream); font-weight:600; line-height:1.3; }
+.cat-name-en    { font-size:0.65rem; color:rgba(245,237,214,0.35); text-transform:uppercase; letter-spacing:0.08em; }
+.ci-1  { background:rgba(61,138,92,0.18); }  .ci-2  { background:rgba(180,140,20,0.15); }
+.ci-3  { background:rgba(61,138,92,0.15); }  .ci-4  { background:rgba(100,160,120,0.15); }
+.ci-5  { background:rgba(200,100,80,0.12); } .ci-6  { background:rgba(80,120,200,0.12); }
+.ci-7  { background:rgba(160,80,200,0.12); } .ci-8  { background:rgba(61,138,92,0.18); }
+.ci-9  { background:rgba(212,137,10,0.12); } .ci-10 { background:rgba(80,180,140,0.15); }
+
+/* ─── WHY SECTION ───────────────────────────────────────── */
+.why-section {
+  background:radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13,34,24,0.5) 0%, transparent 60%), var(--void);
+}
+.features-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:18px; }
+.feature-card {
+  background:linear-gradient(145deg, rgba(13,34,24,0.7) 0%, rgba(7,14,11,0.9) 100%);
+  border:1px solid rgba(61,138,92,0.15); border-radius:20px; padding:28px 24px;
+  transition:all 0.4s; position:relative; overflow:hidden;
+}
+.feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, var(--herb), transparent); opacity:0; transition:opacity 0.3s; }
+.feature-card:hover { transform:translateY(-6px); border-color:rgba(61,138,92,0.3); }
+.feature-card:hover::before { opacity:1; }
+.feature-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:18px; }
+.fi-1 { background:rgba(61,138,92,0.2); }   .fi-2 { background:rgba(212,137,10,0.15); }
+.fi-3 { background:rgba(61,138,92,0.18); }  .fi-4 { background:rgba(100,180,140,0.15); }
+.feature-title-en    { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--herb); font-weight:600; margin-bottom:6px; }
+.feature-title-tamil { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); font-weight:600; margin-bottom:12px; }
+.feature-desc        { font-size:0.83rem; color:rgba(245,237,214,0.5); line-height:1.7; }
+
+/* ─── CTA SECTION ───────────────────────────────────────── */
+.cta-section {
+  margin:0 36px 90px; border-radius:28px;
+  background:
+    radial-gradient(ellipse 60% 80% at 20% 50%, rgba(45,104,69,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 50%, rgba(212,137,10,0.1) 0%, transparent 60%),
+    linear-gradient(135deg, rgba(13,34,24,0.95) 0%, rgba(7,14,11,0.98) 100%);
+  border:1px solid rgba(61,138,92,0.2); padding:60px 56px;
+  display:flex; align-items:center; justify-content:space-between; gap:32px;
+  position:relative; overflow:hidden;
+}
+.cta-section::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%233D8A5C' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.cta-content { position:relative; z-index:1; }
+.cta-tag { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.2em; color:var(--herb); font-weight:600; margin-bottom:14px; }
+.cta-headline { font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,3.5vw,2.8rem); font-weight:300; color:var(--cream); line-height:1.2; margin-bottom:8px; }
+.cta-headline strong { font-weight:600; color:var(--turmeric); font-style:italic; }
+.cta-sub { font-size:0.88rem; color:rgba(245,237,214,0.45); max-width:360px; line-height:1.7; }
+.cta-actions { display:flex; gap:12px; flex-shrink:0; position:relative; z-index:1; }
+
+/* ─── FOOTER ────────────────────────────────────────────── */
+.footer { background:var(--deep); border-top:1px solid rgba(61,138,92,0.1); padding:48px 36px 28px; }
+.footer-top { display:flex; justify-content:space-between; gap:40px; margin-bottom:40px; flex-wrap:wrap; }
+.footer-brand .nav-logo-tamil { font-size:1.4rem; }
+.footer-brand p { font-size:0.8rem; color:rgba(245,237,214,0.4); max-width:240px; line-height:1.7; margin-top:12px; }
+.footer-col h5 { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.15em; color:var(--herb); font-weight:600; margin-bottom:16px; }
+.footer-col a  { display:block; font-size:0.82rem; color:rgba(245,237,214,0.45); text-decoration:none; margin-bottom:10px; transition:color 0.2s; }
+.footer-col a:hover { color:var(--cream); }
+.footer-bottom { border-top:1px solid rgba(61,138,92,0.1); padding-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.footer-copy   { font-size:0.75rem; color:rgba(245,237,214,0.25); }
+.footer-locale { display:flex; align-items:center; gap:6px; font-size:0.72rem; color:rgba(245,237,214,0.3); }
+
+/* ─── ANIMATIONS ────────────────────────────────────────── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width:900px) {
+  .hero-products { display:none; }
+  .cta-section { flex-direction:column; }
+  .cta-actions { width:100%; }
+  .navbar { padding:0 18px; }
+  .section { padding:60px 18px; }
+}
+@media (max-width:600px) {
+  .hero { padding:90px 18px 50px; }
+  .cta-section { margin:0 18px 60px; padding:36px 24px; }
+  .footer { padding:40px 18px 24px; }
+  .footer-top { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <div class="nav-logo-text">
+      <span class="nav-logo-tamil">வைத்தியம்</span>
+      <span class="nav-logo-sub">Siddha · Ayurveda · Natural</span>
+    </div>
+  </a>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search Tamil or English medicine name…">
+  </div>
+  <div class="nav-actions">
+    <button class="nav-btn" title="Upload prescription">📋</button>
+    <button class="nav-btn" title="Barcode scan">📷</button>
+    <button class="nav-btn" title="Wishlist">🤍</button>
+    <button class="nav-btn" title="Account">👤</button>
+    <button class="nav-btn cart-btn" title="Cart">🛒<span class="cart-badge">3</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+  <span class="herb-float">🌿</span><span class="herb-float">🌱</span>
+  <span class="herb-float">🍃</span><span class="herb-float">✦</span>
+  <span class="herb-float">🌾</span><span class="herb-float">🪴</span>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span>Antigravity Wellness</span>
+      <span class="hero-eyebrow-tamil">சித்த மருத்துவம் · ஆயுர்வேதம் · இயற்கை மருந்துகள்</span>
+    </div>
+    <h1 class="hero-headline">
+      Authentic<br>Siddha &amp;<br>
+      <span class="accent"><span class="floating-word">Ayurveda</span></span>
+      <strong>Medicine</strong>
+    </h1>
+    <p class="hero-sub">Verified traditional medicines with Tamil-first labels, prescription-aware checkout, and educational safety content. Ancient wisdom. Elevated.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn-primary">🌿 Shop Medicines</a>
+      <a href="#" class="btn-ghost">↓ Browse Categories</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">2,400<span>+</span></span><span class="stat-label">Products</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">100<span>%</span></span><span class="stat-label">Verified</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">24<span>h</span></span><span class="stat-label">Dispatch</span></div>
+    </div>
+  </div>
+
+  <div class="hero-products">
+    <div class="hero-product-card">
+      <div class="card-icon siddha">🌿</div>
+      <div class="card-info">
+        <div class="card-system">Siddha</div>
+        <div class="card-name card-name-tamil">அஸ்வகந்தா சூர்ணம்</div>
+        <div class="card-name" style="font-size:0.72rem;color:rgba(245,237,214,0.4)">Ashwagandha Churnam</div>
+        <div class="card-price-row"><span class="card-price">₹185</span><span class="card-was">₹220</span><span class="card-off">16% off</span></div>
+      </div>
+    </div>
+    <div class="hero-product-card">
+      <div class="card-icon ayurveda">🌱</div>
+      <div class="card-info">
+        <div class="card-system">Ayurveda</div>
+        <div class="card-name card-name-tamil">திரிபல சூரணம்</div>
+        <div class="card-name" style="font-size:0.72rem;color:rgba(245,237,214,0.4)">Triphala Churnam</div>
+        <div class="card-price-row"><span class="card-price">₹180</span><span class="card-was">₹220</span><span class="card-off">18% off</span></div>
+      </div>
+    </div>
+    <div class="hero-product-card">
+      <div class="card-icon natural">🪴</div>
+      <div class="card-info">
+        <div class="card-system">Natural</div>
+        <div class="card-name card-name-tamil">நெல்லிக்காய் ஜூஸ்</div>
+        <div class="card-name" style="font-size:0.72rem;color:rgba(245,237,214,0.4)">Amla Juice · 500ml</div>
+        <div class="card-price-row"><span class="card-price">₹95</span><span class="card-was">₹120</span><span class="card-off">21% off</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="marquee-dot"></span> Free delivery on orders above ₹499</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Verified by licensed pharmacist</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Dispatch within 7 days</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Educational content only</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Tamil-first product labels</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> RX-safe checkout</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Track every order via SMS</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Free delivery on orders above ₹499</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Verified by licensed pharmacist</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Dispatch within 7 days</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Educational content only</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Tamil-first product labels</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> RX-safe checkout</div>
+    <div class="marquee-item"><span class="marquee-dot"></span> Track every order via SMS</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section products-section">
+  <div class="products-header">
+    <div>
+      <span class="section-tag">Most Popular</span>
+      <h2 class="section-title">மிகவும் <strong>பிரபலமான</strong></h2>
+      <p class="section-sub">Our most trusted medicines, verified by licensed practitioners.</p>
+    </div>
+    <a href="#" class="view-all-link">View all →</a>
+  </div>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-img bg-siddha"><span>🌿</span><span class="product-badge badge-siddha">Siddha</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">நன்னாரி சர்பத்</div>
+        <div class="product-name-en">Nannari Sharbath · 500ml</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹145</span><span class="product-was">₹180</span><span class="product-discount">19% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-ayurveda"><span>🍃</span><span class="product-badge badge-ayurveda">Ayurveda</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">சுக்கு மல்லி கஷாயம்</div>
+        <div class="product-name-en">Sukku Malli Kashayam</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹95</span><span class="product-was">₹120</span><span class="product-discount">21% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-natural"><span>🌱</span><span class="product-badge badge-natural">Natural</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">வேப்பிலை தூள்</div>
+        <div class="product-name-en">Neem Leaf Powder · 100g</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹75</span><span class="product-was">₹95</span><span class="product-discount">21% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-siddha"><span>🪴</span><span class="product-badge badge-siddha">Siddha</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">அகத்தி கீரை தூள்</div>
+        <div class="product-name-en">Agathi Leaf Powder · 50g</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹110</span><span class="product-was">₹140</span><span class="product-discount">21% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-ayurveda"><span>🌾</span><span class="product-badge badge-ayurveda">Ayurveda</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">தாமரை தேன்</div>
+        <div class="product-name-en">Lotus Honey · 250g</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹320</span><span class="product-was">₹390</span><span class="product-discount">18% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-natural" style="background:linear-gradient(135deg,rgba(10,20,15,0.8),rgba(40,70,30,0.5))"><span>🌺</span><span class="product-badge badge-natural">Natural</span></div>
+      <div class="product-body">
+        <div class="product-name-tamil">ரோஜா எண்ணெய்</div>
+        <div class="product-name-en">Rose Water Distillate · 100ml</div>
+        <div class="product-footer">
+          <div class="product-pricing"><span class="product-price">₹165</span><span class="product-was">₹200</span><span class="product-discount">17% off</span></div>
+          <button class="product-add">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section categories-section">
+  <span class="section-tag">Browse by Type</span>
+  <h2 class="section-title">மருந்துகளை வகையால் <strong>தேடுங்கள்</strong></h2>
+  <p class="section-sub">Find medicines by system, condition, or body area.</p>
+  <div class="categories-grid">
+    <a href="#" class="category-card"><div class="cat-icon ci-1">🌿</div><div><div class="cat-name-tamil">சித்த மருத்துவம்</div><div class="cat-name-en">Siddha</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-2">✨</div><div><div class="cat-name-tamil">ஆயுர்வேதம்</div><div class="cat-name-en">Ayurveda</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-3">🌱</div><div><div class="cat-name-tamil">இயற்கை நலம்</div><div class="cat-name-en">Natural wellness</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-4">🍎</div><div><div class="cat-name-tamil">செரிமான பராமரிப்பு</div><div class="cat-name-en">Digestive care</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-5">✦</div><div><div class="cat-name-tamil">தோல் பராமரிப்பு</div><div class="cat-name-en">Skin care</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-6">💧</div><div><div class="cat-name-tamil">முடி பராமரிப்பு</div><div class="cat-name-en">Hair care</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-7">🛡</div><div><div class="cat-name-tamil">நோய் எதிர்ப்பு ஆதரவு</div><div class="cat-name-en">Immunity support</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-8">💚</div><div><div class="cat-name-tamil">பொது நலன்</div><div class="cat-name-en">General wellness</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-9">⚡</div><div><div class="cat-name-tamil">வலி நிவாரணம்</div><div class="cat-name-en">Pain relief</div></div></a>
+    <a href="#" class="category-card"><div class="cat-icon ci-10">🌡</div><div><div class="cat-name-tamil">காய்ச்சல் பராமரிப்பு</div><div class="cat-name-en">Fever care</div></div></a>
+  </div>
+</section>
+
+<!-- WHY VAITHIYAM -->
+<section class="section why-section">
+  <span class="section-tag">Why Vaithiyam</span>
+  <h2 class="section-title">நம்மை <strong>நம்புவது ஏன்?</strong></h2>
+  <p class="section-sub">We are built for trust, transparency, and the Tamil way.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon fi-1">🛡</div>
+      <div class="feature-title-en">Verified Catalogue</div>
+      <div class="feature-title-tamil">சரிபார்க்கப்பட்ட பட்டியல்</div>
+      <p class="feature-desc">Every product manually verified. No unapproved health claims. No misleading information.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-2">📋</div>
+      <div class="feature-title-en">RX-Safe Checkout</div>
+      <div class="feature-title-tamil">மருந்துகள் பரிந்துரை பரிசோதனை</div>
+      <p class="feature-desc">Prescription medicines verified by a licensed pharmacist before dispatch.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-3">🌐</div>
+      <div class="feature-title-en">Tamil First</div>
+      <div class="feature-title-tamil">தமிழ் ஆதரவு</div>
+      <p class="feature-desc">Tamil product names, Tamil UI, Tamil-speaking customer support available.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-4">📦</div>
+      <div class="feature-title-en">Track Every Order</div>
+      <div class="feature-title-tamil">ஒவ்வொரு ஆர்டரையும் கண்காணிக்கவும்</div>
+      <p class="feature-desc">Real-time delivery tracking with SMS updates throughout the journey.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-content">
+    <div class="cta-tag">Consult a Practitioner</div>
+    <h2 class="cta-headline">Not sure which<br>medicine is <strong>right for you?</strong></h2>
+    <p class="cta-sub">Our licensed Siddha and Ayurveda practitioners are available for online consultations. Free for first-time users.</p>
+  </div>
+  <div class="cta-actions">
+    <a href="#" class="btn-primary">Book Consultation →</a>
+    <a href="#" class="btn-ghost">Learn More</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo-tamil">வைத்தியம்</div>
+      <p>Premium traditional medicine e-commerce. Siddha · Ayurveda · Natural. Not a substitute for medical advice.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <a href="#">All Products</a>
+      <a href="#">Siddha</a>
+      <a href="#">Ayurveda</a>
+      <a href="#">Natural</a>
+      <a href="#">Prescription</a>
+    </div>
+    <div class="footer-col">
+      <h5>Care</h5>
+      <a href="#">Upload Rx</a>
+      <a href="#">Scanner</a>
+      <a href="#">Consult</a>
+      <a href="#">Help Center</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Returns</a>
+      <a href="#">Disclaimer</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Vaithiyam. Demo project. Not real medical advice.</span>
+    <span class="footer-locale">🌐 Tamil Nadu · தமிழ் / English</span>
+  </div>
+</footer>
+
+</body>
+</html>

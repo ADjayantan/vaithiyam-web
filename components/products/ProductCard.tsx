@@ -29,46 +29,69 @@ export function ProductCard({
       className="vt-card vt-card-solid vt-product-card"
       data-tradition={product.tradition}
     >
+      {/* Product art image area */}
       <Link href={`/products/${product.slug}`} aria-label={`${product.nameEn} details`}>
         <MedicineArt product={product} />
       </Link>
+
+      {/* Card body — flex column, actions pinned to bottom */}
       <div className="vt-product-body">
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'start' }}>
-          <span className="vt-badge">{traditionLabels[product.tradition]}</span>
-          <span className={product.inStock ? 'vt-badge vt-badge-cyan' : 'vt-badge vt-badge-danger'}>
-            {product.inStock ? `${product.stockCount} left` : 'Out'}
+        {/* Badges row */}
+        <div className="vt-product-meta">
+          <span className="vt-badge vt-badge-tradition">{traditionLabels[product.tradition]}</span>
+          <span className={product.inStock ? 'vt-badge vt-stock-in' : 'vt-badge vt-stock-out'}>
+            {product.inStock ? `${product.stockCount} left` : 'Out of stock'}
           </span>
         </div>
-        <div>
+
+        {/* Names */}
+        <div className="vt-product-names">
           <Link href={`/products/${product.slug}`}>
-            <h3 style={{ margin: 0, color: 'var(--vt-forest-950)', fontFamily: 'var(--vt-font-display)', fontSize: '1.14rem', lineHeight: 1.4, letterSpacing: '-0.01em' }}>
-              {product.nameTa}
-            </h3>
+            <h3 className="vt-product-title">{product.nameTa}</h3>
           </Link>
-          <p className="vt-muted" style={{ margin: '3px 0 0', fontSize: '0.9rem' }}>{product.nameEn}</p>
+          <p className="vt-product-subtitle">{product.nameEn}</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--vt-gold-500)', fontWeight: 700 }}>
-          <FontAwesomeIcon icon={faStar} style={{width: 16, height: 16}} />
-          <span>{product.rating.toFixed(1)}</span>
-          <span className="vt-muted" style={{ fontWeight: 500 }}>({product.reviewCount})</span>
+
+        {/* Rating */}
+        <div className="vt-product-rating">
+          <FontAwesomeIcon icon={faStar} style={{ width: 14, height: 14 }} />
+          <span className="vt-rating-value">{product.rating.toFixed(1)}</span>
+          <span className="vt-muted vt-rating-count">({product.reviewCount})</span>
         </div>
+
+        {/* Price */}
         <div className="vt-price-row">
           <span className="vt-price">₹{product.price}</span>
           <span className="vt-mrp">₹{product.mrp}</span>
-          {discount > 0 && <span className="vt-badge vt-badge-gold">{discount}% off</span>}
+          {discount > 0 && <span className="vt-discount-badge">{discount}% off</span>}
         </div>
+
+        {/* Rx note */}
         {product.prescriptionRequired && (
-          <div className="vt-safe-note" style={{ padding: 10, fontSize: '0.82rem' }}>
-            Prescription verification required before checkout.
-          </div>
+          <p className="vt-rx-note">
+            ℞ Prescription verification required before checkout.
+          </p>
         )}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
-          <Button type="button" disabled={!product.inStock} onClick={() => onAddToCart?.(product)} aria-label={`Add ${product.nameEn} to cart`} className="vt-btn-card">
-            <FontAwesomeIcon icon={faCartShopping} style={{width: 15, height: 15}} />
-            {product.inStock ? 'சேர்' : 'இல்லை'}
+
+        {/* Actions — always pinned to bottom via margin-top: auto on parent */}
+        <div className="vt-product-actions">
+          <Button
+            type="button"
+            disabled={!product.inStock}
+            onClick={() => onAddToCart?.(product)}
+            aria-label={`Add ${product.nameEn} to cart`}
+            className="vt-btn-add vt-button-primary"
+          >
+            <FontAwesomeIcon icon={faCartShopping} style={{ width: 14, height: 14 }} />
+            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
           </Button>
-          <button className="vt-icon-button" type="button" onClick={() => onWishlist?.(product)} aria-label={`Add ${product.nameEn} to wishlist`}>
-            <FontAwesomeIcon icon={faHeart} style={{width: 18, height: 18}} />
+          <button
+            className="vt-btn-icon"
+            type="button"
+            onClick={() => onWishlist?.(product)}
+            aria-label={`Add ${product.nameEn} to wishlist`}
+          >
+            <FontAwesomeIcon icon={faHeart} style={{ width: 16, height: 16, color: 'var(--vt-rose-500)' }} />
           </button>
         </div>
       </div>
