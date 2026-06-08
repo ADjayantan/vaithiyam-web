@@ -1,39 +1,12 @@
 'use client';
 
-/**
- * apps/web/app/auth/register/page.tsx
- *
- * Vaithiyam — Registration Page
- * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
- *
- * ─── Flow ─────────────────────────────────────────────────────────────────────
- *   1. Renders the existing RegisterForm component inside a page shell
- *   2. On form submit → POST /api/auth/register
- *   3. API sends OTP to the provided mobile number
- *   4. On success → router.replace("/auth/verify-otp?mobile=<number>")
- *   5. Server errors (e.g. "மொபைல் ஏற்கனவே பதிவாகியுள்ளது") fed back into form
- *
- * ─── API contract ─────────────────────────────────────────────────────────────
- *   POST /api/auth/register
- *   Body:    { fullName, mobile, email, password }
- *   Success: { message: string }   ← OTP dispatched to mobile
- *   Error:   { message: string }
- *
- *   To swap for a lib function:
- *     import { registerUser } from '../../../lib/auth';
- *
- * ─── Components used ──────────────────────────────────────────────────────────
- *   RegisterForm  →  apps/web/components/auth/RegisterForm.tsx
- */
-
-import { useState, useCallback }  from 'react';
-import { useRouter }               from 'next/navigation';
-import Link                        from 'next/link';
-import { FontAwesomeIcon }         from '@fortawesome/react-fontawesome';
-import { faLeaf, faSeedling, faMobileScreen } from '@fortawesome/free-solid-svg-icons';
+import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeaf, faMobileScreen } from '@fortawesome/free-solid-svg-icons';
 import RegisterForm, { type RegisterData } from '../../../components/auth/RegisterForm';
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
+// ─── Design tokens ─────────────────────────────────────────────────
 const T = {
   forestPrimary: '#1A3A2A',
   forestDark:    '#0F2A1C',
@@ -53,10 +26,9 @@ const T = {
 const FONT = {
   display: "'Mukta Malar', sans-serif",
   body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
 } as const;
 
-// ─── API helper ───────────────────────────────────────────────────────────────
+// ─── API helper ─────────────────────────────────────────────────────
 async function registerApi(data: RegisterData): Promise<void> {
   const res = await fetch('/api/auth/register', {
     method:  'POST',
@@ -64,108 +36,98 @@ async function registerApi(data: RegisterData): Promise<void> {
     body:    JSON.stringify({
       fullName: data.fullName,
       mobile:   data.mobile,
-      email:    data.email || undefined,  // omit if empty string
+      email:    data.email || undefined,
       password: data.password,
     }),
   });
-
   if (!res.ok) {
     const err = await res.json().catch(() => ({})) as { message?: string };
     throw new Error(err.message ?? 'பதிவு தோல்வி. மீண்டும் முயற்சிக்கவும்.');
   }
-  // 201 Created — API already sent the OTP; no response body needed
 }
 
-// ─── Step indicator (displayed above the card during redirect) ────────────────
-function StepDots({ active }: { active: 0 | 1 }) {
+// ─── Step Progress Bar (matching screenshot exactly) ────────────────
+function StepBar({ active }: { active: 0 | 1 }) {
+  const steps = ['பதிவு', 'OTP சரிபார்'] as const;
   return (
     <div
-      aria-hidden="true"
+      aria-label="Registration progress"
       style={{
         display:        'flex',
         alignItems:     'center',
-        justifyContent: 'center',
-        gap:            '8px',
-        marginBottom:   '28px',
+        marginBottom:   '32px',
+        gap:            0,
       }}
     >
-      {(['பதிவு', 'OTP சரிபார்'] as const).map((label, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div
-            style={{
-              display:        'flex',
-              flexDirection:  'column',
-              alignItems:     'center',
-              gap:            '4px',
-            }}
-          >
+      {steps.map((label, i) => (
+        <div
+          key={i}
+          style={{
+            display:    'flex',
+            alignItems: 'center',
+            flex:       i < steps.length - 1 ? 1 : 'none',
+          }}
+        >
+          {/* Step node + label */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <div
               style={{
-                width:        i === active ? '28px' : '24px',
-                height:       i === active ? '28px' : '24px',
-                borderRadius: '50%',
-                background:   i === active
+                width:          i === active ? 30 : 26,
+                height:         i === active ? 30 : 26,
+                borderRadius:   '50%',
+                background:     i === active
                   ? `linear-gradient(135deg, ${T.forestPrimary} 0%, ${T.leaf} 100%)`
                   : i < active
                     ? T.leaf
                     : T.creamAlt,
-                border:       i < active
-                  ? `1.5px solid ${T.leaf}`
-                  : i === active
-                    ? 'none'
-                    : `1.5px solid ${T.border}`,
+                border:         i === active ? 'none'
+                  : i < active  ? `2px solid ${T.leaf}`
+                  : `2px solid ${T.border}`,
                 display:        'flex',
                 alignItems:     'center',
                 justifyContent: 'center',
-                transition:     'all 0.2s',
+                transition:     'all 0.25s',
                 flexShrink:     0,
+                boxShadow:      i === active ? '0 4px 12px rgba(26,58,42,0.28)' : 'none',
               }}
             >
               {i < active ? (
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                   <path d="M2 6l3.5 3.5 4.5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : (
-                <span
-                  style={{
-                    fontFamily: FONT.display,
-                    fontSize:   i === active ? '0.78rem' : '0.72rem',
-                    fontWeight: 700,
-                    color:      i === active ? '#fff' : T.muted,
-                    lineHeight: 1,
-                  }}
-                >
+                <span style={{
+                  fontFamily: FONT.display, fontSize: i === active ? '0.80rem' : '0.74rem',
+                  fontWeight: 700, color: i === active ? '#fff' : T.muted, lineHeight: 1,
+                }}>
                   {i + 1}
                 </span>
               )}
             </div>
-            <span
-              style={{
-                fontFamily:  FONT.body,
-                fontSize:    '0.68rem',
-                fontWeight:  i === active ? 700 : 400,
-                color:       i === active ? T.forestPrimary : T.muted,
-                whiteSpace:  'nowrap',
-                transition:  'color 0.2s',
-              }}
-            >
+            <span style={{
+              fontFamily:  FONT.body, fontSize: '0.72rem',
+              fontWeight:  i === active ? 700 : 400,
+              color:       i === active ? T.forestPrimary : T.muted,
+              whiteSpace:  'nowrap', transition: 'color 0.2s',
+            }}>
               {label}
             </span>
           </div>
 
-          {/* Connector line between steps */}
-          {i === 0 && (
-            <div
-              style={{
-                width:        '28px',
-                height:       '2px',
-                background:   active > 0 ? T.leaf : T.border,
-                borderRadius: '2px',
-                marginBottom: '18px',
-                flexShrink:   0,
-                transition:   'background 0.3s',
-              }}
-            />
+          {/* Connector bar (between steps) */}
+          {i < steps.length - 1 && (
+            <div style={{
+              flex:         1,
+              height:       4,
+              marginBottom: 20,
+              marginLeft:   8,
+              marginRight:  8,
+              borderRadius: 4,
+              background:   active > 0
+                ? T.leaf
+                : `linear-gradient(90deg, ${T.leaf} 0%, ${T.gold} 50%, ${T.border} 100%)`,
+              transition:   'background 0.4s',
+            }} />
           )}
         </div>
       ))}
@@ -173,201 +135,145 @@ function StepDots({ active }: { active: 0 | 1 }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────
 export default function RegisterPage() {
   const router = useRouter();
+  const [serverError, setServerError] = useState('');
+  const [redirecting, setRedirecting] = useState(false);
 
-  const [serverError,  setServerError]  = useState('');
-  const [redirecting,  setRedirecting]  = useState(false);
-
-  const handleSubmit = useCallback(
-    async (data: RegisterData) => {
-      setServerError('');
-      try {
-        await registerApi(data);
-        setRedirecting(true);
-        // Pass mobile so verify-otp page can display it masked
-        router.replace(`/auth/verify-otp?mobile=${encodeURIComponent(data.mobile)}`);
-      } catch (err) {
-        setRedirecting(false);
-        setServerError(
-          err instanceof Error
-            ? err.message
-            : 'பதிவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.',
-        );
-      }
-    },
-    [router],
-  );
+  const handleSubmit = useCallback(async (data: RegisterData) => {
+    setServerError('');
+    try {
+      await registerApi(data);
+      setRedirecting(true);
+      router.replace(`/auth/verify-otp?mobile=${encodeURIComponent(data.mobile)}`);
+    } catch (err) {
+      setRedirecting(false);
+      setServerError(
+        err instanceof Error
+          ? err.message
+          : 'பதிவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.',
+      );
+    }
+  }, [router]);
 
   return (
-    <div
-      style={{
-        minHeight:     '100dvh',
-        background:    T.creamBase,
-        paddingBottom: '56px',
-      }}
-    >
-      {/* ── Sticky header ─────────────────────────────────────────────────── */}
+    <div style={{ minHeight: '100dvh', background: T.creamBase, paddingBottom: '60px' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@400;600;700&family=Hind+Madurai:wght@400;500;600&display=swap');
+      `}</style>
+
+      {/* ── Sticky header ─────────────────────────────────────── */}
       <header
         style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     200,
+          position:   'sticky', top: 0, zIndex: 200,
           background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
           boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
         }}
       >
         <div
           style={{
-            maxWidth:   '540px',
-            margin:     '0 auto',
-            padding:    '14px 20px',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '12px',
+            maxWidth:   '600px', margin: '0 auto',
+            padding:    '12px 20px',
+            display:    'flex', alignItems: 'center', gap: '14px',
           }}
         >
           {/* Brand mark */}
           <div
             aria-hidden="true"
             style={{
-              width:          '38px',
-              height:         '38px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.10)',
-              border:         '1px solid rgba(240,201,110,0.20)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              flexShrink:     0,
+              width: 40, height: 40, borderRadius: '12px',
+              background: 'rgba(240,201,110,0.12)',
+              border: '1px solid rgba(240,201,110,0.22)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}
           >
-            <span style={{ lineHeight: 1, display: 'inline-flex', alignItems: 'center' }}>
-              <FontAwesomeIcon icon={faLeaf} style={{ width: 18, height: 18, color: '#226038' }} />
-            </span>
+            <FontAwesomeIcon icon={faLeaf} style={{ width: 20, height: 20, color: '#3D8A5C' }} />
           </div>
 
           <div style={{ flex: 1, minWidth: 0 }}>
-            <Link
+            <a
               href="/"
               style={{
-                display:        'block',
-                fontFamily:     FONT.display,
-                fontSize:       '1.15rem',
-                fontWeight:     700,
-                color:          T.goldPale,
-                letterSpacing:  '0.02em',
-                textDecoration: 'none',
-                lineHeight:     1.2,
+                display: 'block', fontFamily: FONT.display,
+                fontSize: '1.25rem', fontWeight: 700, color: T.goldPale,
+                letterSpacing: '0.02em', textDecoration: 'none', lineHeight: 1.2,
               }}
             >
               வைத்தியம்
-            </Link>
+            </a>
             <span
               style={{
-                display:       'block',
-                fontFamily:    FONT.body,
-                fontSize:      '0.7rem',
-                color:         'rgba(240,201,110,0.60)',
-                letterSpacing: '0.01em',
-                marginTop:     '1px',
+                display: 'block', fontFamily: FONT.body,
+                fontSize: '0.65rem', color: 'rgba(240,201,110,0.55)',
+                letterSpacing: '0.12em', textTransform: 'uppercase',
+                fontWeight: 500, marginTop: '2px',
               }}
             >
-              ஆரோக்கியமான வாழ்வு
+              Siddha · Ayurveda · Natural
             </span>
           </div>
 
-          {/* Skip-to-login */}
-          <Link
+          {/* Login link */}
+          <a
             href="/auth/login"
             style={{
-              fontFamily:     FONT.display,
-              fontSize:       '0.78rem',
-              fontWeight:     600,
-              color:          T.goldPale,
-              textDecoration: 'none',
-              padding:        '6px 12px',
-              borderRadius:   '20px',
-              border:         '1px solid rgba(240,201,110,0.28)',
-              whiteSpace:     'nowrap',
-              flexShrink:     0,
+              fontFamily: FONT.display, fontSize: '0.82rem', fontWeight: 600,
+              color: T.goldPale, textDecoration: 'none',
+              padding: '7px 16px', borderRadius: '22px',
+              border: '1.5px solid rgba(240,201,110,0.32)',
+              whiteSpace: 'nowrap', flexShrink: 0,
+              transition: 'all 0.2s',
             }}
           >
             உள்நுழைவு
-          </Link>
+          </a>
         </div>
       </header>
 
-      {/* ── Main content ──────────────────────────────────────────────────────── */}
+      {/* ── Main ────────────────────────────────────────────────── */}
       <main
         style={{
-          maxWidth: '540px',
-          margin:   '0 auto',
-          padding:  'clamp(28px, 5vw, 48px) 20px 0',
+          maxWidth: '580px', margin: '0 auto',
+          padding: 'clamp(32px, 5vw, 52px) 20px 0',
         }}
       >
         {/* Hero heading */}
-        <div
-          style={{
-            textAlign:    'center',
-            marginBottom: '28px',
-          }}
-        >
-          <span
-            aria-hidden="true"
-            style={{
-              display:      'block',
-              fontSize:     '44px',
-              lineHeight:   1,
-              marginBottom: '14px',
-            }}
-          >
-            <FontAwesomeIcon icon={faSeedling} style={{ width: 40, height: 40, color: 'rgba(26,58,42,0.72)', marginBottom: 14 }} />
-          </span>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h1
             style={{
-              fontFamily:   FONT.display,
-              fontSize:     'clamp(1.4rem, 4.5vw, 1.8rem)',
-              fontWeight:   700,
-              color:        T.darkText,
-              margin:       '0 0 8px',
-              lineHeight:   1.2,
-              letterSpacing:'0.01em',
+              fontFamily: FONT.display,
+              fontSize: 'clamp(1.6rem, 5vw, 2.2rem)',
+              fontWeight: 700, color: T.darkText,
+              margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '0.01em',
             }}
           >
-            புதிய கணக்கு உருவாக்கவும்
+            புதிய கணக்கு உருவாக்குதல்
           </h1>
           <p
             style={{
-              fontFamily: FONT.body,
-              fontSize:   '0.92rem',
-              color:      T.secondaryText,
-              margin:     0,
-              lineHeight: 1.6,
+              fontFamily: FONT.body, fontSize: '0.94rem',
+              color: T.secondaryText, margin: 0, lineHeight: 1.6,
             }}
           >
             இலவசமாக பதிவு செய்து ஆரோக்கியமான வாழ்வை தொடங்குங்கள்
           </p>
         </div>
 
-        {/* 2-step progress indicator */}
-        <StepDots active={redirecting ? 1 : 0} />
+        {/* Step progress bar */}
+        <StepBar active={redirecting ? 1 : 0} />
 
         {/* Form card */}
         <div
           style={{
-            background:   '#FFFFFF',
-            borderRadius: '24px',
-            padding:      'clamp(24px, 5vw, 40px)',
-            boxShadow:    '0 4px 32px rgba(26,58,42,0.08), 0 1px 4px rgba(26,58,42,0.04)',
-            marginBottom: '24px',
-            // Gentle fade-in
-            animation:    'vt-reg-fade 0.35s ease forwards',
+            background: '#FFFFFF', borderRadius: '20px',
+            padding: 'clamp(24px, 5vw, 40px)',
+            boxShadow: '0 4px 32px rgba(26,58,42,0.09), 0 1px 4px rgba(26,58,42,0.05)',
+            marginBottom: '20px',
+            animation: 'reg-fade 0.3s ease forwards',
           }}
         >
-          <style>{`@keyframes vt-reg-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }`}</style>
-
+          <style>{`@keyframes reg-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }`}</style>
           <RegisterForm
             onSubmit={handleSubmit}
             serverError={serverError}
@@ -382,25 +288,19 @@ export default function RegisterPage() {
         {/* OTP dispatch notice */}
         <div
           style={{
-            display:      'flex',
-            alignItems:   'flex-start',
-            gap:          '10px',
-            background:   'rgba(61,122,85,0.06)',
-            border:       '1px solid rgba(61,122,85,0.18)',
-            borderRadius: '14px',
-            padding:      '14px 16px',
+            display: 'flex', alignItems: 'flex-start', gap: '10px',
+            background: 'rgba(61,122,85,0.07)',
+            border: '1px solid rgba(61,122,85,0.20)',
+            borderRadius: '14px', padding: '14px 18px',
           }}
         >
-          <span aria-hidden="true" style={{ flexShrink: 0, marginTop: '1px', display: 'inline-flex', alignItems: 'center' }}>
+          <span style={{ flexShrink: 0, marginTop: '1px', display: 'inline-flex' }}>
             <FontAwesomeIcon icon={faMobileScreen} style={{ width: 15, height: 15, color: '#6b7f74' }} />
           </span>
           <p
             style={{
-              fontFamily: FONT.body,
-              fontSize:   '0.8rem',
-              color:      T.secondaryText,
-              margin:     0,
-              lineHeight: 1.6,
+              fontFamily: FONT.body, fontSize: '0.82rem',
+              color: T.secondaryText, margin: 0, lineHeight: 1.6,
             }}
           >
             பதிவு முடிந்தவுடன் உங்கள் மொபைல் எண்ணுக்கு சரிபார்ப்பு குறியீடு (OTP) அனுப்பப்படும்.
