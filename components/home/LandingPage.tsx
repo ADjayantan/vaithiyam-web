@@ -281,11 +281,12 @@ function HeroSection() {
             சித்த மருத்துவம் · ஆயுர்வேதம் · இயற்கை மருந்துகள்
           </span>
           <h1 className="vt-hero-h1">
-            Authentic Siddha &amp; Ayurveda<br />
-            <span className="vt-hero-h1-accent">Medicine</span> — Tamil First
+            தமிழ் மருந்துகளுக்கான<br />
+            <span className="vt-hero-h1-accent">பாதுகாப்பான</span> ஆன்லைன் கடை
           </h1>
           <p className="vt-hero-copy">
-            Verified traditional medicines with Tamil-first labels, prescription-aware checkout, and educational safety information. Not a substitute for medical advice.
+            Verified Siddha, Ayurveda &amp; natural products with Tamil-first labels.
+            Safe, prescription-aware checkout. Educational information only.
           </p>
           <div className="vt-hero-actions">
             <ButtonLink href="/products" variant="gold">
@@ -317,14 +318,12 @@ function HeroSection() {
         >
         {/* Hero floating product cards with icon + glow */}
         {[
-          { icon: faMortarPestle, iconColor: '#00c8c2', badge: 'Siddha',   nameTa: 'அஸ்வகந்தா சூர்ணம்', sub: 'Ashwagandha Churnam · 100g', price: '₹185', mrp: '₹220', off: '16%', glow: 'rgba(0, 200, 194, 0.25)',   delay: 0   },
-          { icon: faLeaf,         iconColor: '#f4d581', badge: 'Ayurveda', nameTa: 'திரிபல சூரணம்',       sub: 'Triphala Churnam · 100g',    price: '₹180', mrp: '₹220', off: '18%', glow: 'rgba(244, 213, 129, 0.22)', delay: 0.8 },
-          { icon: faSeedling,     iconColor: '#a78bfa', badge: 'Natural',  nameTa: 'நெல்லிக்காய் ஜூஸ்',  sub: 'Amla Juice · 500ml',          price: '₹95',  mrp: '₹120', off: '21%', glow: 'rgba(167, 139, 250, 0.22)', delay: 1.4 },
+          { icon: faMortarPestle, iconColor: '#0f6e42', badge: '🌿 Siddha',   nameTa: 'அஸ்வகந்தா சூர்ணம்', sub: 'Ashwagandha Churnam · 100g', price: '₹185', mrp: '₹220', off: '16%', delay: 0   },
+          { icon: faLeaf,         iconColor: '#8a6000', badge: '🪷 Ayurveda', nameTa: 'திரிபல சூரணம்',       sub: 'Triphala Churnam · 100g',    price: '₹180', mrp: '₹220', off: '18%', delay: 0.8 },
         ].map((card, i) => (
           <motion.div
             key={card.nameTa}
             className={`vt-hero-float-card${i === 1 ? ' vt-hero-float-card-2' : ''}`}
-            style={{ '--card-glow': card.glow } as React.CSSProperties}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: card.delay }}
           >
