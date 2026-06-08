@@ -63,9 +63,9 @@ export function ProductCard({
           </div>
         )}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
-          <Button type="button" disabled={!product.inStock} onClick={() => onAddToCart?.(product)} aria-label={`Add ${product.nameEn} to cart`}>
-            <FontAwesomeIcon icon={faCartShopping} style={{width: 17, height: 17}} />
-            {product.inStock ? 'கூடையில் சேர்' : 'கையிருப்பில் இல்லை'}
+          <Button type="button" disabled={!product.inStock} onClick={() => onAddToCart?.(product)} aria-label={`Add ${product.nameEn} to cart`} className="vt-btn-card">
+            <FontAwesomeIcon icon={faCartShopping} style={{width: 15, height: 15}} />
+            {product.inStock ? 'சேர்' : 'இல்லை'}
           </Button>
           <button className="vt-icon-button" type="button" onClick={() => onWishlist?.(product)} aria-label={`Add ${product.nameEn} to wishlist`}>
             <FontAwesomeIcon icon={faHeart} style={{width: 18, height: 18}} />
