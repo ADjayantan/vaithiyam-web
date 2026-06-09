@@ -1704,3 +1704,48 @@ input, select, textarea { font: inherit; }
   .vt-fk-price { font-size: 1.08rem; }
   .vt-fk-cart-btn { font-size: 0.75rem; height: 36px; letter-spacing: 0; }
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   PRODUCTS CATALOGUE — editorial reference layout
+   ───────────────────────────────────────────────────────────────── */
+.vt-catalogue-page {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1040px) {
+  .vt-catalogue-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .vt-catalogue-filter {
+    position: static !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px !important;
+  }
+  .vt-catalogue-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .vt-catalogue-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .vt-catalogue-main,
+  .vt-catalogue-footer,
+  .vt-catalogue-page header > div {
+    width: calc(100% - 32px) !important;
+  }
+  .vt-catalogue-navlinks {
+    display: none !important;
+  }
+  .vt-catalogue-filter {
+    grid-template-columns: 1fr !important;
+  }
+  .vt-catalogue-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .vt-catalogue-footer {
+    grid-template-columns: 1fr !important;
+  }
+}

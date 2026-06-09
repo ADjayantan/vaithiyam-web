@@ -1,10 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faBoxOpen, faCircleCheck, faFilter, faMagnifyingGlass, faShieldHalved, faStethoscope, faUpload, faDroplet, faAppleWhole, faBolt, faTemperatureHalf, faFlask, faWandSparkles, faLeaf, faHeartPulse } from '@fortawesome/free-solid-svg-icons';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faArrowLeft, faArrowRight, faBagShopping, faBoxOpen, faCircleCheck, faFilter, faMagnifyingGlass, faShieldHalved, faStethoscope, faUpload, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import type { MedicineCategory, SeedMedicine, Tradition } from '@/lib/medicineData';
 import { ButtonLink } from '@/components/ui/Button';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
@@ -37,19 +39,50 @@ function productQuery({ search, tradition, category, stock, sort }: { search: st
   return `/api/products?${params.toString()}`;
 }
 
-const CAT_META: Record<string, { icon: IconDefinition; bg: string; fg: string }> = {
-  'siddha':           { icon: faLeaf,          bg: '#e3f7ed', fg: '#1b8a58' },
-  'ayurveda':         { icon: faWandSparkles,  bg: '#fdf5d0', fg: '#b07800' },
-  'natural-wellness': { icon: faFlask,         bg: '#d9f5f4', fg: '#0f8a86' },
-  'digestive-care':   { icon: faAppleWhole,    bg: '#fff0e6', fg: '#c45e00' },
-  'skin-care':        { icon: faWandSparkles,  bg: '#fce8f0', fg: '#b03070' },
-  'hair-care':        { icon: faDroplet,       bg: '#ede8ff', fg: '#6d28d9' },
-  'immunity-support': { icon: faShieldHalved,  bg: '#dbeafe', fg: '#1d4ed8' },
-  'general-wellness': { icon: faHeartPulse,    bg: '#fde8e8', fg: '#be123c' },
-  'pain-relief':      { icon: faBolt,          bg: '#ffedd5', fg: '#c2410c' },
-  'fever-care':       { icon: faTemperatureHalf, bg: '#e0e7ff', fg: '#4338ca' },
-};
-const DEFAULT_CAT_META = { icon: faLeaf, bg: '#e3f7ed', fg: '#1b8a58' };
+const CATALOGUE_CARDS = [
+  {
+    image: '/catalogue-ref-1.png',
+    nameTa: 'அழுக்கரா மாத்திரை',
+    nameEn: 'நரம்பு தளர்ச்சி மற்றும் தூக்கமின்மை',
+    price: '₹450.00',
+    slug: 'ashwagandha-churnam',
+  },
+  {
+    image: '/catalogue-ref-2.png',
+    nameTa: 'திரிபலா சூரணம்',
+    nameEn: 'செரிமான மண்டல ஆரோக்கியம்',
+    price: '₹280.00',
+    slug: 'triphala-churnam',
+  },
+  {
+    image: '/catalogue-ref-3.png',
+    nameTa: 'அருகம்புல் தைலம்',
+    nameEn: 'தோல் வியாதிகளுக்கான சித்த தீர்வு',
+    price: '₹520.00',
+    slug: 'arugampul-powder',
+  },
+  {
+    image: '/catalogue-ref-4.png',
+    nameTa: 'சவன்பிராஷ் லேகியம்',
+    nameEn: 'நோய் எதிர்ப்பு சக்தி மேம்பாடு',
+    price: '₹750.00',
+    slug: 'daily-wellness-combo',
+  },
+  {
+    image: '/catalogue-ref-5.png',
+    nameTa: 'பிரம்ம நிவாரணி',
+    nameEn: 'ஞாபக சக்தி மற்றும் மன அமைதி',
+    price: '₹390.00',
+    slug: 'brahmi-oil',
+  },
+  {
+    image: '/catalogue-ref-6.png',
+    nameTa: 'அரிஷ்டம்',
+    nameEn: 'இரத்தச் சுத்திகரிப்பு மற்றும் மெலிவு',
+    price: '₹640.00',
+    slug: 'jeeraka-arishtam',
+  },
+] as const;
 
 export function StorefrontPage({
   mode = 'home',
@@ -168,6 +201,135 @@ export function StorefrontPage({
     }
   }, [showToast]);
 
+  if (mode === 'products') {
+    const actionProducts = CATALOGUE_CARDS.map((card, index) => (
+      products.find((product) => product.slug === card.slug) ?? products[index]
+    ));
+
+    return (
+      <div className="vt-catalogue-page" style={{ minHeight: '100dvh', background: '#061711', color: '#e8e4dd', fontFamily: "'Outfit','Catamaran',system-ui,sans-serif" }}>
+        <CatalogueNav cartCount={cartCount} />
+
+        <main className="vt-catalogue-main" style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', padding: '34px 0 108px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: '#9ea7a1', fontSize: 15, fontWeight: 700, marginBottom: 20 }}>
+            <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>முகப்பு</Link>
+            <span>›</span>
+            <span style={{ color: '#d8d3ca' }}>சித்த மருத்துவம்</span>
+          </div>
+
+          <section style={{ marginBottom: 66 }}>
+            <h1 style={{
+              margin: '0 0 24px',
+              fontFamily: "'Noto Serif Tamil','Catamaran',serif",
+              fontSize: 'clamp(3.8rem, 5vw, 5.15rem)',
+              lineHeight: 1.02,
+              fontWeight: 700,
+              color: '#f0efec',
+              letterSpacing: 0,
+            }}>
+              மூலிகை மருந்துகள்
+            </h1>
+            <p style={{ margin: 0, maxWidth: 800, color: '#a5aca7', fontSize: '1.35rem', lineHeight: 1.72, fontWeight: 500 }}>
+              ஆய்வுக்கணக்கான ஆண்டுகளால் பாரம்பரியமும் நவீன மருத்துவ அறிவியலும் இணைந்த உயர்தர மூலிகை சிகிச்சைகள்.
+            </p>
+          </section>
+
+          <section className="vt-catalogue-layout" style={{ display: 'grid', gridTemplateColumns: '303px minmax(0, 1fr)', gap: 27, alignItems: 'start' }}>
+            <aside className="vt-catalogue-filter" style={{ position: 'sticky', top: 100, display: 'grid', gap: 40, paddingTop: 3 }}>
+              <FilterGroup title="வகை">
+                <CatalogueCheck label="சித்தம் (124)" checked={false} />
+                <CatalogueCheck label="ஆயுர்வேதம் (86)" checked />
+                <CatalogueCheck label="யுனானி (42)" checked={false} />
+              </FilterGroup>
+
+              <FilterGroup title="ஆரோக்கிய இலக்கு">
+                <CatalogueCheck label="நோய் எதிர்ப்பு சக்தி" checked={false} />
+                <CatalogueCheck label="செரிமானம்" checked={false} />
+                <CatalogueCheck label="மன அழுத்தம்" checked={false} />
+              </FilterGroup>
+
+              <FilterGroup title="வடிவம்">
+                {['மாத்திரை', 'லேகியம்', 'தைலம்', 'சூரணம்'].map((label) => (
+                  <button
+                    key={label}
+                    type="button"
+                    style={{
+                      minHeight: 31, padding: '0 13px', marginRight: 8, marginBottom: 8,
+                      border: `1px solid ${label === 'லேகியம்' ? '#e9c349' : 'rgba(232,228,221,0.42)'}`,
+                      background: 'transparent',
+                      color: label === 'லேகியம்' ? '#e9c349' : '#d6d1c8',
+                      fontSize: 14, fontWeight: 800,
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </FilterGroup>
+            </aside>
+
+            <div>
+              {loading && products.length === 0 ? (
+                <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
+                  {Array.from({ length: 6 }, (_, index) => (
+                    <div key={index} style={{ minHeight: 526, background: 'rgba(30,29,29,0.78)' }} />
+                  ))}
+                </div>
+              ) : (
+                <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
+                  {CATALOGUE_CARDS.map((card, index) => (
+                    <CatalogueProductCard
+                      key={card.slug}
+                      card={card}
+                      actionProduct={actionProducts[index]}
+                      onAddToCart={(product) => {
+                        if (product) void addToCart(product);
+                        else showToast('Products are still loading. Please try again.');
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, marginTop: 74 }}>
+                {[
+                  { label: '', icon: faArrowLeft, active: false },
+                  { label: '1', active: true },
+                  { label: '2', active: false },
+                  { label: '3', active: false },
+                  { label: '...', active: false },
+                  { label: '12', active: false },
+                  { label: '', icon: faArrowRight, active: false },
+                ].map((item, index) => (
+                  <button
+                    key={`${item.label}-${index}`}
+                    type="button"
+                    style={{
+                      width: 48, height: 48, display: 'inline-grid', placeItems: 'center',
+                      border: item.label === '...' ? 'none' : '1px solid rgba(232,228,221,0.28)',
+                      background: item.active ? '#e9c349' : 'transparent',
+                      color: item.active ? '#241a00' : '#d8d3ca',
+                      fontWeight: 800, fontSize: 18,
+                    }}
+                  >
+                    {item.icon ? <FontAwesomeIcon icon={item.icon} style={{ width: 16, height: 16 }} /> : item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <CatalogueFooter />
+        <MobileBottomNav />
+        {toast && (
+          <div role="status" style={{ position: 'fixed', left: '50%', bottom: 94, zIndex: 100, transform: 'translateX(-50%)', padding: '12px 18px', borderRadius: 2, background: '#1d1c1c', border: '1px solid rgba(233,195,73,0.28)', color: '#fff', fontWeight: 800, whiteSpace: 'nowrap' }}>
+            {toast}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="vt-page-shell">
       <CustomerHeader cartCount={cartCount} searchValue={search} onSearchChange={setSearch} />
@@ -233,54 +395,18 @@ export function StorefrontPage({
                 <p>Siddha, Ayurveda, Natural, pain relief, fever care, digestive care, skin, hair, wellness, and prescription-required products.</p>
               </div>
             </div>
-            {mode === 'products' ? (
-              /* Visual category grid for /products page */
-              <div className="vt-category-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginTop: 8 }}>
-                {categories.map((item) => {
-                  const meta = CAT_META[item.slug] ?? DEFAULT_CAT_META;
-                  const isActive = category === item.slug;
-                  return (
-                    <button
-                      key={item.slug}
-                      type="button"
-                      onClick={() => setCategory(item.slug)}
-                      className="vt-category-card"
-                      style={{
-                        cursor: 'pointer', textAlign: 'left', border: 'none', background: 'none',
-                        boxShadow: isActive ? '0 0 0 2px var(--vt-emerald-600)' : undefined,
-                        transform: isActive ? 'scale(1.03)' : undefined,
-                        transition: 'transform 160ms, box-shadow 160ms',
-                      }}
-                    >
-                      <span
-                        className="vt-category-icon"
-                        style={{ width: 46, height: 46, borderRadius: 14, background: meta.bg, color: meta.fg, display: 'grid', placeItems: 'center' }}
-                      >
-                        <FontAwesomeIcon icon={meta.icon} style={{ width: 20, height: 20 }} />
-                      </span>
-                      <strong style={{ fontFamily: 'var(--vt-font-display)', fontSize: '0.9rem', lineHeight: 1.45, letterSpacing: 0, color: isActive ? 'var(--vt-emerald-600)' : 'var(--vt-forest-900)' }}>
-                        {item.nameTa}
-                      </strong>
-                      <span style={{ fontSize: 'var(--vt-text-xs)', color: 'var(--vt-muted)', fontWeight: 600 }}>{item.nameEn}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              /* Chip row for home mode */
-              <div className="vt-chip-row" role="list" aria-label="Category filters">
-                {categories.map((item) => (
-                  <button
-                    key={item.slug}
-                    type="button"
-                    className={`vt-chip ${category === item.slug ? 'vt-chip-active' : ''}`}
-                    onClick={() => setCategory(item.slug)}
-                  >
-                    {item.nameEn}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="vt-chip-row" role="list" aria-label="Category filters">
+              {categories.map((item) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  className={`vt-chip ${category === item.slug ? 'vt-chip-active' : ''}`}
+                  onClick={() => setCategory(item.slug)}
+                >
+                  {item.nameEn}
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -326,7 +452,7 @@ export function StorefrontPage({
           <div className="vt-container">
             <div className="vt-section-heading">
               <div>
-                <h2>{mode === 'products' ? 'All medicines' : 'Product catalogue'}</h2>
+                <h2>Product catalogue</h2>
                 <p>Every product page includes educational information and doctor/pharmacist consultation warnings.</p>
               </div>
             </div>
@@ -358,6 +484,136 @@ export function StorefrontPage({
           {toast}
         </div>
       )}
+    </div>
+  );
+}
+
+function CatalogueNav({ cartCount }: { cartCount: number }) {
+  return (
+    <header style={{ height: 70, background: '#0d0d0d', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'sticky', top: 0, zIndex: 80 }}>
+      <div style={{ width: 'min(1324px, calc(100% - 48px))', height: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+        <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 42, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }}>
+          Vaithiyam
+        </Link>
+        <nav className="vt-catalogue-navlinks" style={{ display: 'flex', alignItems: 'center', gap: 38, color: '#c8c8c0', fontSize: 16, letterSpacing: '0.09em', fontWeight: 700 }}>
+          <Link href="/products" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Cancer Care</Link>
+          <Link href="/products?tradition=siddha" style={{ color: '#e9c349', textDecoration: 'none', borderBottom: '3px solid #e9c349', paddingBottom: 8 }}>Siddha</Link>
+          <Link href="/products?tradition=ayurveda" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Ayurveda</Link>
+          <Link href="/help" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Consultations</Link>
+        </nav>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 22, color: '#b7cbc3' }}>
+          <Link href="/cart" aria-label="Cart" style={{ color: 'inherit', position: 'relative' }}>
+            <FontAwesomeIcon icon={faBagShopping} style={{ width: 23, height: 23 }} />
+            {cartCount > 0 && <span style={{ position: 'absolute', top: -9, right: -9, color: '#e9c349', fontSize: 11 }}>{cartCount}</span>}
+          </Link>
+          <Link href="/account" aria-label="Account" style={{ color: 'inherit' }}>
+            <FontAwesomeIcon icon={faUserCircle} style={{ width: 25, height: 25 }} />
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div style={{ paddingBottom: 35, borderBottom: '1px solid rgba(232,228,221,0.10)' }}>
+      <h2 style={{ margin: '0 0 18px', color: '#e9c349', fontSize: 17, letterSpacing: '0.02em', fontWeight: 800 }}>{title}</h2>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+function CatalogueCheck({ label, checked }: { label: string; checked: boolean }) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'center', gap: 13, minHeight: 40, color: '#c7cdc7', fontSize: 19, cursor: 'default' }}>
+      <input type="checkbox" checked={checked} readOnly style={{ width: 20, height: 20, accentColor: '#e9c349' }} />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+function CatalogueProductCard({
+  card,
+  actionProduct,
+  onAddToCart,
+}: {
+  card: typeof CATALOGUE_CARDS[number];
+  actionProduct?: SeedMedicine;
+  onAddToCart: (product?: SeedMedicine) => void;
+}) {
+  return (
+    <article style={{ background: '#1f1d1d', minWidth: 0 }}>
+      <Link href={`/products/${card.slug}`} style={{ display: 'block', position: 'relative', aspectRatio: '1 / 1', overflow: 'hidden', background: '#071711' }}>
+        <Image src={card.image} alt={card.nameTa} fill sizes="(max-width: 900px) 50vw, 312px" style={{ objectFit: 'cover' }} />
+      </Link>
+      <div style={{ height: 214, padding: '24px 18px 18px', overflow: 'hidden' }}>
+        <Link href={`/products/${card.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+          <h2 style={{
+            margin: '0 0 11px',
+            minHeight: 92,
+            fontFamily: "'Noto Serif Tamil','Catamaran',serif",
+            fontSize: 'clamp(2rem, 2.7vw, 2.55rem)',
+            lineHeight: 1.14,
+            fontWeight: 700,
+            color: '#f0efec',
+            letterSpacing: 0,
+          }}>
+            {card.nameTa}
+          </h2>
+          <p style={{ margin: 0, minHeight: 20, color: '#a1a19c', fontSize: 14, fontWeight: 700 }}>{card.nameEn}</p>
+        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginTop: 17 }}>
+          <strong style={{ fontSize: 24, color: '#f0efec', lineHeight: 1 }}>{card.price}</strong>
+          <button
+            type="button"
+            onClick={() => onAddToCart(actionProduct)}
+            style={{
+              width: 61, height: 37, border: 'none',
+              background: '#e9c349',
+              color: '#241a00', fontWeight: 900, cursor: 'pointer',
+            }}
+          >
+            சேர்
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function CatalogueFooter() {
+  return (
+    <footer style={{ background: '#0d0d0d', borderTop: '1px solid rgba(255,255,255,0.06)', padding: '78px 0 32px' }}>
+      <div className="vt-catalogue-footer" style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr', gap: 58 }}>
+        <div>
+          <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 42, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }}>Vaithiyam</Link>
+          <p style={{ color: '#a6aaa5', lineHeight: 1.85, maxWidth: 270, marginTop: 28, fontSize: 18 }}>பழமையான மருத்துவ முறைகள், நவீன வாழ்க்கைக்கு.</p>
+        </div>
+        <FooterColumn title="சேவைகள்" links={['Siddha Traditions', 'Cancer Protocols', 'Ayurvedic Wellness']} />
+        <FooterColumn title="சட்டம்" links={['Privacy Policy', 'Terms of Service', 'Clinical Research']} />
+        <div>
+          <h3 style={{ margin: '0 0 31px', color: '#e9c349', fontSize: 16 }}>செய்தி மடல்</h3>
+          <div style={{ display: 'flex', borderBottom: '1px solid rgba(232,228,221,0.22)' }}>
+            <input placeholder="மின்னஞ்சல் முகவரி" style={{ flex: 1, height: 48, border: 'none', outline: 'none', background: 'transparent', color: '#e8e4dd', fontSize: 18 }} />
+            <button aria-label="Subscribe" style={{ width: 48, border: 'none', background: 'transparent', color: '#e9c349' }}>
+              <FontAwesomeIcon icon={faArrowRight} style={{ width: 20, height: 20 }} />
+            </button>
+          </div>
+        </div>
+      </div>
+      <p style={{ margin: '73px 0 0', textAlign: 'center', color: '#9ea7a1', fontWeight: 700, fontSize: 14 }}>© 2024 Vaithiyam Healthcare. All Rights Reserved.</p>
+    </footer>
+  );
+}
+
+function FooterColumn({ title, links }: { title: string; links: string[] }) {
+  return (
+    <div>
+      <h3 style={{ margin: '0 0 26px', color: '#e9c349', fontSize: 16 }}>{title}</h3>
+      <div style={{ display: 'grid', gap: 16 }}>
+        {links.map((link) => <Link key={link} href="/products" style={{ color: '#a7aea8', textDecoration: 'none', fontWeight: 800, fontSize: 16 }}>{link}</Link>)}
+      </div>
     </div>
   );
 }

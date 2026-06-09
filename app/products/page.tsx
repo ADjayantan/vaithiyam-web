@@ -1,9 +1,10 @@
 import { StorefrontPage } from '@/components/products/StorefrontPage';
 
-export default function ProductsPage({
+export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams?: { category?: string; tradition?: string; sort?: string };
+  searchParams?: Promise<{ category?: string; tradition?: string; sort?: string }>;
 }) {
-  return <StorefrontPage mode="products" initialCategory={searchParams?.category} initialTradition={searchParams?.tradition as never} initialSort={searchParams?.sort as never} />;
+  const params = await searchParams;
+  return <StorefrontPage mode="products" initialCategory={params?.category} initialTradition={params?.tradition as never} initialSort={params?.sort as never} />;
 }
