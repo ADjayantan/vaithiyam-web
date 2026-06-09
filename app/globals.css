@@ -174,10 +174,11 @@ input, select, textarea { font: inherit; }
   top: 0;
   z-index: var(--z-nav);
   display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 0 36px;
-  height: 62px;
+  flex-direction: column;       /* stack brand row + search strip vertically */
+  align-items: stretch;
+  gap: 0;
+  padding: 0;                   /* padding moved to .vt-header-inner */
+  height: auto;                 /* auto — expands for the mobile search row */
   background: rgba(3,12,7,0.75);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -190,6 +191,9 @@ input, select, textarea { font: inherit; }
   display: flex;
   align-items: center;
   gap: 20px;
+  min-height: 62px;             /* keep the brand row at 62 px tall */
+  padding: 0 36px;              /* horizontal padding lives here now */
+  flex-shrink: 0;
 }
 
 .vt-brand {
@@ -230,6 +234,10 @@ input, select, textarea { font: inherit; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
+  white-space: nowrap;          /* keep on one line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;             /* clip on very narrow viewports */
 }
 
 /* ── Search bar ──────────────────────────────────────────────────── */
@@ -277,7 +285,7 @@ input, select, textarea { font: inherit; }
 /* Mobile search strip */
 .vt-mobile-search-strip {
   display: block;
-  padding: 0 18px 10px;
+  padding: 6px 18px 10px;      /* 6px top gap between brand row and search */
   width: 100%;
 }
 .vt-header-search-desktop { display: none; }
@@ -291,6 +299,8 @@ input, select, textarea { font: inherit; }
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;               /* never shrink into the brand */
+  margin-left: auto;            /* push to right when search is hidden */
 }
 
 .vt-icon-link {
@@ -1296,7 +1306,7 @@ input, select, textarea { font: inherit; }
    ───────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .vt-consult-inner { flex-direction: column; }
-  .vt-app-header { padding: 0 18px; }
+  .vt-header-inner  { padding: 0 18px; }       /* reduced side-padding on tablets */
   .vt-section { padding: 60px 18px; }
   .vt-storefront { padding: 20px 18px 60px; }
 }
@@ -1305,6 +1315,26 @@ input, select, textarea { font: inherit; }
   .vt-footer { padding: 40px 18px 24px; }
   .vt-products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .vt-categories-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* ── Section header: stack heading + see-all on mobile ─────────── */
+  .vt-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  /* Slightly smaller Tamil heading so it never overflows on 360px */
+  .vt-section-header h2,
+  .vt-section-heading h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    letter-spacing: 0;
+  }
+  /* See-all link wraps instead of overflowing */
+  .vt-see-all,
+  .vt-see-all-link {
+    white-space: normal;
+    font-size: 0.78rem;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1674,4 +1704,3 @@ input, select, textarea { font: inherit; }
   .vt-fk-price { font-size: 1.08rem; }
   .vt-fk-cart-btn { font-size: 0.75rem; height: 36px; letter-spacing: 0; }
 }
-
