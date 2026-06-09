@@ -20,25 +20,25 @@ import { useState } from 'react';
 
 // ─── Design tokens (mirrors all existing Vaithiyam modules exactly) ────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -112,11 +112,11 @@ export default function ProfileCard({
     <section
       aria-label="சுயவிவர தகவல்"
       style={{
-        background:   '#FFFFFF',
-        border:       `1px solid ${T.border}`,
+        background:   'var(--vt-card)',
+        border:       `1px solid var(--vt-border)`,
         borderRadius: '24px',
         overflow:     'hidden',
-        boxShadow:    '0 2px 16px rgba(26,58,42,0.07)',
+        boxShadow:    'var(--vt-shadow-sm)',
       }}
     >
       {/* ── Gradient header band ─────────────────────────────────────────── */}
@@ -165,7 +165,7 @@ export default function ProfileCard({
               width:          '88px',
               height:         '88px',
               borderRadius:   '50%',
-              border:         `3px solid #FFFFFF`,
+              border:         `3px solid var(--vt-border-strong)`,
               boxShadow:      '0 2px 12px rgba(0,0,0,0.14)',
               overflow:       'hidden',
               position:       'relative',
@@ -210,7 +210,7 @@ export default function ProfileCard({
                 style={{
                   position:        'absolute',
                   inset:           0,
-                  background:      'rgba(15,42,28,0.65)',
+                  background:      'rgba(3,12,7,0.75)',
                   display:         'flex',
                   flexDirection:   'column',
                   alignItems:      'center',
@@ -253,13 +253,13 @@ export default function ProfileCard({
               gap:            '6px',
               padding:        '9px 18px',
               borderRadius:   '100px',
-              border:         `1.5px solid rgba(26,58,42,0.22)`,
+              border:         `1.5px solid var(--vt-border)`,
               background:     'transparent',
               cursor:         'pointer',
               fontFamily:     FONT.display,
               fontSize:       '13px',
               fontWeight:     700,
-              color:          T.forestPrimary,
+              color:          'var(--vt-gold-300)',
               transition:     'all 0.16s ease',
               marginBottom:   '2px',
             }}
@@ -375,7 +375,7 @@ function InfoRow({
           width:          '34px',
           height:         '34px',
           borderRadius:   '10px',
-          background:     'rgba(26,58,42,0.07)',
+          background:     'rgba(61,138,92,0.12)',
           display:        'flex',
           alignItems:     'center',
           justifyContent: 'center',

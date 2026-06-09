@@ -44,24 +44,24 @@ import OrderHistoryCard from './OrderHistoryCard';
 import type { OrderHistorySummary } from './OrderHistoryCard';
 import type { OrderFiltersState }   from './OrderFilters';
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-800)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-gold-500)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-muted)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
 } as const;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ function CardSkeleton({ delay = 0 }: { delay?: number }) {
     <div
       aria-hidden="true"
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
         borderRadius: '20px',
         border:       `1px solid ${T.border}`,
         padding:      '15px',
@@ -287,7 +287,7 @@ function EmptyState({
           animation: 'vt-ohl-float 3s ease-in-out infinite',
         }}
       >
-        <FontAwesomeIcon icon={icon} style={{ width: 48, height: 48, color: 'rgba(26,58,42,0.38)' }} />
+        <FontAwesomeIcon icon={icon} style={{ width: 48, height: 48, color: 'rgba(61,138,92,0.38)' }} />
       </span>
       <style>{`
         @keyframes vt-ohl-float {
@@ -607,7 +607,7 @@ export default function OrderHistoryList({
     return (
       <div
         style={{
-          background:   '#FFFFFF',
+          background:   'var(--vt-card)',
           borderRadius: '20px',
           border:       `1px solid ${T.border}`,
         }}
@@ -622,7 +622,7 @@ export default function OrderHistoryList({
     return (
       <div
         style={{
-          background:   '#FFFFFF',
+          background:   'var(--vt-card)',
           borderRadius: '20px',
           border:       `1px solid ${T.border}`,
         }}

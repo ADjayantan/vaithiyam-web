@@ -11,7 +11,7 @@ import AddressForm from '@/components/checkout/AddressForm';
 import { placeOrder, type PaymentMethod } from '@/lib/order';
 import { useCartStore } from '@/stores/cartStore';
 import type { CartItem } from '@/types/order';
-import { CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
 import { MedicineArt } from '@/components/ui/MedicineArt';
 import { Button } from '@/components/ui/Button';
 
@@ -329,10 +329,11 @@ export default function CheckoutPage() {
           )}
         </section>
 
-        <p className="vt-muted" style={{ marginTop: 18 }}>
-          Need to edit your cart? <Link href="/cart" style={{ color: 'var(--vt-forest-800)', fontWeight: 800 }}>Return to cart</Link>.
+        <p className="vt-muted" style={{ marginTop: 18, marginBottom: 32 }}>
+          Need to edit your cart? <Link href="/cart" style={{ color: 'var(--vt-emerald-400)', fontWeight: 800 }}>Return to cart</Link>.
         </p>
       </main>
+      <CustomerFooter />
       <MobileBottomNav />
     </div>
   );
@@ -358,15 +359,15 @@ function PaymentChoice({
     <button
       type="button"
       onClick={() => onSelect(value)}
-      className="vt-card vt-card-solid"
+      className="vt-card"
       style={{
         width: '100%',
         padding: 14,
         display: 'flex',
         gap: 12,
         textAlign: 'left',
-        borderColor: active ? 'rgba(31,138,98,0.52)' : 'var(--vt-border)',
-        background: active ? 'rgba(31,138,98,0.08)' : '#fff',
+        borderColor: active ? 'var(--vt-border-strong)' : 'var(--vt-border)',
+        background: active ? 'rgba(61,138,92,0.12)' : 'rgba(255, 255, 255, 0.02)',
         cursor: 'pointer',
       }}
     >
@@ -383,7 +384,7 @@ function Summary({ label, value, strong = false }: { label: string; value: strin
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
       <span className="vt-muted">{label}</span>
-      <strong style={{ color: 'var(--vt-forest-950)', fontSize: strong ? '1.35rem' : '1rem' }}>{value}</strong>
+      <strong style={{ color: strong ? 'var(--vt-gold-400)' : 'var(--vt-ink)', fontSize: strong ? '1.35rem' : '1rem' }}>{value}</strong>
     </div>
   );
 }

@@ -34,31 +34,32 @@ import { FontAwesomeIcon }       from '@fortawesome/react-fontawesome';
 import {
   faGift, faCalendarDays, faPhone, faBox, faCreditCard,
 } from '@fortawesome/free-solid-svg-icons';
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
 import OrderTimeline             from '../../../components/order/OrderTimeline';
 import OrderSummary              from '../../../components/order/OrderSummary';
 import type { OrderData, OrderStatus } from '../../../components/order/OrderSummary';
 
 // ─── Design tokens (mirrors all order components exactly) ─────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-800)',
+  forestDark:    'var(--vt-deep)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-200)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-gold-500)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-muted)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 function getToken(): string | null {
@@ -93,15 +94,20 @@ export default function OrderDetailPage() {
     <div
       style={{
         minHeight:     '100dvh',
-        background:    T.creamBase,
-        paddingBottom: '48px',
+        background:    'var(--vt-void)',
+        paddingBottom: '80px',
       }}
     >
+      <CustomerHeader />
+
       {/* ── Content (useParams doesn't require Suspense, but we wrap
              to get the skeleton during data fetching as a unified UX) */}
       <Suspense fallback={<PageShellSkeleton />}>
         <OrderDetailContent />
       </Suspense>
+
+      <CustomerFooter />
+      <MobileBottomNav />
 
       <style>{`
         @keyframes vt-od-spin {
@@ -211,116 +217,51 @@ function OrderDetailContent() {
 
   return (
     <>
-      {/* ── Sticky header ──────────────────────────────────────────────── */}
-      <header
+      {/* Back to list and ID heading for context */}
+      <div
         style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     200,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '16px 16px 0',
+          maxWidth: '660px',
+          margin: '0 auto',
         }}
       >
-        <div
+        <Link
+          href="/account/orders"
           style={{
-            maxWidth:   '660px',
-            margin:     '0 auto',
-            padding:    '14px 16px',
-            display:    'flex',
+            fontFamily: FONT.body,
+            fontSize: '13px',
+            color: 'var(--vt-emerald-400)',
+            textDecoration: 'none',
+            display: 'inline-flex',
             alignItems: 'center',
-            gap:        '12px',
+            gap: '4px',
           }}
         >
-          {/* Back to orders */}
-          <Link
-            href="/account/orders"
-            aria-label="ஆர்டர்களுக்கு திரும்பு"
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.10)',
-              border:         '1px solid rgba(240,201,110,0.18)',
-              flexShrink:     0,
-              textDecoration: 'none',
-              transition:     'background 150ms ease',
-            }}
-          >
-            <BackArrowIcon />
-          </Link>
-
-          {/* Herb mark */}
-          <div
-            aria-hidden="true"
-            style={{
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.10)',
-              border:         '1px solid rgba(240,201,110,0.18)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              flexShrink:     0,
-            }}
-          >
-            <HerbIcon color={T.goldPale} />
-          </div>
-
-          {/* Order identity */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1
-              style={{
-                fontFamily:   FONT.display,
-                fontSize:     '16px',
-                fontWeight:   800,
-                color:        T.goldPale,
-                margin:       0,
-                lineHeight:   1.2,
-                overflow:     'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace:   'nowrap',
-              }}
-            >
-              #{order.orderId}
-            </h1>
-            <p
-              style={{
-                fontFamily: FONT.body,
-                fontSize:   '11px',
-                color:      'rgba(240,201,110,0.50)',
-                margin:     '2px 0 0',
-                lineHeight: 1.3,
-              }}
-            >
-              {placedDateFmt}
-            </p>
-          </div>
-
-          {/* Status badge */}
-          <span
-            style={{
-              fontFamily:    FONT.body,
-              fontSize:      '11px',
-              fontWeight:    700,
-              background:    badge.bg,
-              color:         badge.color,
-              border:        `1px solid ${badge.border}`,
-              padding:       '4px 10px',
-              borderRadius:  '100px',
-              whiteSpace:    'nowrap',
-              lineHeight:    1.5,
-              letterSpacing: '0.02em',
-              flexShrink:    0,
-            }}
-          >
-            {badge.labelTa}
-          </span>
-        </div>
-      </header>
+          ← என் ஆர்டர்கள்
+        </Link>
+        <span style={{ color: 'var(--vt-muted)' }}>|</span>
+        <h2 style={{ fontSize: '14px', margin: 0, fontFamily: FONT.display, color: T.gold }}>
+          ஆர்டர் #{order.orderId}
+        </h2>
+        <span
+          style={{
+            fontFamily:    FONT.body,
+            fontSize:      '10px',
+            fontWeight:    700,
+            background:    badge.bg,
+            color:         badge.color,
+            border:        `1px solid ${badge.border}`,
+            padding:       '2px 8px',
+            borderRadius:  '100px',
+            marginLeft:    'auto',
+          }}
+        >
+          {badge.labelTa}
+        </span>
+      </div>
 
       {/* ── Page body ────────────────────────────────────────────────────── */}
       <main
@@ -450,11 +391,11 @@ function OrderDetailContent() {
           <section
             aria-label="மீண்டும் ஆர்டர் செய்யவும்"
             style={{
-              background:   '#FFFFFF',
+              background:   'var(--vt-card)',
               border:       `1px solid ${T.border}`,
               borderRadius: '20px',
               padding:      '20px',
-              boxShadow:    '0 2px 12px rgba(26,58,42,0.06)',
+              boxShadow:    'var(--vt-shadow-sm)',
               textAlign:    'center',
             }}
           >
@@ -551,14 +492,14 @@ function OrderDetailContent() {
         <SupportSection orderId={order.orderId} />
 
         {/* ── 8. Continue shopping link ─────────────────────────────────── */}
-        <div style={{ textAlign: 'center', paddingTop: '4px' }}>
+        <div style={{ textAlign: 'center', paddingTop: '4px', marginBottom: '24px' }}>
           <Link
             href="/products"
             style={{
               fontFamily:     FONT.body,
               fontSize:       '13px',
               fontWeight:     600,
-              color:          T.muted,
+              color:          'var(--vt-emerald-400)',
               textDecoration: 'none',
             }}
           >
@@ -580,11 +521,11 @@ function SupportSection({ orderId }: { orderId: string }) {
     <section
       aria-label="உதவி மையம்"
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
         border:       `1px solid ${T.border}`,
         borderRadius: '20px',
         overflow:     'hidden',
-        boxShadow:    '0 2px 12px rgba(26,58,42,0.06)',
+        boxShadow:    'var(--vt-shadow-sm)',
       }}
     >
       {/* Header */}
@@ -594,8 +535,8 @@ function SupportSection({ orderId }: { orderId: string }) {
           alignItems: 'center',
           gap:        '10px',
           padding:    '16px 20px',
-          background: 'rgba(26,58,42,0.03)',
-          borderBottom: `1px solid rgba(221,208,184,0.50)`,
+          background: 'rgba(255,255,255,0.02)',
+          borderBottom: `1px solid var(--vt-border)`,
         }}
       >
         <SupportIcon />
@@ -697,7 +638,7 @@ function SupportSection({ orderId }: { orderId: string }) {
             alignItems:     'center',
             gap:            '12px',
             padding:        '13px 16px',
-            background:     T.creamBase,
+            background:     'rgba(255, 255, 255, 0.02)',
             border:         `1px solid ${T.border}`,
             borderRadius:   '14px',
             textDecoration: 'none',
@@ -705,7 +646,7 @@ function SupportSection({ orderId }: { orderId: string }) {
           }}
         >
           <span style={{ lineHeight: 1, flexShrink: 0, display: 'inline-flex', alignItems: 'center' }} aria-hidden="true">
-            <FontAwesomeIcon icon={faPhone} style={{ width: 16, height: 16, color: '#1A3A2A' }} />
+            <FontAwesomeIcon icon={faPhone} style={{ width: 16, height: 16, color: 'var(--vt-forest-600)' }} />
           </span>
           <div style={{ flex: 1 }}>
             <p
@@ -742,14 +683,6 @@ function SupportSection({ orderId }: { orderId: string }) {
 function LoadingView() {
   return (
     <div role="status" aria-label="ஆர்டர் விவரங்கள் ஏற்றுகிறோம்...">
-      {/* Skeleton header */}
-      <div
-        style={{
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          height:     '68px',
-        }}
-      />
-
       {/* Skeleton body */}
       <div
         style={{
@@ -785,7 +718,7 @@ function SkeletonCard({ height }: { height: string }) {
       style={{
         height,
         borderRadius: '20px',
-        background:   'linear-gradient(90deg, rgba(26,58,42,0.06) 0%, rgba(26,58,42,0.10) 50%, rgba(26,58,42,0.06) 100%)',
+        background:   'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%)',
         backgroundSize: '200% 100%',
         animation:    'vt-od-shimmer 1.8s linear infinite',
         border:       `1px solid ${T.border}`,
@@ -798,43 +731,6 @@ function SkeletonCard({ height }: { height: string }) {
 function NotFoundView({ orderId }: { orderId: string }) {
   return (
     <div>
-      {/* Minimal header */}
-      <header
-        style={{
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          padding:    '16px 20px',
-        }}
-      >
-        <div style={{ maxWidth: '660px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link
-            href="/account/orders"
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.10)',
-              textDecoration: 'none',
-            }}
-          >
-            <BackArrowIcon />
-          </Link>
-          <h1
-            style={{
-              fontFamily: FONT.display,
-              fontSize:   '17px',
-              fontWeight: 700,
-              color:      T.goldPale,
-              margin:     0,
-            }}
-          >
-            ஆர்டர் விவரங்கள்
-          </h1>
-        </div>
-      </header>
-
       <main
         style={{
           maxWidth:  '660px',
@@ -845,12 +741,12 @@ function NotFoundView({ orderId }: { orderId: string }) {
       >
         <div
           style={{
-            background:   '#FFFFFF',
-            border:       '1px solid rgba(139,58,47,0.18)',
+            background:   'var(--vt-card)',
+            border:       '1px solid var(--vt-border)',
             borderRadius: '24px',
             padding:      '40px 24px',
             textAlign:    'center',
-            boxShadow:    '0 4px 24px rgba(139,58,47,0.06)',
+            boxShadow:    'var(--vt-shadow-sm)',
           }}
         >
           <span style={{ marginBottom: '20px', lineHeight: 1, display: 'flex', justifyContent: 'center' }} aria-hidden="true">
@@ -961,43 +857,6 @@ function ErrorView({
 }) {
   return (
     <div>
-      {/* Minimal header */}
-      <header
-        style={{
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          padding:    '16px 20px',
-        }}
-      >
-        <div style={{ maxWidth: '660px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link
-            href="/account/orders"
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.10)',
-              textDecoration: 'none',
-            }}
-          >
-            <BackArrowIcon />
-          </Link>
-          <h1
-            style={{
-              fontFamily: FONT.display,
-              fontSize:   '17px',
-              fontWeight: 700,
-              color:      T.goldPale,
-              margin:     0,
-            }}
-          >
-            ஆர்டர் விவரங்கள்
-          </h1>
-        </div>
-      </header>
-
       <main
         style={{
           maxWidth:  '660px',
@@ -1009,11 +868,11 @@ function ErrorView({
         <div
           role="alert"
           style={{
-            background:   '#FFFFFF',
-            border:       '1px solid rgba(139,58,47,0.18)',
+            background:   'var(--vt-card)',
+            border:       '1px solid var(--vt-border)',
             borderRadius: '24px',
             overflow:     'hidden',
-            boxShadow:    '0 4px 24px rgba(139,58,47,0.06)',
+            boxShadow:    'var(--vt-shadow-sm)',
           }}
         >
           {/* Error header */}

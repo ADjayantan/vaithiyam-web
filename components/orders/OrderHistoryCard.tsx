@@ -39,25 +39,25 @@ import type { OrderStatus }      from '../order/OrderSummary';
 
 // ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Status config (mirrors order/[orderId]/page.tsx exactly) ─────────────────
@@ -141,8 +141,8 @@ function ThumbnailStrip({ items }: { items: OrderHistoryItem[] }) {
             width:        '48px',
             height:       '48px',
             borderRadius: '11px',
-            border:       `1.5px solid ${T.border}`,
-            background:   T.creamAlt,
+            border:       `1.5px solid var(--vt-border)`,
+            background:   'rgba(13,34,24,0.60)',
             overflow:     'hidden',
             flexShrink:   0,
             position:     'relative',
@@ -178,8 +178,8 @@ function ThumbnailStrip({ items }: { items: OrderHistoryItem[] }) {
             width:          '48px',
             height:         '48px',
             borderRadius:   '11px',
-            background:     'rgba(26,58,42,0.06)',
-            border:         `1.5px dashed ${T.border}`,
+            background:     'rgba(61,138,92,0.12)',
+            border:         `1.5px dashed var(--vt-border)`,
             display:        'flex',
             alignItems:     'center',
             justifyContent: 'center',
@@ -238,14 +238,14 @@ const BTN_STYLES: Record<BtnVariant, React.CSSProperties> = {
     boxShadow:   '0 2px 8px rgba(26,58,42,0.22)',
   },
   ghost: {
-    background: 'rgba(26,58,42,0.06)',
-    color:      T.forestPrimary,
-    border:     '1px solid rgba(26,58,42,0.12)',
+    background: 'rgba(61,138,92,0.12)',
+    color:      T.goldPale,
+    border:     '1px solid var(--vt-border)',
   },
   outline: {
     background: 'transparent',
-    color:      T.forestPrimary,
-    border:     `1.5px solid ${T.forestPrimary}`,
+    color:      T.goldPale,
+    border:     `1.5px solid var(--vt-border)`,
   },
 };
 
@@ -336,11 +336,11 @@ export default function OrderHistoryCard({
     <article
       aria-label={`ஆர்டர் ${order.orderId} — ${badge.labelTa}`}
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
         borderRadius: '20px',
-        border:       `1px solid ${T.border}`,
+        border:       `1px solid var(--vt-border)`,
         overflow:     'hidden',
-        boxShadow:    '0 2px 12px rgba(26,58,42,0.06), 0 1px 3px rgba(26,58,42,0.04)',
+        boxShadow:    'var(--vt-shadow-xs)',
       }}
     >
       {/* ── Top row: thumbnails + meta + total ─────────────────────────────── */}

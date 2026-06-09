@@ -42,24 +42,24 @@ import type { WishlistItem } from './WishlistCard';
 
 // ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
 } as const;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -155,9 +155,9 @@ function CardSkeleton({ delay = 0 }: { delay?: number }) {
     <div
       aria-hidden="true"
       style={{
-        background:    '#FFFFFF',
+        background:    'var(--vt-card)',
         borderRadius:  '20px',
-        border:        `1px solid ${T.border}`,
+        border:        `1px solid var(--vt-border)`,
         overflow:      'hidden',
         display:       'flex',
         flexDirection: 'column',
@@ -264,9 +264,9 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
         gap:            '14px',
         padding:        '48px 24px',
         textAlign:      'center',
-        background:     '#FFFFFF',
+        background:     'var(--vt-card)',
         borderRadius:   '20px',
-        border:         `1px solid ${T.border}`,
+        border:         `1px solid var(--vt-border)`,
       }}
     >
       <span aria-hidden="true" style={{ fontSize: '2.8rem', lineHeight: 1 }}>⚠️</span>
@@ -308,7 +308,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
           fontSize:     '0.88rem',
           fontWeight:   700,
           cursor:       'pointer',
-          boxShadow:    '0 3px 10px rgba(26,58,42,0.22)',
+          boxShadow:    '0 4px 12px rgba(61,138,92,0.22)',
         }}
       >
         மீண்டும் முயற்சி

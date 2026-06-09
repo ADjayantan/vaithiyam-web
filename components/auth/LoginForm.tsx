@@ -27,30 +27,31 @@ import {
   type FormEvent,
   type ChangeEvent,
 } from 'react';
+import Link from 'next/link';
 import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faEnvelope, faLeaf } from '@fortawesome/free-solid-svg-icons';
 
 // ─── Design tokens (mirrors checkout / order modules exactly) ──────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -238,13 +239,13 @@ export default function LoginForm({
     padding:        '12px 16px',
     border:         `1.5px solid ${hasError ? T.terracotta : focused ? T.forestPrimary : T.border}`,
     borderRadius:   '12px',
-    background:     focused ? '#fff' : T.creamBase,
+    background:     focused ? 'rgba(13,34,24,0.80)' : T.creamBase,
     fontFamily:     FONT.body,
     fontSize:       '1rem',
     color:          T.darkText,
     outline:        'none',
     transition:     'border-color 0.15s, box-shadow 0.15s, background 0.15s',
-    boxShadow:      focused ? `0 0 0 3px ${hasError ? 'rgba(139,58,47,0.12)' : 'rgba(26,58,42,0.10)'}` : 'none',
+    boxShadow:      focused ? `0 0 0 3px ${hasError ? 'rgba(249,92,56,0.12)' : 'rgba(61,138,92,0.12)'}` : 'none',
   });
 
   const isLoading = submitting || disabled;
@@ -487,7 +488,7 @@ export default function LoginForm({
               கடவுச்சொல்
               <span aria-hidden="true" style={{ color: T.terracotta, marginLeft: '3px' }}>*</span>
             </label>
-            <a
+            <Link
               href={forgotPasswordHref}
               style={{
                 fontFamily:  FONT.body,
@@ -498,7 +499,7 @@ export default function LoginForm({
               }}
             >
               மறந்துவிட்டீர்களா?
-            </a>
+            </Link>
           </div>
           <div style={{ position: 'relative' }}>
             <input
@@ -638,7 +639,7 @@ export default function LoginForm({
           }}
         >
           புதிய கணக்கு தேவையா?{' '}
-          <a
+          <Link
             href={registerHref}
             style={{
               color:          T.leaf,
@@ -647,7 +648,7 @@ export default function LoginForm({
             }}
           >
             பதிவு செய்யுங்கள்
-          </a>
+          </Link>
         </p>
       </form>
     </div>

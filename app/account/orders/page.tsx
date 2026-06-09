@@ -46,6 +46,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
+
 import OrderFilters, {
   type OrderFiltersState,
 } from '../../../components/orders/OrderFilters';
@@ -54,25 +56,25 @@ import OrderHistoryList from '../../../components/orders/OrderHistoryList';
 
 // ─── Design tokens (mirrors account page exactly) ─────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-800)',
+  forestDark:    'var(--vt-deep)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-200)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-gold-500)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-muted)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -234,7 +236,7 @@ function SearchBar({
           padding:     '0 42px 0 42px',
           border:      `1.5px solid ${T.border}`,
           borderRadius:'14px',
-          background:  '#FFFFFF',
+          background:  'rgba(255, 255, 255, 0.05)',
           fontFamily:  FONT.body,
           fontSize:    '0.9rem',
           color:       T.darkText,
@@ -244,8 +246,8 @@ function SearchBar({
           opacity:     disabled ? 0.6 : 1,
         }}
         onFocus={(e) => {
-          e.target.style.borderColor = T.forestPrimary;
-          e.target.style.boxShadow  = '0 0 0 3px rgba(26,58,42,0.10)';
+          e.target.style.borderColor = 'var(--vt-forest-600)';
+          e.target.style.boxShadow  = '0 0 0 3px rgba(61, 138, 92, 0.15)';
         }}
         onBlur={(e) => {
           e.target.style.borderColor = T.border;
@@ -358,112 +360,11 @@ export default function OrderHistoryPage() {
     <div
       style={{
         minHeight:     '100dvh',
-        background:    T.creamBase,
-        paddingBottom: '64px',
+        background:    'var(--vt-void)',
+        paddingBottom: '80px',
       }}
     >
-      {/* ══════════════════════════════════════════════════════════════════
-          STICKY HEADER
-      ══════════════════════════════════════════════════════════════════ */}
-      <header
-        style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     300,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth:   '640px',
-            margin:     '0 auto',
-            padding:    '13px 16px',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '10px',
-          }}
-        >
-          {/* Back to account */}
-          <Link
-            href="/account"
-            aria-label="கணக்கு பக்கத்திற்கு திரும்பவும்"
-            style={{
-              width:          '34px',
-              height:         '34px',
-              borderRadius:   '50%',
-              border:         '1px solid rgba(240,201,110,0.22)',
-              background:     'rgba(240,201,110,0.08)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              textDecoration: 'none',
-              flexShrink:     0,
-            }}
-          >
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M10 3L5 8l5 5"
-                stroke={T.goldPale}
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
-
-          {/* Brand + page label */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Link
-              href="/"
-              style={{
-                display:        'block',
-                fontFamily:     FONT.display,
-                fontSize:       '1.08rem',
-                fontWeight:     700,
-                color:          T.goldPale,
-                letterSpacing:  '0.02em',
-                textDecoration: 'none',
-                lineHeight:     1.2,
-              }}
-            >
-              வைத்தியம்
-            </Link>
-            <span
-              style={{
-                display:    'block',
-                fontFamily: FONT.body,
-                fontSize:   '0.68rem',
-                color:      'rgba(240,201,110,0.60)',
-                marginTop:  '1px',
-              }}
-            >
-              என் ஆர்டர்கள்
-            </span>
-          </div>
-
-          {/* Order count chip */}
-          {totalCount !== undefined && totalCount > 0 && (
-            <div
-              aria-label={`${totalCount} ஆர்டர்கள்`}
-              style={{
-                padding:      '5px 12px',
-                borderRadius: '100px',
-                background:   'rgba(240,201,110,0.12)',
-                border:       '1px solid rgba(240,201,110,0.26)',
-                fontFamily:   FONT.display,
-                fontSize:     '0.76rem',
-                fontWeight:   700,
-                color:        T.goldPale,
-                flexShrink:   0,
-                whiteSpace:   'nowrap',
-              }}
-            >
-              {totalCount > 999 ? '999+' : totalCount} ஆர்டர்கள்
-            </div>
-          )}
-        </div>
-      </header>
+      <CustomerHeader />
 
       {/* ══════════════════════════════════════════════════════════════════
           MAIN CONTENT
@@ -472,7 +373,7 @@ export default function OrderHistoryPage() {
         style={{
           maxWidth: '640px',
           margin:   '0 auto',
-          padding:  'clamp(18px, 4vw, 32px) 16px 0',
+          padding:  'clamp(18px, 4vw, 32px) 16px 20px',
         }}
       >
         {/* ── Page heading ─────────────────────────────────────────────── */}
@@ -489,7 +390,7 @@ export default function OrderHistoryPage() {
             }}
           >
             <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
-              <FontAwesomeIcon icon={faBox} style={{ width: 18, height: 18, color: '#1A3A2A' }} />
+              <FontAwesomeIcon icon={faBox} style={{ width: 18, height: 18, color: 'var(--vt-forest-600)' }} />
             </span>
             என் ஆர்டர்கள்
           </h1>
@@ -518,12 +419,12 @@ export default function OrderHistoryPage() {
         {/* ── Filters ──────────────────────────────────────────────────── */}
         <div
           style={{
-            background:   '#FFFFFF',
+            background:   'var(--vt-card)',
             borderRadius: '18px',
             border:       `1px solid ${T.border}`,
             padding:      '14px 14px',
             marginBottom: '16px',
-            boxShadow:    '0 1px 6px rgba(26,58,42,0.04)',
+            boxShadow:    'var(--vt-shadow-sm)',
           }}
         >
           <OrderFilters
@@ -594,46 +495,10 @@ export default function OrderHistoryPage() {
           onUnauthorized={handleUnauthorized}
         />
 
-        {/* ── Bottom navigation ─────────────────────────────────────────── */}
-        <nav
-          aria-label="கணக்கு விருப்பங்கள்"
-          style={{
-            display:    'flex',
-            gap:        '10px',
-            marginTop:  '28px',
-            flexWrap:   'wrap',
-          }}
-        >
-          {BOTTOM_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                display:        'inline-flex',
-                alignItems:     'center',
-                gap:            '6px',
-                padding:        '9px 16px',
-                borderRadius:   '100px',
-                background:     '#FFFFFF',
-                border:         `1px solid ${T.border}`,
-                fontFamily:     FONT.display,
-                fontSize:       '0.8rem',
-                fontWeight:     600,
-                color:          T.secondaryText,
-                textDecoration: 'none',
-                boxShadow:      '0 1px 4px rgba(26,58,42,0.05)',
-                transition:     'all 0.14s',
-                whiteSpace:     'nowrap',
-              }}
-            >
-              <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center' }}>
-                <FontAwesomeIcon icon={link.icon} style={{ width: 15, height: 15 }} />
-              </span>
-              {link.labelTa}
-            </Link>
-          ))}
-        </nav>
       </main>
+
+      <CustomerFooter />
+      <MobileBottomNav />
 
       {/* ── Toast notifications ───────────────────────────────────────────── */}
       <ToastStack toasts={toasts} onDismiss={dismissToast} />

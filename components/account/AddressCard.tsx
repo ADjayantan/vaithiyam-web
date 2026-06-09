@@ -27,25 +27,25 @@ import type { IconDefinition }    from '@fortawesome/fontawesome-svg-core';
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -154,13 +154,13 @@ export default function AddressCard({
     <article
       aria-label={`${typeLabel} முகவரி${address.isDefault ? ' - இயல்புநிலை' : ''}`}
       style={{
-        background:   '#FFFFFF',
-        border:       `1.5px solid ${address.isDefault ? 'rgba(201,146,42,0.35)' : T.border}`,
+        background:   'var(--vt-card)',
+        border:       `1.5px solid ${address.isDefault ? 'rgba(212,137,10,0.35)' : T.border}`,
         borderRadius: '18px',
         overflow:     'hidden',
         boxShadow:    address.isDefault
-          ? '0 2px 16px rgba(201,146,42,0.10)'
-          : '0 1px 8px rgba(26,58,42,0.06)',
+          ? 'var(--vt-shadow-gold)'
+          : 'var(--vt-shadow-xs)',
         transition:   'box-shadow 0.2s, border-color 0.2s',
         position:     'relative',
       }}
@@ -251,8 +251,8 @@ export default function AddressCard({
                 width:          '34px',
                 height:         '34px',
                 borderRadius:   '10px',
-                border:         `1.5px solid rgba(26,58,42,0.16)`,
-                background:     'rgba(26,58,42,0.04)',
+                border:         `1.5px solid var(--vt-border)`,
+                background:     'rgba(61,138,92,0.12)',
                 cursor:         isLocked ? 'not-allowed' : 'pointer',
                 display:        'flex',
                 alignItems:     'center',
@@ -276,8 +276,8 @@ export default function AddressCard({
                   width:          '34px',
                   height:         '34px',
                   borderRadius:   '10px',
-                  border:         `1.5px solid rgba(139,58,47,0.16)`,
-                  background:     'rgba(139,58,47,0.04)',
+                  border:         `1.5px solid rgba(249,92,56,0.16)`,
+                  background:     'rgba(249,92,56,0.12)',
                   cursor:         isLocked ? 'not-allowed' : 'pointer',
                   display:        'flex',
                   alignItems:     'center',
@@ -298,8 +298,8 @@ export default function AddressCard({
           <div
             role="alert"
             style={{
-              background:   'rgba(139,58,47,0.07)',
-              border:       `1px solid rgba(139,58,47,0.22)`,
+              background:   'rgba(249,92,56,0.08)',
+              border:       `1px solid rgba(249,92,56,0.22)`,
               borderRadius: '12px',
               padding:      '12px 14px',
               marginBottom: '14px',
@@ -328,7 +328,7 @@ export default function AddressCard({
                 style={{
                   flex:         1,
                   padding:      '8px 14px',
-                  border:       `1.5px solid ${T.border}`,
+                  border:       `1.5px solid var(--vt-border)`,
                   borderRadius: '10px',
                   background:   'transparent',
                   cursor:       deleting ? 'not-allowed' : 'pointer',
@@ -433,9 +433,9 @@ export default function AddressCard({
                 alignItems:     'center',
                 gap:            '6px',
                 padding:        '7px 14px',
-                border:         `1.5px dashed rgba(201,146,42,0.40)`,
+                border:         `1.5px dashed rgba(212,137,10,0.40)`,
                 borderRadius:   '100px',
-                background:     'rgba(201,146,42,0.05)',
+                background:     'rgba(212,137,10,0.08)',
                 cursor:         isLocked ? 'not-allowed' : 'pointer',
                 fontFamily:     FONT.display,
                 fontSize:       '0.78rem',

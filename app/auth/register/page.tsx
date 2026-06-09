@@ -2,30 +2,31 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeaf, faMobileScreen } from '@fortawesome/free-solid-svg-icons';
 import RegisterForm, { type RegisterData } from '../../../components/auth/RegisterForm';
 
 // ─── Design tokens ─────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(13,34,24,0.35)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
 } as const;
 
 // ─── API helper ─────────────────────────────────────────────────────
@@ -88,7 +89,7 @@ function StepBar({ active }: { active: 0 | 1 }) {
                 justifyContent: 'center',
                 transition:     'all 0.25s',
                 flexShrink:     0,
-                boxShadow:      i === active ? '0 4px 12px rgba(26,58,42,0.28)' : 'none',
+                boxShadow:      i === active ? '0 4px 12px rgba(61,138,92,0.28)' : 'none',
               }}
             >
               {i < active ? (
@@ -107,7 +108,7 @@ function StepBar({ active }: { active: 0 | 1 }) {
             <span style={{
               fontFamily:  FONT.body, fontSize: '0.72rem',
               fontWeight:  i === active ? 700 : 400,
-              color:       i === active ? T.forestPrimary : T.muted,
+              color:       i === active ? T.darkText : T.muted,
               whiteSpace:  'nowrap', transition: 'color 0.2s',
             }}>
               {label}
@@ -159,15 +160,15 @@ export default function RegisterPage() {
 
   return (
     <div style={{ minHeight: '100dvh', background: T.creamBase, paddingBottom: '60px' }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@400;600;700&family=Hind+Madurai:wght@400;500;600&display=swap');
-      `}</style>
-
       {/* ── Sticky header ─────────────────────────────────────── */}
       <header
         style={{
-          position:   'sticky', top: 0, zIndex: 200,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
+          position:   'sticky',
+          top:        0,
+          zIndex:     200,
+          background: 'rgba(3, 12, 7, 0.75)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(61,138,92,0.14)',
           boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
         }}
       >
@@ -182,17 +183,22 @@ export default function RegisterPage() {
           <div
             aria-hidden="true"
             style={{
-              width: 40, height: 40, borderRadius: '12px',
-              background: 'rgba(240,201,110,0.12)',
-              border: '1px solid rgba(240,201,110,0.22)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              width:          '38px',
+              height:         '38px',
+              borderRadius:   '50%',
+              background:     'rgba(240,201,110,0.10)',
+              border:         '1px solid rgba(240,201,110,0.20)',
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              flexShrink:     0,
             }}
           >
-            <FontAwesomeIcon icon={faLeaf} style={{ width: 20, height: 20, color: '#3D8A5C' }} />
+            <FontAwesomeIcon icon={faLeaf} style={{ width: 18, height: 18, color: '#3D8A5C' }} />
           </div>
 
           <div style={{ flex: 1, minWidth: 0 }}>
-            <a
+            <Link
               href="/"
               style={{
                 display: 'block', fontFamily: FONT.display,
@@ -201,7 +207,7 @@ export default function RegisterPage() {
               }}
             >
               வைத்தியம்
-            </a>
+            </Link>
             <span
               style={{
                 display: 'block', fontFamily: FONT.body,
@@ -215,7 +221,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Login link */}
-          <a
+          <Link
             href="/auth/login"
             style={{
               fontFamily: FONT.display, fontSize: '0.82rem', fontWeight: 600,
@@ -227,7 +233,7 @@ export default function RegisterPage() {
             }}
           >
             உள்நுழைவு
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -266,9 +272,11 @@ export default function RegisterPage() {
         {/* Form card */}
         <div
           style={{
-            background: '#FFFFFF', borderRadius: '20px',
+            background: 'var(--vt-card)',
+            border: '1px solid var(--vt-border)',
+            borderRadius: '20px',
             padding: 'clamp(24px, 5vw, 40px)',
-            boxShadow: '0 4px 32px rgba(26,58,42,0.09), 0 1px 4px rgba(26,58,42,0.05)',
+            boxShadow: 'var(--vt-shadow-sm)',
             marginBottom: '20px',
             animation: 'reg-fade 0.3s ease forwards',
           }}
@@ -289,13 +297,13 @@ export default function RegisterPage() {
         <div
           style={{
             display: 'flex', alignItems: 'flex-start', gap: '10px',
-            background: 'rgba(61,122,85,0.07)',
-            border: '1px solid rgba(61,122,85,0.20)',
+            background: 'rgba(61,138,92,0.12)',
+            border: '1px solid var(--vt-border)',
             borderRadius: '14px', padding: '14px 18px',
           }}
         >
           <span style={{ flexShrink: 0, marginTop: '1px', display: 'inline-flex' }}>
-            <FontAwesomeIcon icon={faMobileScreen} style={{ width: 15, height: 15, color: '#6b7f74' }} />
+            <FontAwesomeIcon icon={faMobileScreen} style={{ width: 15, height: 15, color: T.gold }} />
           </span>
           <p
             style={{

@@ -25,25 +25,25 @@ import { faLeaf, faTruck }      from '@fortawesome/free-solid-svg-icons';
 
 // ─── Design tokens (mirrors checkout / RazorpayButton exactly) ─────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -158,11 +158,12 @@ export default function OrderSuccessCard({
     <article
       aria-label="ஆர்டர் வெற்றி விவரங்கள்"
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
+        backdropFilter: 'blur(12px)',
         border:       `1px solid ${T.border}`,
         borderRadius: '24px',
         overflow:     'hidden',
-        boxShadow:    '0 8px 40px rgba(26,58,42,0.12)',
+        boxShadow:    'var(--vt-shadow-lg)',
         animation:    mounted ? 'vt-sc-enter 420ms cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none',
         opacity:      mounted ? undefined : 0,
       }}
@@ -327,8 +328,8 @@ export default function OrderSuccessCard({
             justifyContent: 'space-between',
             gap:            '10px',
             padding:        '14px 18px',
-            background:     'rgba(26,58,42,0.04)',
-            border:         `1px solid rgba(26,58,42,0.11)`,
+            background:     'rgba(255, 255, 255, 0.02)',
+            border:         `1px solid ${T.border}`,
             borderRadius:   '14px',
             marginBottom:   '16px',
           }}
@@ -352,7 +353,7 @@ export default function OrderSuccessCard({
                 fontFamily:    'monospace',
                 fontSize:      '14px',
                 fontWeight:    700,
-                color:         T.forestPrimary,
+                color:         T.gold,
                 margin:        0,
                 lineHeight:    1.2,
                 letterSpacing: '0.05em',
@@ -375,7 +376,7 @@ export default function OrderSuccessCard({
               padding:      '7px 14px',
               flexShrink:   0,
               background:   copied ? 'rgba(61,122,85,0.10)' : 'transparent',
-              border:       `1px solid ${copied ? T.leaf : 'rgba(26,58,42,0.18)'}`,
+              border:       `1px solid ${copied ? T.leaf : 'rgba(255,255,255,0.18)'}`,
               borderRadius: '8px',
               cursor:       'pointer',
               fontFamily:   FONT.body,
@@ -394,7 +395,7 @@ export default function OrderSuccessCard({
         {/* Info table */}
         <div
           style={{
-            background:   'rgba(245,239,224,0.45)',
+            background:   'rgba(255, 255, 255, 0.02)',
             border:       `1px solid ${T.border}`,
             borderRadius: '14px',
             overflow:     'hidden',
@@ -406,7 +407,7 @@ export default function OrderSuccessCard({
           <InfoRow
             label="மொத்த தொகை"
             value={`₹${total.toLocaleString('ta-IN')}`}
-            valueColor={T.forestPrimary}
+            valueColor={T.gold}
             bold
           />
           <InfoDivider />
@@ -478,8 +479,8 @@ export default function OrderSuccessCard({
               alignItems:   'center',
               gap:          '12px',
               padding:      '12px 18px',
-              background:   'linear-gradient(135deg,rgba(61,122,85,0.10) 0%,rgba(61,122,85,0.04) 100%)',
-              border:       `1px solid rgba(61,122,85,0.20)`,
+              background:   'linear-gradient(135deg,rgba(61,122,85,0.18) 0%,rgba(61,122,85,0.06) 100%)',
+              border:       `1px solid rgba(61,122,85,0.30)`,
               borderRadius: '14px',
               marginBottom: '20px',
             }}
@@ -519,14 +520,14 @@ export default function OrderSuccessCard({
               gap:            '9px',
               height:         '54px',
               borderRadius:   '14px',
-              background:     `linear-gradient(135deg,${T.forestPrimary} 0%,#254D38 100%)`,
-              color:          T.goldPale,
+              background:     'linear-gradient(135deg, var(--vt-gold-700), var(--vt-gold-500))',
+              color:          '#030C07',
               fontFamily:     FONT.display,
               fontSize:       '16px',
               fontWeight:     700,
               letterSpacing:  '0.02em',
               textDecoration: 'none',
-              boxShadow:      '0 4px 16px rgba(26,58,42,0.22)',
+              boxShadow:      '0 4px 16px rgba(201,146,42,0.18)',
               transition:     'background 200ms ease',
               userSelect:     'none',
             }}
@@ -546,8 +547,8 @@ export default function OrderSuccessCard({
               height:         '50px',
               borderRadius:   '14px',
               background:     'transparent',
-              border:         `1.5px solid rgba(26,58,42,0.20)`,
-              color:          T.forestPrimary,
+              border:         `1.5px solid ${T.border}`,
+              color:          T.gold,
               fontFamily:     FONT.display,
               fontSize:       '15px',
               fontWeight:     700,

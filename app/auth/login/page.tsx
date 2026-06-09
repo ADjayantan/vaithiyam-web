@@ -35,25 +35,25 @@ import LoginForm, { type LoginCredentials }            from '../../../components
 
 // ─── Design tokens (mirrors all existing Vaithiyam modules) ───────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(13,34,24,0.35)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Auth response type ───────────────────────────────────────────────────────
@@ -196,7 +196,9 @@ export default function LoginPage() {
           position:   'sticky',
           top:        0,
           zIndex:     200,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
+          background: 'rgba(3, 12, 7, 0.75)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(61,138,92,0.14)',
           boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
         }}
       >
@@ -347,10 +349,11 @@ export default function LoginPage() {
         {/* Form card */}
         <div
           style={{
-            background:   '#FFFFFF',
+            background:   'var(--vt-card)',
+            border:       '1px solid var(--vt-border)',
             borderRadius: '24px',
             padding:      'clamp(24px, 5vw, 40px)',
-            boxShadow:    '0 4px 32px rgba(26,58,42,0.08), 0 1px 4px rgba(26,58,42,0.04)',
+            boxShadow:    'var(--vt-shadow-sm)',
             marginBottom: '28px',
           }}
         >

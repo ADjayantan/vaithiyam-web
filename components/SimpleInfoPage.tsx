@@ -1,19 +1,19 @@
 import Link from 'next/link';
 
 const T = {
-  forestPrimary: '#1A3A2A',
-  creamBase: '#F5EFE0',
-  goldPale: '#F0C96E',
-  leaf: '#3D7A55',
-  darkText: '#1C1410',
-  secondaryText: '#5C4A30',
-  muted: '#9C8060',
-  border: '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  creamBase: 'var(--vt-void)',
+  goldPale: 'var(--vt-gold-300)',
+  leaf: 'var(--vt-forest-600)',
+  darkText: 'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted: 'var(--vt-muted)',
+  border: 'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body: "'Hind Madurai', sans-serif",
+  display: "var(--vt-font-display)",
+  body: "var(--vt-font-body)",
 } as const;
 
 export default function SimpleInfoPage({
@@ -27,8 +27,18 @@ export default function SimpleInfoPage({
 }) {
   return (
     <div style={{ minHeight: '100dvh', background: T.creamBase }}>
-      <header style={{ background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)` }}>
-        <div style={{ maxWidth: 720, margin: '0 auto', padding: '18px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <header
+        style={{
+          position:   'sticky',
+          top:        0,
+          zIndex:     200,
+          background: 'rgba(3, 12, 7, 0.75)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(61,138,92,0.14)',
+          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
+        }}
+      >
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
           <Link href="/" style={{ color: T.goldPale, textDecoration: 'none', fontSize: 24 }}>‹</Link>
           <div>
             <p style={{ fontFamily: FONT.body, color: 'rgba(240,201,110,0.65)', margin: 0, fontSize: 12 }}>{eyebrow}</p>
@@ -37,8 +47,8 @@ export default function SimpleInfoPage({
         </div>
       </header>
       <main style={{ maxWidth: 720, margin: '0 auto', padding: 16 }}>
-        <section style={{ background: '#fff', border: `1px solid ${T.border}`, borderRadius: 18, padding: 22, boxShadow: '0 2px 12px rgba(26,58,42,0.06)' }}>
-          <div style={{ fontFamily: FONT.body, color: T.secondaryText, lineHeight: 1.75 }}>
+        <section style={{ background: 'var(--vt-card)', border: `1px solid ${T.border}`, borderRadius: 18, padding: 22, boxShadow: 'var(--vt-shadow-sm)' }}>
+          <div style={{ fontFamily: FONT.body, color: T.darkText, lineHeight: 1.75 }}>
             {children}
           </div>
         </section>

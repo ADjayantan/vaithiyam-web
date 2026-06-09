@@ -23,25 +23,25 @@ import { faHeart, faLeaf, faStar } from '@fortawesome/free-solid-svg-icons';
 
 // ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Botanical illustration ───────────────────────────────────────────────────
@@ -195,9 +195,9 @@ export default function EmptyWishlist() {
     <div
       role="status"
       style={{
-        background:    '#FFFFFF',
+        background:    'var(--vt-card)',
         borderRadius:  '24px',
-        border:        `1px solid ${T.border}`,
+        border:        `1px solid var(--vt-border)`,
         padding:       '52px 24px 44px',
         display:       'flex',
         flexDirection: 'column',
@@ -249,7 +249,7 @@ export default function EmptyWishlist() {
         }}
       >
         உங்களுக்கு பிடித்த சித்தா, ஆயுர்வேத மற்றும் இயற்கை பொருட்களை
-        <FontAwesomeIcon icon={faHeart} style={{ width: 13, height: 13, color: '#b33a28', margin: '0 3px', verticalAlign: 'middle' }} aria-hidden="true" /> அழுத்தி இங்கே சேமிக்கவும்.
+        <FontAwesomeIcon icon={faHeart} style={{ width: 13, height: 13, color: 'var(--vt-coral-500)', margin: '0 3px', verticalAlign: 'middle' }} aria-hidden="true" /> அழுத்தி இங்கே சேமிக்கவும்.
       </p>
 
       {/* CTAs */}
@@ -299,13 +299,13 @@ export default function EmptyWishlist() {
             height:         '48px',
             borderRadius:   '14px',
             background:     'transparent',
-            color:          T.forestPrimary,
+            color:          'var(--vt-gold-300)',
             fontFamily:     FONT.display,
             fontSize:       '0.92rem',
             fontWeight:     600,
             letterSpacing:  '0.01em',
             textDecoration: 'none',
-            border:         `1.5px solid ${T.forestPrimary}`,
+            border:         `1.5px solid var(--vt-border)`,
           }}
         >
           <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center' }}>

@@ -74,30 +74,40 @@ export default function ForgotPasswordPage() {
   }, [password, confirm]);
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--vt-cream-100)', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
+    <div style={{ minHeight: '100dvh', background: 'var(--vt-void)', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
 
       {/* ── Header ──────────────────────────────────────────────── */}
-      <header style={{ background: 'linear-gradient(135deg, var(--vt-forest-900) 0%, var(--vt-forest-700) 100%)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <header
+        style={{
+          position:   'sticky',
+          top:        0,
+          zIndex:     200,
+          background: 'rgba(3, 12, 7, 0.75)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(61,138,92,0.14)',
+          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
+        }}
+      >
         <div style={{ maxWidth: 480, margin: '0 auto', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
           <Link
             href="/auth/login"
-            style={{ display: 'grid', width: 36, height: 36, placeItems: 'center', borderRadius: 10, border: '1px solid rgba(255,255,255,0.16)', color: 'rgba(255,255,255,0.8)', flexShrink: 0 }}
+            style={{ display: 'grid', width: 36, height: 36, placeItems: 'center', borderRadius: 10, border: '1px solid rgba(240,201,110,0.28)', color: 'var(--vt-gold-300)', flexShrink: 0 }}
             aria-label="Back to login"
           >
             <FontAwesomeIcon icon={faArrowLeft} style={{ width: 14 }} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ display: 'grid', width: 36, height: 36, placeItems: 'center', borderRadius: 10, background: 'linear-gradient(135deg, var(--vt-emerald-600), var(--vt-teal-500))', color: '#fff', flexShrink: 0 }}>
+            <span style={{ display: 'grid', width: 36, height: 36, placeItems: 'center', borderRadius: '50%', background: 'rgba(240,201,110,0.10)', border: '1px solid rgba(240,201,110,0.20)', color: '#3D8A5C', flexShrink: 0 }}>
               <FontAwesomeIcon icon={faLeaf} style={{ width: 18 }} />
             </span>
             <div>
-              <span style={{ display: 'block', fontFamily: 'var(--vt-font-display)', fontSize: '1.2rem', fontWeight: 800, color: '#fff', lineHeight: 1, letterSpacing: 0 }}>வைத்தியம்</span>
-              <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, color: 'rgba(255,255,255,0.55)', letterSpacing: '.06em' }}>SINCE 2024</span>
+              <span style={{ display: 'block', fontFamily: 'var(--vt-font-display)', fontSize: '1.2rem', fontWeight: 800, color: 'var(--vt-gold-300)', lineHeight: 1, letterSpacing: 0 }}>வைத்தியம்</span>
+              <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, color: 'rgba(240,201,110,0.55)', letterSpacing: '.06em' }}>SINCE 2024</span>
             </div>
           </div>
           <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
             <p style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1rem', fontWeight: 800, color: 'var(--vt-gold-300)', letterSpacing: 0 }}>கடவுச்சொல் மீட்பு</p>
-            <p style={{ margin: 0, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, letterSpacing: '.04em' }}>Password Recovery</p>
+            <p style={{ margin: 0, fontSize: '0.7rem', color: 'rgba(240,201,110,0.60)', fontWeight: 600, letterSpacing: '.04em' }}>Password Recovery</p>
           </div>
         </div>
       </header>
@@ -144,7 +154,7 @@ export default function ForgotPasswordPage() {
                 <div style={{ display: 'grid', width: 52, height: 52, placeItems: 'center', borderRadius: 16, background: 'var(--vt-emerald-100)', color: 'var(--vt-emerald-600)', marginBottom: 14 }}>
                   <FontAwesomeIcon icon={faMobileScreen} style={{ width: 22 }} />
                 </div>
-                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-forest-900)', letterSpacing: 0 }}>உங்கள் கணக்கை உறுதிப்படுத்துங்கள்</h2>
+                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-ink)', letterSpacing: 0 }}>உங்கள் கணக்கை உறுதிப்படுத்துங்கள்</h2>
                 <p style={{ margin: 0, fontSize: 'var(--vt-text-sm)', color: 'var(--vt-muted)', lineHeight: 1.6 }}>Enter your registered mobile number or email. We will send a 6-digit OTP.</p>
               </div>
               <label style={{ display: 'grid', gap: 7, fontSize: 'var(--vt-text-sm)', fontWeight: 700, color: 'var(--vt-ink-80)' }}>
@@ -178,7 +188,7 @@ export default function ForgotPasswordPage() {
                 <div style={{ display: 'grid', width: 52, height: 52, placeItems: 'center', borderRadius: 16, background: 'var(--vt-gold-100)', color: 'var(--vt-gold-700)', marginBottom: 14 }}>
                   <FontAwesomeIcon icon={faShieldHalved} style={{ width: 22 }} />
                 </div>
-                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-forest-900)', letterSpacing: 0 }}>OTP சரிபார்ப்பு</h2>
+                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-ink)', letterSpacing: 0 }}>OTP சரிபார்ப்பு</h2>
                 <p style={{ margin: 0, fontSize: 'var(--vt-text-sm)', color: 'var(--vt-muted)', lineHeight: 1.6 }}>
                   A 6-digit code was sent to <strong style={{ color: 'var(--vt-ink)' }}>{identifier}</strong>.
                 </p>
@@ -200,7 +210,7 @@ export default function ForgotPasswordPage() {
                       width: 48, height: 56, textAlign: 'center', fontSize: '1.4rem', fontWeight: 800,
                       border: `2px solid ${d ? 'var(--vt-emerald-600)' : 'var(--vt-border)'}`,
                       borderRadius: 12, outline: 'none', fontFamily: 'var(--vt-font-body)',
-                      color: 'var(--vt-forest-900)', background: d ? 'var(--vt-emerald-100)' : 'var(--vt-card)',
+                      color: 'var(--vt-ink)', background: d ? 'rgba(13,34,24,0.80)' : 'rgba(13,34,24,0.35)',
                       transition: 'border-color 120ms, background 120ms',
                     }}
                   />
@@ -243,7 +253,7 @@ export default function ForgotPasswordPage() {
                 <div style={{ display: 'grid', width: 52, height: 52, placeItems: 'center', borderRadius: 16, background: 'var(--vt-teal-100)', color: 'var(--vt-teal-600)', marginBottom: 14 }}>
                   <FontAwesomeIcon icon={faKey} style={{ width: 22 }} />
                 </div>
-                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-forest-900)', letterSpacing: 0 }}>புதிய கடவுச்சொல்</h2>
+                <h2 style={{ margin: '0 0 6px', fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-ink)', letterSpacing: 0 }}>புதிய கடவுச்சொல்</h2>
                 <p style={{ margin: 0, fontSize: 'var(--vt-text-sm)', color: 'var(--vt-muted)', lineHeight: 1.6 }}>Choose a strong password. Minimum 8 characters.</p>
               </div>
               {[
@@ -275,7 +285,7 @@ export default function ForgotPasswordPage() {
           {step === 'done' && (
             <div style={{ textAlign: 'center', display: 'grid', gap: 14, padding: '10px 0' }}>
               <FontAwesomeIcon icon={faCircleCheck} style={{ width: 52, height: 52, color: 'var(--vt-emerald-600)', margin: '0 auto' }} />
-              <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-forest-900)', letterSpacing: 0 }}>
+              <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--vt-ink)', letterSpacing: 0 }}>
                 கடவுச்சொல் மாற்றப்பட்டது!
               </h2>
               <p style={{ margin: 0, fontSize: 'var(--vt-text-sm)', color: 'var(--vt-muted)', lineHeight: 1.6 }}>

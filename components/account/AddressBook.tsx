@@ -39,25 +39,25 @@ import AddressCard, { type Address, type AddressType } from './AddressCard';
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 const MAX_ADDRESSES = 5;
@@ -164,14 +164,14 @@ function inputSt(focused: boolean, error: boolean): React.CSSProperties {
     padding:      '11px 14px',
     border:       `1.5px solid ${error ? T.terracotta : focused ? T.forestPrimary : T.border}`,
     borderRadius: '11px',
-    background:   focused ? '#fff' : T.creamBase,
+    background:   focused ? 'rgba(13,34,24,0.80)' : T.creamBase,
     fontFamily:   FONT.body,
     fontSize:     '0.94rem',
     color:        T.darkText,
     outline:      'none',
     transition:   'border-color 0.14s, box-shadow 0.14s, background 0.14s',
     boxShadow:    focused
-      ? `0 0 0 3px ${error ? 'rgba(139,58,47,0.11)' : 'rgba(26,58,42,0.09)'}`
+      ? `0 0 0 3px ${error ? 'rgba(249,92,56,0.12)' : 'rgba(61,138,92,0.12)'}`
       : 'none',
   };
 }
@@ -377,11 +377,11 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
   return (
     <div
       style={{
-        background:   '#FFFFFF',
-        border:       `1.5px solid rgba(26,58,42,0.16)`,
+        background:   'var(--vt-card)',
+        border:       `1px solid var(--vt-border)`,
         borderRadius: '18px',
         overflow:     'hidden',
-        boxShadow:    '0 4px 24px rgba(26,58,42,0.10)',
+        boxShadow:    'var(--vt-shadow-sm)',
       }}
     >
       {/* Form header */}
@@ -456,14 +456,14 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
                       alignItems:   'center',
                       gap:          '6px',
                       padding:      '8px 16px',
-                      border:       `1.5px solid ${active ? T.forestPrimary : T.border}`,
+                      border:       `1.5px solid ${active ? T.leaf : T.border}`,
                       borderRadius: '100px',
-                      background:   active ? 'rgba(26,58,42,0.08)' : 'transparent',
+                      background:   active ? 'rgba(61,138,92,0.18)' : 'transparent',
                       cursor:       saving ? 'not-allowed' : 'pointer',
                       fontFamily:   FONT.display,
                       fontSize:     '0.82rem',
                       fontWeight:   active ? 700 : 500,
-                      color:        active ? T.forestPrimary : T.secondaryText,
+                      color:        active ? '#fff' : T.secondaryText,
                       transition:   'all 0.15s',
                     }}
                   >
@@ -659,7 +659,7 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
               alignItems:   'center',
               gap:          '10px',
               padding:      '12px 14px',
-              background:   T.creamAlt,
+              background:   'rgba(13,34,24,0.60)',
               borderRadius: '12px',
               marginBottom: '22px',
               cursor:       saving ? 'not-allowed' : 'pointer',
@@ -672,7 +672,7 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
               checked={f.isDefault}
               onChange={(e) => setField('isDefault', e.target.checked)}
               disabled={saving}
-              style={{ width: '16px', height: '16px', accentColor: T.forestPrimary, cursor: 'pointer', flexShrink: 0 }}
+              style={{ width: '16px', height: '16px', accentColor: 'var(--vt-forest-600)', cursor: 'pointer', flexShrink: 0 }}
               onClick={(e) => e.stopPropagation()}
             />
             <label
@@ -694,14 +694,14 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
               style={{
                 flex:         '1 1 100px',
                 padding:      '12px 18px',
-                border:       `1.5px solid ${T.border}`,
+                border:       `1.5px solid var(--vt-border)`,
                 borderRadius: '12px',
                 background:   'transparent',
                 cursor:       saving ? 'not-allowed' : 'pointer',
                 fontFamily:   FONT.display,
                 fontSize:     '0.88rem',
                 fontWeight:   700,
-                color:        T.secondaryText,
+                color:        'var(--vt-muted)',
                 opacity:      saving ? 0.5 : 1,
               }}
             >
@@ -727,7 +727,7 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
                 alignItems:     'center',
                 justifyContent: 'center',
                 gap:            '7px',
-                boxShadow:      saving ? 'none' : '0 4px 12px rgba(26,58,42,0.24)',
+                boxShadow:      saving ? 'none' : '0 4px 12px rgba(61,138,92,0.24)',
                 opacity:        saving ? 0.7 : 1,
               }}
             >

@@ -44,25 +44,25 @@ export type { UserProfile };
 
 // ─── Design tokens (mirrors all Vaithiyam modules exactly) ────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -130,14 +130,14 @@ function inputStyleFn(focused: boolean, error: boolean): React.CSSProperties {
     padding:      '12px 16px',
     border:       `1.5px solid ${error ? T.terracotta : focused ? T.forestPrimary : T.border}`,
     borderRadius: '12px',
-    background:   focused ? '#fff' : T.creamBase,
+    background:   focused ? 'rgba(13,34,24,0.80)' : T.creamBase,
     fontFamily:   FONT.body,
     fontSize:     '1rem',
     color:        T.darkText,
     outline:      'none',
     transition:   'border-color 0.15s, box-shadow 0.15s, background 0.15s',
     boxShadow:    focused
-      ? `0 0 0 3px ${error ? 'rgba(139,58,47,0.12)' : 'rgba(26,58,42,0.10)'}`
+      ? `0 0 0 3px ${error ? 'rgba(249,92,56,0.12)' : 'rgba(61,138,92,0.12)'}`
       : 'none',
   };
 }
@@ -331,11 +331,11 @@ export default function EditProfileForm({
     <section
       aria-label="சுயவிவரம் திருத்து"
       style={{
-        background:   '#FFFFFF',
-        border:       `1px solid ${T.border}`,
+        background:   'var(--vt-card)',
+        border:       `1px solid var(--vt-border)`,
         borderRadius: '24px',
         overflow:     'hidden',
-        boxShadow:    '0 2px 20px rgba(26,58,42,0.08)',
+        boxShadow:    'var(--vt-shadow-sm)',
       }}
     >
       {/* ── Section header ──────────────────────────────────────────────── */}
@@ -508,14 +508,14 @@ export default function EditProfileForm({
                   disabled={isLoading}
                   style={{
                     padding:      '8px 16px',
-                    border:       `1.5px solid rgba(26,58,42,0.22)`,
+                    border:       `1.5px solid var(--vt-border)`,
                     borderRadius: '100px',
                     background:   'transparent',
                     cursor:       isLoading ? 'not-allowed' : 'pointer',
                     fontFamily:   FONT.display,
                     fontSize:     '0.82rem',
                     fontWeight:   700,
-                    color:        T.forestPrimary,
+                    color:        'var(--vt-gold-300)',
                     transition:   'all 0.15s',
                     whiteSpace:   'nowrap',
                   }}
@@ -529,14 +529,14 @@ export default function EditProfileForm({
                     disabled={isLoading}
                     style={{
                       padding:      '7px 16px',
-                      border:       `1.5px solid rgba(139,58,47,0.22)`,
+                      border:       `1.5px solid var(--vt-border)`,
                       borderRadius: '100px',
                       background:   'transparent',
                       cursor:       isLoading ? 'not-allowed' : 'pointer',
                       fontFamily:   FONT.display,
                       fontSize:     '0.78rem',
                       fontWeight:   600,
-                      color:        T.terracotta,
+                      color:        'var(--vt-coral-500)',
                       transition:   'all 0.15s',
                       whiteSpace:   'nowrap',
                     }}
@@ -738,14 +738,14 @@ export default function EditProfileForm({
               style={{
                 flex:         '1 1 120px',
                 padding:      '13px 20px',
-                border:       `1.5px solid ${T.border}`,
+                border:       `1.5px solid var(--vt-border)`,
                 borderRadius: '14px',
                 background:   'transparent',
                 cursor:       saving ? 'not-allowed' : 'pointer',
                 fontFamily:   FONT.display,
                 fontSize:     '0.94rem',
                 fontWeight:   700,
-                color:        T.secondaryText,
+                color:        'var(--vt-muted)',
                 transition:   'all 0.15s',
                 opacity:      saving ? 0.5 : 1,
               }}

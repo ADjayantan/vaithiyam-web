@@ -37,25 +37,25 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 // ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Tradition config ──────────────────────────────────────────────────────────
@@ -65,24 +65,24 @@ const TRADITION_STYLE: Record<
 > = {
   siddha:    {
     labelTa: 'சித்தா',
-    bg:      'rgba(61,122,85,0.10)',
+    bg:      'rgba(61,138,92,0.12)',
     color:   T.leaf,
-    border:  'rgba(61,122,85,0.24)',
-    imageBg: 'linear-gradient(135deg, #D6EAD8 0%, #EAF5EB 100%)',
+    border:  'rgba(61,138,92,0.24)',
+    imageBg: 'linear-gradient(135deg, rgba(13,34,24,0.60) 0%, rgba(61,138,92,0.12) 100%)',
   },
   ayurveda:  {
     labelTa: 'ஆயுர்வேதம்',
-    bg:      'rgba(201,146,42,0.10)',
+    bg:      'rgba(212,137,10,0.12)',
     color:   T.gold,
-    border:  'rgba(201,146,42,0.26)',
-    imageBg: 'linear-gradient(135deg, #F0E6C8 0%, #FDF5E4 100%)',
+    border:  'rgba(212,137,10,0.26)',
+    imageBg: 'linear-gradient(135deg, rgba(13,34,24,0.60) 0%, rgba(212,137,10,0.12) 100%)',
   },
   natural:   {
     labelTa: 'இயற்கை',
-    bg:      'rgba(26,58,42,0.07)',
+    bg:      'rgba(61,138,92,0.08)',
     color:   T.forestPrimary,
-    border:  'rgba(26,58,42,0.18)',
-    imageBg: 'linear-gradient(135deg, #DCE8DC 0%, #EEF5EE 100%)',
+    border:  'rgba(61,138,92,0.18)',
+    imageBg: 'linear-gradient(135deg, rgba(13,34,24,0.60) 0%, rgba(61,138,92,0.08) 100%)',
   },
 };
 
@@ -94,17 +94,17 @@ const BTN_STYLES: Record<BtnVariant, React.CSSProperties> = {
     background: `linear-gradient(135deg, ${T.forestPrimary} 0%, ${T.leaf} 100%)`,
     color:      '#FFFFFF',
     border:     'none',
-    boxShadow:  '0 2px 8px rgba(26,58,42,0.22)',
+    boxShadow:  '0 4px 12px rgba(61,138,92,0.22)',
   },
   ghost: {
-    background: 'rgba(26,58,42,0.06)',
-    color:      T.forestPrimary,
-    border:     '1px solid rgba(26,58,42,0.12)',
+    background: 'rgba(61,138,92,0.12)',
+    color:      T.goldPale,
+    border:     '1px solid var(--vt-border)',
   },
   outline: {
     background: 'transparent',
-    color:      T.forestPrimary,
-    border:     `1.5px solid ${T.forestPrimary}`,
+    color:      T.goldPale,
+    border:     `1.5px solid var(--vt-border)`,
   },
 };
 
@@ -331,11 +331,11 @@ export default function WishlistCard({
     <article
       aria-label={item.nameTa}
       style={{
-        background:   '#FFFFFF',
-        border:       `1px solid ${T.border}`,
+        background:   'var(--vt-card)',
+        border:       `1px solid var(--vt-border)`,
         borderRadius: '20px',
         overflow:     'hidden',
-        boxShadow:    '0 2px 12px rgba(26,58,42,0.06)',
+        boxShadow:    'var(--vt-shadow-xs)',
         display:      'flex',
         flexDirection:'column',
         transition:   'box-shadow 0.2s ease, transform 0.2s ease',
@@ -442,11 +442,11 @@ export default function WishlistCard({
             height:         '34px',
             borderRadius:   '50%',
             background:     heartHover && !removing
-              ? 'rgba(139,58,47,0.12)'
-              : 'rgba(255,255,255,0.90)',
+              ? 'rgba(249,92,56,0.14)'
+              : 'rgba(13,34,24,0.70)',
             border:         heartHover && !removing
-              ? '1px solid rgba(139,58,47,0.30)'
-              : '1px solid rgba(221,208,184,0.80)',
+              ? '1px solid rgba(249,92,56,0.30)'
+              : '1px solid var(--vt-border)',
             backdropFilter: 'blur(4px)',
             cursor:         removing ? 'not-allowed' : 'pointer',
             display:        'flex',
@@ -666,7 +666,7 @@ function HerbPlaceholder({ tradition }: { tradition: WishlistItem['tradition'] }
         userSelect:     'none',
       }}
     >
-      <FontAwesomeIcon icon={PLACEHOLDER_ICONS[tradition]} style={{ width: 44, height: 44, color: 'rgba(31,138,98,0.72)' }} />
+      <FontAwesomeIcon icon={PLACEHOLDER_ICONS[tradition]} style={{ width: 44, height: 44, color: 'rgba(61,138,92,0.40)' }} />
     </div>
   );
 }

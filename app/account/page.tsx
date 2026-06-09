@@ -45,6 +45,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
+
 import ProfileCard, {
   type UserProfile,
 } from '../../components/account/ProfileCard';
@@ -59,25 +61,25 @@ import AddressBook, {
 
 // ─── Design tokens (mirrors all Vaithiyam modules exactly) ────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-800)',
+  forestDark:    'var(--vt-deep)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-200)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-gold-500)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-muted)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Auth helpers ─────────────────────────────────────────────────────────────
@@ -520,114 +522,18 @@ export default function AccountPage() {
     <div
       style={{
         minHeight:     '100dvh',
-        background:    T.creamBase,
-        paddingBottom: '64px',
+        background:    'var(--vt-void)',
+        paddingBottom: '80px',
       }}
     >
-      {/* ── Sticky forest header ─────────────────────────────────────────── */}
-      <header
-        style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     300,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth:   '640px',
-            margin:     '0 auto',
-            padding:    '14px 18px',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '12px',
-          }}
-        >
-          {/* Back button */}
-          <Link
-            href="/"
-            aria-label="முகப்பு திரும்பு"
-            style={{
-              width:          '34px',
-              height:         '34px',
-              borderRadius:   '50%',
-              border:         '1px solid rgba(240,201,110,0.22)',
-              background:     'rgba(240,201,110,0.08)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              textDecoration: 'none',
-              flexShrink:     0,
-            }}
-          >
-            <BackArrowIcon />
-          </Link>
-
-          {/* Brand */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Link
-              href="/"
-              style={{
-                display:        'block',
-                fontFamily:     FONT.display,
-                fontSize:       '1.1rem',
-                fontWeight:     700,
-                color:          T.goldPale,
-                letterSpacing:  '0.02em',
-                textDecoration: 'none',
-                lineHeight:     1.2,
-              }}
-            >
-              வைத்தியம்
-            </Link>
-            <span
-              style={{
-                display:    'block',
-                fontFamily: FONT.body,
-                fontSize:   '0.68rem',
-                color:      'rgba(240,201,110,0.58)',
-                marginTop:  '1px',
-              }}
-            >
-              என் கணக்கு
-            </span>
-          </div>
-
-          {/* Logout button */}
-          <button
-            type="button"
-            onClick={handleLogout}
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              gap:            '6px',
-              padding:        '7px 14px',
-              border:         '1px solid rgba(240,201,110,0.24)',
-              borderRadius:   '100px',
-              background:     'rgba(240,201,110,0.07)',
-              cursor:         'pointer',
-              fontFamily:     FONT.display,
-              fontSize:       '0.76rem',
-              fontWeight:     700,
-              color:          T.goldPale,
-              whiteSpace:     'nowrap',
-              flexShrink:     0,
-              transition:     'all 0.15s',
-            }}
-          >
-            <LogoutIcon />
-            வெளியேறு
-          </button>
-        </div>
-      </header>
+      <CustomerHeader />
 
       {/* ── Main content ───────────────────────────────────────────────────── */}
       <main
         style={{
           maxWidth: '640px',
           margin:   '0 auto',
-          padding:  'clamp(20px, 4vw, 36px) 16px 0',
+          padding:  'clamp(20px, 4vw, 36px) 16px 20px',
         }}
       >
         {/* ── Page title ─────────────────────────────────────────────────── */}
@@ -643,7 +549,7 @@ export default function AccountPage() {
           }}
         >
           <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
-            <FontAwesomeIcon icon={faCircleUser} style={{ width: 20, height: 20, color: '#1A3A2A' }} />
+            <FontAwesomeIcon icon={faCircleUser} style={{ width: 20, height: 20, color: 'var(--vt-forest-600)' }} />
           </span>
           என் கணக்கு
         </h1>
@@ -655,7 +561,7 @@ export default function AccountPage() {
         {!loading && pageError && (
           <div
             style={{
-              background:   '#FFFFFF',
+              background:   'var(--vt-card)',
               border:       `1px solid ${T.border}`,
               borderRadius: '24px',
               overflow:     'hidden',
@@ -755,11 +661,11 @@ export default function AccountPage() {
             <nav
               aria-label="கணக்கு விருப்பங்கள்"
               style={{
-                background:   '#FFFFFF',
+                background:   'var(--vt-card)',
                 border:       `1px solid ${T.border}`,
                 borderRadius: '20px',
                 overflow:     'hidden',
-                boxShadow:    '0 1px 8px rgba(26,58,42,0.06)',
+                boxShadow:    'var(--vt-shadow-sm)',
               }}
             >
               {ACCOUNT_LINKS.map((link, i) => (
@@ -788,7 +694,7 @@ export default function AccountPage() {
                         flexShrink:     0,
                       }}
                     >
-                      <FontAwesomeIcon icon={link.icon} style={{ width: 17, height: 17, color: '#1A3A2A' }} />
+                      <FontAwesomeIcon icon={link.icon} style={{ width: 17, height: 17, color: link.iconColor }} />
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontFamily: FONT.display, fontSize: '0.9rem', fontWeight: 700, color: T.darkText, margin: '0 0 1px', lineHeight: 1.3 }}>
@@ -814,14 +720,14 @@ export default function AccountPage() {
               style={{
                 width:          '100%',
                 padding:        '14px',
-                border:         `1.5px solid rgba(139,58,47,0.22)`,
+                border:         `1.5px solid rgba(249, 92, 56, 0.22)`,
                 borderRadius:   '16px',
-                background:     'rgba(139,58,47,0.04)',
+                background:     'rgba(249, 92, 56, 0.04)',
                 cursor:         'pointer',
                 fontFamily:     FONT.display,
                 fontSize:       '0.92rem',
                 fontWeight:     700,
-                color:          T.terracotta,
+                color:          'var(--vt-coral-400)',
                 display:        'flex',
                 alignItems:     'center',
                 justifyContent: 'center',
@@ -829,12 +735,15 @@ export default function AccountPage() {
                 transition:     'all 0.15s',
               }}
             >
-              <LogoutIcon color={T.terracotta} />
+              <LogoutIcon color="var(--vt-coral-400)" />
               கணக்கிலிருந்து வெளியேறு
             </button>
           </div>
         )}
       </main>
+
+      <CustomerFooter />
+      <MobileBottomNav />
 
       {/* ── Toast notifications ───────────────────────────────────────────── */}
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
@@ -851,28 +760,31 @@ export default function AccountPage() {
 
 // ─── Account navigation links ─────────────────────────────────────────────────
 const ACCOUNT_LINKS: {
-  href: string; icon: IconDefinition; labelTa: string; descTa: string; bg: string;
+  href: string; icon: IconDefinition; labelTa: string; descTa: string; bg: string; iconColor: string;
 }[] = [
   {
     href:    '/account/orders',
     icon:    faBox,
     labelTa: 'என் ஆர்டர்கள்',
     descTa:  'ஆர்டர் வரலாறு மற்றும் கண்காணிப்பு',
-    bg:      'rgba(61,122,85,0.10)',
+    bg:      'rgba(61, 138, 92, 0.15)',
+    iconColor: 'var(--vt-emerald-400)',
   },
   {
     href:    '/prescriptions',
     icon:    faPills,
     labelTa: 'என் பரிந்துரைகள்',
     descTa:  'மருந்து சீட்டு பதிவேற்றங்கள்',
-    bg:      'rgba(201,146,42,0.10)',
+    bg:      'rgba(212, 137, 10, 0.15)',
+    iconColor: 'var(--vt-gold-400)',
   },
   {
     href:    '/help',
     icon:    faHeadphones,
     labelTa: 'உதவி மற்றும் ஆதரவு',
     descTa:  'கேள்விகள் மற்றும் புகார்கள்',
-    bg:      'rgba(26,58,42,0.08)',
+    bg:      'rgba(255, 255, 255, 0.08)',
+    iconColor: 'var(--vt-ink)',
   },
 ];
 

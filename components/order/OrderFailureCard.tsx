@@ -24,27 +24,27 @@ import { faPhone }              from '@fortawesome/free-solid-svg-icons';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  errorBg:       '#FDF3F1',
-  errorBorder:   'rgba(139,58,47,0.22)',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'rgba(13,34,24,0.35)', // dark glassmorphic input background
+  creamAlt:      'rgba(13,34,24,0.60)', // dark selector background
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  errorBg:       'rgba(249, 92, 56, 0.08)',
+  errorBorder:   'var(--vt-border)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // Razorpay error code → friendlier Tamil description
@@ -92,11 +92,12 @@ export default function OrderFailureCard({
     <article
       aria-label="கட்டண தோல்வி விவரங்கள்"
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
+        backdropFilter: 'blur(12px)',
         border:       `1px solid ${T.errorBorder}`,
         borderRadius: '24px',
         overflow:     'hidden',
-        boxShadow:    '0 8px 40px rgba(139,58,47,0.10)',
+        boxShadow:    'var(--vt-shadow-lg)',
         animation:    mounted ? 'vt-fc-enter 380ms cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none',
         opacity:      mounted ? undefined : 0,
       }}
@@ -267,7 +268,7 @@ export default function OrderFailureCard({
         {(orderId || amount) && (
           <div
             style={{
-              background:   'rgba(245,239,224,0.45)',
+              background:   'rgba(255, 255, 255, 0.02)',
               border:       `1px solid ${T.border}`,
               borderRadius: '14px',
               overflow:     'hidden',
@@ -291,7 +292,7 @@ export default function OrderFailureCard({
                     fontFamily:    'monospace',
                     fontSize:      '13px',
                     fontWeight:    600,
-                    color:         T.darkText,
+                    color:         T.gold,
                     letterSpacing: '0.04em',
                   }}
                 >
@@ -342,14 +343,14 @@ export default function OrderFailureCard({
               gap:            '9px',
               height:         '54px',
               borderRadius:   '14px',
-              background:     `linear-gradient(135deg,${T.forestPrimary} 0%,#254D38 100%)`,
-              color:          T.goldPale,
+              background:     'linear-gradient(135deg, var(--vt-gold-700), var(--vt-gold-500))',
+              color:          '#030C07',
               fontFamily:     FONT.display,
               fontSize:       '16px',
               fontWeight:     700,
               letterSpacing:  '0.02em',
               textDecoration: 'none',
-              boxShadow:      '0 4px 16px rgba(26,58,42,0.22)',
+              boxShadow:      '0 4px 16px rgba(201,146,42,0.18)',
               transition:     'background 200ms ease',
               userSelect:     'none',
             }}
@@ -369,8 +370,8 @@ export default function OrderFailureCard({
               height:         '50px',
               borderRadius:   '14px',
               background:     'transparent',
-              border:         `1.5px solid rgba(26,58,42,0.20)`,
-              color:          T.forestPrimary,
+              border:         `1.5px solid ${T.border}`,
+              color:          T.gold,
               fontFamily:     FONT.display,
               fontSize:       '15px',
               fontWeight:     700,
@@ -389,7 +390,7 @@ export default function OrderFailureCard({
           style={{
             marginTop:    '20px',
             padding:      '16px 18px',
-            background:   'rgba(245,239,224,0.50)',
+            background:   'rgba(255, 255, 255, 0.02)',
             border:       `1px solid ${T.border}`,
             borderRadius: '14px',
           }}
@@ -414,7 +415,7 @@ export default function OrderFailureCard({
                 alignItems:     'center',
                 gap:            '10px',
                 padding:        '10px 14px',
-                background:     '#FFFFFF',
+                background:     'rgba(255, 255, 255, 0.03)',
                 border:         `1px solid ${T.border}`,
                 borderRadius:   '10px',
                 textDecoration: 'none',
@@ -422,7 +423,7 @@ export default function OrderFailureCard({
               }}
             >
               <span style={{ lineHeight: 1, flexShrink: 0, display: 'inline-flex', alignItems: 'center' }} aria-hidden="true">
-                <FontAwesomeIcon icon={faPhone} style={{ width: 14, height: 14, color: '#1A3A2A' }} />
+                <FontAwesomeIcon icon={faPhone} style={{ width: 14, height: 14, color: T.gold }} />
               </span>
               <span style={{ fontFamily: FONT.body, fontSize: '13px', fontWeight: 600, color: T.darkText }}>
                 +91 88000 00000
@@ -440,8 +441,8 @@ export default function OrderFailureCard({
                 alignItems:     'center',
                 gap:            '10px',
                 padding:        '10px 14px',
-                background:     '#FFFFFF',
-                border:         `1px solid rgba(37,211,102,0.30)`,
+                background:     'rgba(255, 255, 255, 0.03)',
+                border:         `1px solid rgba(37,211,102,0.22)`,
                 borderRadius:   '10px',
                 textDecoration: 'none',
                 transition:     'border-color 150ms ease',

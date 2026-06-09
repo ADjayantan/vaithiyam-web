@@ -26,28 +26,29 @@ import { useSearchParams }  from 'next/navigation';
 import Link                 from 'next/link';
 import OrderSuccessCard     from '../../../components/order/OrderSuccessCard';
 import type { OrderData }   from '../../../components/order/OrderSummary';
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 function getToken(): string | null {
@@ -66,99 +67,28 @@ function authHeaders(): HeadersInit {
 }
 
 // ─── Page shell ───────────────────────────────────────────────────────────────
-// Wraps the inner client component in Suspense to satisfy Next.js App Router's
-// requirement for components that call useSearchParams().
 export default function OrderSuccessPage() {
   return (
     <div
       style={{
-        minHeight:   '100dvh',
-        background:  T.creamBase,
-        paddingTop:  '0',
-        paddingBottom: '48px',
+        minHeight:     '100dvh',
+        background:    T.creamBase,
+        display:       'flex',
+        flexDirection: 'column',
       }}
     >
-      {/* ── Sticky success header ──────────────────────────────────────── */}
-      <header
-        style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     200,
-          background: `linear-gradient(135deg, ${T.forestPrimary} 0%, #1E472E 100%)`,
-          boxShadow:  '0 2px 16px rgba(0,0,0,0.18)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '600px',
-            margin:   '0 auto',
-            padding:  '16px 20px',
-            display:  'flex',
-            alignItems:'center',
-            gap:      '12px',
-          }}
-        >
-          {/* Herb mark */}
-          <div
-            aria-hidden="true"
-            style={{
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(240,201,110,0.12)',
-              border:         '1px solid rgba(240,201,110,0.22)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              flexShrink:     0,
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 72 72" fill="none">
-              <path
-                d="M36 8C26 14 18 22 18 34a18 18 0 0 0 18 18 18 18 0 0 0 18-18C54 22 46 14 36 8z"
-                stroke={T.goldPale}
-                strokeWidth="2.5"
-                fill="rgba(240,201,110,0.10)"
-              />
-              <path d="M36 22v26" stroke={T.goldPale} strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M26 32c5-2 10-2 10 0" stroke={T.leaf} strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M46 38c-5-2-10-2-10 0" stroke={T.leaf} strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-          </div>
-          <div>
-            <h1
-              style={{
-                fontFamily: FONT.display,
-                fontSize:   '18px',
-                fontWeight: 800,
-                color:      T.goldPale,
-                margin:     0,
-                lineHeight: 1.2,
-              }}
-            >
-              வெற்றி! ✓
-            </h1>
-            <p
-              style={{
-                fontFamily: FONT.body,
-                fontSize:   '12px',
-                color:      'rgba(240,201,110,0.60)',
-                margin:     '2px 0 0',
-                lineHeight: 1.3,
-              }}
-            >
-              ஆர்டர் உறுதிப்படுத்தல்
-            </p>
-          </div>
-        </div>
-      </header>
+      <CustomerHeader />
 
-      {/* ── Main content ───────────────────────────────────────────────── */}
       <main
         style={{
-          maxWidth: '600px',
-          margin:   '0 auto',
-          padding:  '24px 16px',
+          flex:       1,
+          maxWidth:   '600px',
+          width:      '100%',
+          margin:     '0 auto',
+          padding:    '24px 16px 48px',
+          boxSizing:  'border-box',
+          display:    'flex',
+          flexDirection: 'column',
         }}
         aria-label="ஆர்டர் வெற்றி பக்கம்"
       >
@@ -166,6 +96,9 @@ export default function OrderSuccessPage() {
           <OrderSuccessContent />
         </Suspense>
       </main>
+
+      <CustomerFooter />
+      <MobileBottomNav />
 
       <style>{`
         @keyframes vt-os-spin {
@@ -289,8 +222,8 @@ function LoadingScreen() {
           width:          '72px',
           height:         '72px',
           borderRadius:   '50%',
-          background:     'rgba(26,58,42,0.05)',
-          border:         `2px solid rgba(26,58,42,0.12)`,
+          background:     'rgba(255,255,255,0.02)',
+          border:         `2px solid var(--vt-border)`,
           display:        'flex',
           alignItems:     'center',
           justifyContent: 'center',
@@ -300,11 +233,11 @@ function LoadingScreen() {
         <svg width="36" height="36" viewBox="0 0 72 72" fill="none">
           <path
             d="M36 8C26 14 18 22 18 34a18 18 0 0 0 18 18 18 18 0 0 0 18-18C54 22 46 14 36 8z"
-            stroke={T.forestPrimary}
+            stroke={T.gold}
             strokeWidth="2"
-            fill="rgba(26,58,42,0.08)"
+            fill="rgba(201,146,42,0.08)"
           />
-          <path d="M36 22v26" stroke={T.forestPrimary} strokeWidth="2" strokeLinecap="round" />
+          <path d="M36 22v26" stroke={T.gold} strokeWidth="2" strokeLinecap="round" />
           <path d="M26 32c5-2 10-2 10 0" stroke={T.leaf} strokeWidth="2" strokeLinecap="round" />
           <path d="M46 38c-5-2-10-2-10 0" stroke={T.leaf} strokeWidth="2" strokeLinecap="round" />
           <circle cx="36" cy="52" r="3" fill={T.leaf} opacity="0.40" />
@@ -351,11 +284,12 @@ function ErrorScreen({
       {/* Error card */}
       <div
         style={{
-          background:   '#FFFFFF',
-          border:       '1px solid rgba(139,58,47,0.22)',
+          background:   'var(--vt-card)',
+          backdropFilter: 'blur(12px)',
+          border:       '1px solid var(--vt-border)',
           borderRadius: '20px',
           overflow:     'hidden',
-          boxShadow:    '0 4px 24px rgba(139,58,47,0.08)',
+          boxShadow:    'var(--vt-shadow-md)',
         }}
       >
         {/* Header */}
@@ -363,8 +297,8 @@ function ErrorScreen({
           style={{
             padding:    '28px 24px 24px',
             textAlign:  'center',
-            background: 'rgba(139,58,47,0.03)',
-            borderBottom: '1px solid rgba(139,58,47,0.12)',
+            background: 'rgba(249,92,56,0.03)',
+            borderBottom: '1px solid var(--vt-border)',
           }}
         >
           <span style={{ fontSize: '44px', display: 'block', marginBottom: '14px' }} aria-hidden="true">
@@ -420,14 +354,14 @@ function ErrorScreen({
               gap:            '8px',
               height:         '50px',
               borderRadius:   '14px',
-              background:     `linear-gradient(135deg,${T.forestPrimary} 0%,#254D38 100%)`,
+              background:     'linear-gradient(135deg, var(--vt-gold-700), var(--vt-gold-500))',
               border:         'none',
-              color:          T.goldPale,
+              color:          '#030C07',
               fontFamily:     FONT.display,
               fontSize:       '15px',
               fontWeight:     700,
               cursor:         'pointer',
-              boxShadow:      '0 4px 16px rgba(26,58,42,0.18)',
+              boxShadow:      '0 4px 16px rgba(201,146,42,0.18)',
               letterSpacing:  '0.02em',
             }}
           >
@@ -444,8 +378,8 @@ function ErrorScreen({
               height:         '46px',
               borderRadius:   '14px',
               background:     'transparent',
-              border:         `1.5px solid rgba(26,58,42,0.20)`,
-              color:          T.forestPrimary,
+              border:         `1.5px solid ${T.border}`,
+              color:          T.gold,
               fontFamily:     FONT.display,
               fontSize:       '14px',
               fontWeight:     700,
@@ -460,7 +394,7 @@ function ErrorScreen({
       {/* Support contact */}
       <div
         style={{
-          background:   'rgba(245,239,224,0.60)',
+          background:   'rgba(255,255,255,0.02)',
           border:       `1px solid ${T.border}`,
           borderRadius: '16px',
           padding:      '16px 20px',
@@ -484,7 +418,7 @@ function ErrorScreen({
             fontFamily:     FONT.display,
             fontSize:       '15px',
             fontWeight:     700,
-            color:          T.forestPrimary,
+            color:          T.gold,
             textDecoration: 'none',
           }}
         >

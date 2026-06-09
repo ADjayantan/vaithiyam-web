@@ -28,28 +28,29 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition }    from '@fortawesome/fontawesome-svg-core';
 import OrderFailureCard           from '../../../components/order/OrderFailureCard';
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
 
 // ─── Design tokens (mirrors all order components exactly) ─────────────────────
 const T = {
-  forestPrimary: '#1A3A2A',
-  forestDark:    '#0F2A1C',
-  creamBase:     '#F5EFE0',
-  creamAlt:      '#EDE3CE',
-  gold:          '#C9922A',
-  goldPale:      '#F0C96E',
-  leaf:          '#3D7A55',
-  saffron:       '#E07B39',
-  terracotta:    '#8B3A2F',
-  darkText:      '#1C1410',
-  secondaryText: '#5C4A30',
-  muted:         '#9C8060',
-  border:        '#DDD0B8',
+  forestPrimary: 'var(--vt-forest-700)',
+  forestDark:    'var(--vt-forest-900)',
+  creamBase:     'var(--vt-void)',
+  creamAlt:      'rgba(255, 255, 255, 0.05)',
+  gold:          'var(--vt-gold-500)',
+  goldPale:      'var(--vt-gold-300)',
+  leaf:          'var(--vt-forest-600)',
+  saffron:       'var(--vt-saffron)',
+  terracotta:    'var(--vt-coral-500)',
+  darkText:      'var(--vt-ink)',
+  secondaryText: 'var(--vt-ink-80)',
+  muted:         'var(--vt-muted)',
+  border:        'var(--vt-border)',
 } as const;
 
 const FONT = {
-  display: "'Mukta Malar', sans-serif",
-  body:    "'Hind Madurai', sans-serif",
-  serif:   "'Lora', serif",
+  display: "var(--vt-font-display)",
+  body:    "var(--vt-font-body)",
+  serif:   "var(--vt-font-serif)",
 } as const;
 
 // ─── Page shell ───────────────────────────────────────────────────────────────
@@ -59,116 +60,22 @@ export default function OrderFailurePage() {
       style={{
         minHeight:     '100dvh',
         background:    T.creamBase,
-        paddingBottom: '48px',
+        display:       'flex',
+        flexDirection: 'column',
       }}
     >
-      {/* ── Sticky failure header ─────────────────────────────────────── */}
-      <header
-        style={{
-          position:   'sticky',
-          top:        0,
-          zIndex:     200,
-          background: 'linear-gradient(135deg, #4A1A14 0%, #6B2A22 100%)',
-          boxShadow:  '0 2px 16px rgba(0,0,0,0.22)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth:   '600px',
-            margin:     '0 auto',
-            padding:    '16px 20px',
-            display:    'flex',
-            alignItems: 'center',
-            gap:        '12px',
-          }}
-        >
-          {/* Back link */}
-          <Link
-            href="/cart"
-            aria-label="கார்ட்டிற்கு திரும்பு"
-            style={{
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(255,255,255,0.08)',
-              border:         '1px solid rgba(255,255,255,0.12)',
-              flexShrink:     0,
-              textDecoration: 'none',
-              transition:     'background 150ms ease',
-            }}
-          >
-            <BackArrowIcon />
-          </Link>
+      <CustomerHeader />
 
-          {/* Warning icon */}
-          <div
-            aria-hidden="true"
-            style={{
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(255,150,100,0.12)',
-              border:         '1px solid rgba(255,150,100,0.22)',
-              display:        'flex',
-              alignItems:     'center',
-              justifyContent: 'center',
-              flexShrink:     0,
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M12 2L2 21h20L12 2z"
-                stroke="rgba(255,180,140,0.85)"
-                strokeWidth="2"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12 10v5M12 17.5v.5"
-                stroke="rgba(255,180,140,0.85)"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-
-          {/* Title */}
-          <div>
-            <h1
-              style={{
-                fontFamily: FONT.display,
-                fontSize:   '18px',
-                fontWeight: 800,
-                color:      'rgba(255,220,200,0.95)',
-                margin:     0,
-                lineHeight: 1.2,
-              }}
-            >
-              கட்டணம் தோல்வியடைந்தது
-            </h1>
-            <p
-              style={{
-                fontFamily: FONT.body,
-                fontSize:   '12px',
-                color:      'rgba(255,200,170,0.55)',
-                margin:     '2px 0 0',
-                lineHeight: 1.3,
-              }}
-            >
-              Payment Failed
-            </p>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Main content ──────────────────────────────────────────────── */}
       <main
         style={{
-          maxWidth: '600px',
-          margin:   '0 auto',
-          padding:  '24px 16px',
+          flex:       1,
+          maxWidth:   '600px',
+          width:      '100%',
+          margin:     '0 auto',
+          padding:    '24px 16px 48px',
+          boxSizing:  'border-box',
+          display:    'flex',
+          flexDirection: 'column',
         }}
         aria-label="கட்டண தோல்வி பக்கம்"
       >
@@ -180,6 +87,9 @@ export default function OrderFailurePage() {
           <FailureContent />
         </Suspense>
       </main>
+
+      <CustomerFooter />
+      <MobileBottomNav />
 
       <style>{`
         @keyframes vt-fp-spin {
@@ -236,11 +146,12 @@ function FailureContent() {
         <section
           aria-label="வேறு கட்டண முறைகள்"
           style={{
-            background:   '#FFFFFF',
+            background:   'var(--vt-card)',
+            backdropFilter: 'blur(12px)',
             border:       `1px solid ${T.border}`,
             borderRadius: '20px',
             padding:      '20px',
-            boxShadow:    '0 2px 12px rgba(26,58,42,0.06)',
+            boxShadow:    'var(--vt-shadow-md)',
           }}
         >
           <p
@@ -293,7 +204,7 @@ function FailureContent() {
       <section
         aria-label="உதவி மையம்"
         style={{
-          background:   'rgba(245,239,224,0.60)',
+          background:   'rgba(255, 255, 255, 0.02)',
           border:       `1px solid ${T.border}`,
           borderRadius: '16px',
           padding:      '16px 20px',
@@ -340,7 +251,7 @@ function FailureContent() {
               fontFamily:     FONT.display,
               fontSize:       '13px',
               fontWeight:     700,
-              color:          '#1A7A3A',
+              color:          '#25D366',
               transition:     'background 150ms ease',
             }}
           >
@@ -354,14 +265,14 @@ function FailureContent() {
               alignItems:     'center',
               gap:            '6px',
               padding:        '9px 16px',
-              background:     'rgba(26,58,42,0.06)',
-              border:         '1px solid rgba(26,58,42,0.14)',
+              background:     'rgba(255, 255, 255, 0.03)',
+              border:         `1px solid ${T.border}`,
               borderRadius:   '100px',
               textDecoration: 'none',
               fontFamily:     FONT.display,
               fontSize:       '13px',
               fontWeight:     700,
-              color:          T.forestPrimary,
+              color:          T.gold,
               transition:     'background 150ms ease',
             }}
           >
@@ -414,7 +325,7 @@ function PaymentOptionLink({
         alignItems:     'center',
         gap:            '12px',
         padding:        '13px 16px',
-        background:     T.creamBase,
+        background:     'rgba(255, 255, 255, 0.02)',
         border:         `1px solid ${T.border}`,
         borderRadius:   '14px',
         textDecoration: 'none',
@@ -422,7 +333,7 @@ function PaymentOptionLink({
       }}
     >
       <span style={{ lineHeight: 1, flexShrink: 0, display: 'inline-flex', alignItems: 'center' }} aria-hidden="true">
-        <FontAwesomeIcon icon={icon} style={{ width: 18, height: 18, color: '#1A3A2A' }} />
+        <FontAwesomeIcon icon={icon} style={{ width: 18, height: 18, color: T.gold }} />
       </span>
       <span
         style={{
@@ -471,7 +382,8 @@ function FailurePageSkeleton() {
       {/* Main card skeleton */}
       <div
         style={{
-          background:   '#FFFFFF',
+          background:   'var(--vt-card)',
+          backdropFilter: 'blur(12px)',
           border:       `1px solid ${T.border}`,
           borderRadius: '24px',
           overflow:     'hidden',
@@ -498,7 +410,7 @@ function SkeletonBar({ height, radius, width = '100%' }: { height: string; radiu
         height,
         width,
         borderRadius: radius ?? '8px',
-        background:   'linear-gradient(90deg, rgba(26,58,42,0.06) 0%, rgba(26,58,42,0.10) 50%, rgba(26,58,42,0.06) 100%)',
+        background:   'linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%)',
         backgroundSize: '200% 100%',
         animation:    'vt-skeleton-shimmer 1.8s linear infinite',
       }}
