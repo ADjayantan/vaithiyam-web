@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarcode, faCartShopping, faCircleUser, faHeart,
-  faHouse, faLeaf, faMagnifyingGlass, faUpload,
+  faHouse, faMagnifyingGlass, faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 
 export function CustomerHeader({
@@ -21,14 +21,8 @@ export function CustomerHeader({
     <header className="vt-app-header">
       {/* ── Top row: brand | search | actions ── */}
       <div className="vt-header-inner">
-        <Link href="/" className="vt-brand" aria-label="Vaithiyam home">
-          <span className="vt-brand-mark">
-            <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
-          </span>
-          <span>
-            <span className="vt-brand-title">வைத்தியம்</span>
-            <span className="vt-brand-subtitle">Siddha · Ayurveda · Natural</span>
-          </span>
+        <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }} aria-label="Vaithiyam home">
+          Vaithiyam
         </Link>
 
         {/* Search — visible on desktop, hidden on mobile (shown in strip below) */}
@@ -116,14 +110,8 @@ export function CustomerFooter() {
     <footer className="vt-footer">
       <div className="vt-container vt-footer-grid">
         <div>
-          <Link href="/" className="vt-brand">
-            <span className="vt-brand-mark">
-              <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
-            </span>
-            <span>
-              <span className="vt-brand-title" style={{ color: 'var(--vt-ink)' }}>வைத்தியம்</span>
-              <span className="vt-brand-subtitle" style={{ color: 'var(--vt-muted)' }}>Premium medical-commerce demo</span>
-            </span>
+          <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }}>
+            Vaithiyam
           </Link>
           <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520 }}>
             Product information is educational only. Vaithiyam does not provide diagnosis, dosage advice,

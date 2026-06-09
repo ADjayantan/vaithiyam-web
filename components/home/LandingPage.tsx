@@ -7,10 +7,9 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight, faFileArrowUp, faShieldHalved,
-  faTruck, faHeartPulse, faRotate,
+  faTruck, faHeartPulse,
   faCalendarDays, faClock, faBolt,
-  faCartShopping, faMagnifyingGlass,
-  faLeaf,
+  faLeaf, faBagShopping, faUserCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import type { SeedMedicine } from '@/lib/medicineData';
 import { MobileBottomNav } from '@/components/layout/CustomerShell';
@@ -108,83 +107,30 @@ export function LandingPage() {
 ══════════════════════════════════════════════════════════════════ */
 function SiteNav({ cartCount }: { cartCount: number }) {
   return (
-    <nav style={{
-      position: 'sticky', top: 0, zIndex: 100,
-      background: 'rgba(3,12,7,0.82)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(61,138,92,0.12)',
-      padding: '0 32px', height: 56,
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      gap: 20,
-    }}>
-      {/* Brand */}
-      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
-        <span style={{
-          width: 30, height: 30, borderRadius: 8,
-          background: 'linear-gradient(135deg, #3D8A5C, #C9922A)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <FontAwesomeIcon icon={faLeaf} style={{ width: 15, height: 15, color: '#fff' }} />
-        </span>
-        <span style={{
-          fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
-          fontSize: '1.15rem', fontWeight: 600, color: '#F5EDD6', letterSpacing: '0.02em',
-        }}>
-          வைத்தியம்
-        </span>
-      </Link>
-
-      {/* Center nav links */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 28, flex: 1, justifyContent: 'center' }}>
-        {[
-          { label: 'சித்த மருத்துவம்', href: '/products?tradition=siddha' },
-          { label: 'ஆயுர்வேதம்',       href: '/products?tradition=ayurveda' },
-          { label: 'இயற்கை',            href: '/products?tradition=natural' },
-          { label: 'ஆரோக்கியம்',        href: '/products' },
-          { label: 'நம்பகம்',           href: '/help' },
-        ].map(({ label, href }) => (
-          <Link key={label} href={href} style={{
-            fontFamily: "'Cormorant Garamond',serif",
-            fontSize: '0.90rem', color: 'rgba(245,237,214,0.70)',
-            textDecoration: 'none', fontWeight: 400, letterSpacing: '0.02em',
-            whiteSpace: 'nowrap',
-            transition: 'color 0.2s',
-          }}>
-            {label}
+    <header style={{ height: 70, background: '#0d0d0d', borderBottom: '1px solid rgba(255,255,255,0.06)', position: 'sticky', top: 0, zIndex: 100 }}>
+      <div style={{ width: 'min(1324px, calc(100% - 48px))', height: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+        <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 42, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }}>
+          Vaithiyam
+        </Link>
+        <nav className="vt-catalogue-navlinks" style={{ display: 'flex', alignItems: 'center', gap: 38, color: '#c8c8c0', fontSize: 16, letterSpacing: '0.09em', fontWeight: 700 }}>
+          <Link href="/products" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Cancer Care</Link>
+          <Link href="/products?tradition=siddha" style={{ color: '#e9c349', textDecoration: 'none', borderBottom: '3px solid #e9c349', paddingBottom: 8 }}>Siddha</Link>
+          <Link href="/products?tradition=ayurveda" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Ayurveda</Link>
+          <Link href="/help" style={{ color: '#c8c8c0', textDecoration: 'none' }}>Consultations</Link>
+        </nav>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 22, color: '#b7cbc3' }}>
+          <Link href="/cart" aria-label="Cart" style={{ color: 'inherit', position: 'relative' }}>
+            <FontAwesomeIcon icon={faBagShopping} style={{ width: 23, height: 23 }} />
+            {cartCount > 0 && <span style={{ position: 'absolute', top: -9, right: -9, color: '#e9c349', fontSize: 11 }}>{cartCount}</span>}
           </Link>
-        ))}
+          <Link href="/account" aria-label="Account" style={{ color: 'inherit' }}>
+            <FontAwesomeIcon icon={faUserCircle} style={{ width: 25, height: 25 }} />
+          </Link>
+        </div>
       </div>
-
-      {/* Right icons */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-        <Link href="/products" aria-label="Search" style={iconBtn}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 16, height: 16 }} />
-        </Link>
-        <Link href="/cart" aria-label="Cart" style={{ ...iconBtn, position: 'relative' }}>
-          <FontAwesomeIcon icon={faCartShopping} style={{ width: 16, height: 16 }} />
-          {cartCount > 0 && (
-            <span style={{
-              position: 'absolute', top: -4, right: -4,
-              width: 15, height: 15, borderRadius: '50%',
-              background: '#D4890A', color: '#000',
-              fontSize: '0.58rem', fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>{cartCount > 99 ? '99+' : cartCount}</span>
-          )}
-        </Link>
-      </div>
-    </nav>
+    </header>
   );
 }
-
-const iconBtn: React.CSSProperties = {
-  width: 34, height: 34, borderRadius: 8,
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(61,138,92,0.18)',
-  color: 'rgba(245,237,214,0.65)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
-  textDecoration: 'none',
-};
 
 /* ══════════════════════════════════════════════════════════════════
    HERO — full viewport with tropical leaf photo background
