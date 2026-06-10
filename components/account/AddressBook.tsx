@@ -211,100 +211,88 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div
       style={{
-        textAlign:     'center',
-        padding:       '48px 24px',
-        display:       'flex',
-        flexDirection: 'column',
-        alignItems:    'center',
-        gap:           '16px',
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'space-between',
+        padding:        '24px 28px 24px 24px',
+        gap:            '16px',
       }}
     >
-      {/* Botanical SVG illustration */}
-      <svg
-        width="110"
-        height="110"
-        viewBox="0 0 110 110"
-        fill="none"
-        aria-hidden="true"
-      >
-        {/* Ground circle */}
-        <circle cx="55" cy="55" r="50" fill={T.creamAlt} opacity="0.7"/>
-        {/* Map pin body */}
-        <path
-          d="M55 22c-10.5 0-19 8.5-19 19 0 14.25 19 37 19 37s19-22.75 19-37c0-10.5-8.5-19-19-19z"
-          fill={T.forestPrimary} opacity="0.15"
-        />
-        <path
-          d="M55 26c-8.3 0-15 6.7-15 15 0 11.3 15 30 15 30s15-18.7 15-30c0-8.3-6.7-15-15-15z"
-          fill={T.forestPrimary} opacity="0.28"
-        />
-        <path
-          d="M55 30c-6.1 0-11 4.9-11 11 0 8.25 11 22 11 22s11-13.75 11-22c0-6.1-4.9-11-11-11z"
-          fill={T.forestPrimary}
-        />
-        {/* Inner dot */}
-        <circle cx="55" cy="41" r="4.5" fill={T.creamBase}/>
-        {/* Leaf sprigs left */}
-        <path d="M34 60 Q28 52 30 45 Q36 50 34 60Z" fill={T.leaf} opacity="0.55"/>
-        <path d="M30 66 Q22 58 24 51 Q31 56 30 66Z" fill={T.leaf} opacity="0.4"/>
-        {/* Leaf sprigs right */}
-        <path d="M76 60 Q82 52 80 45 Q74 50 76 60Z" fill={T.leaf} opacity="0.55"/>
-        <path d="M80 66 Q88 58 86 51 Q79 56 80 66Z" fill={T.leaf} opacity="0.4"/>
-        {/* Gold dots */}
-        <circle cx="38" cy="80" r="3" fill={T.goldPale} opacity="0.8"/>
-        <circle cx="72" cy="80" r="3" fill={T.goldPale} opacity="0.8"/>
-        <circle cx="55" cy="84" r="3.5" fill={T.gold} opacity="0.6"/>
-      </svg>
-
-      <div>
-        <h3
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'flex-start' }}>
+        <h2
           style={{
             fontFamily:   FONT.display,
-            fontSize:     '1.05rem',
+            fontSize:     '1.08rem',
             fontWeight:   700,
             color:        T.darkText,
-            margin:       '0 0 6px',
+            margin:       0,
             lineHeight:   1.3,
           }}
         >
-          முகவரிகள் எதுவும் இல்லை
-        </h3>
-        <p
+          முகவரி புத்தகம்
+        </h2>
+        <button
+          type="button"
+          onClick={onAdd}
           style={{
-            fontFamily: FONT.body,
-            fontSize:   '0.86rem',
-            color:      T.muted,
-            margin:     0,
-            lineHeight: 1.6,
+            display:        'flex',
+            alignItems:     'center',
+            gap:            '8px',
+            padding:        '10px 18px',
+            border:         'none',
+            borderRadius:   '10px',
+            background:     '#3D8A5C',
+            cursor:         'pointer',
+            fontFamily:     FONT.display,
+            fontSize:       '0.88rem',
+            fontWeight:     700,
+            color:          '#fff',
+            transition:     'opacity 0.2s',
           }}
         >
-          உங்கள் டெலிவரி முகவரிகளை இங்கே சேர்க்கவும்
-        </p>
+          + முகவரி சேர்
+        </button>
       </div>
 
-      <button
-        type="button"
-        onClick={onAdd}
-        style={{
-          display:        'flex',
-          alignItems:     'center',
-          gap:            '8px',
-          padding:        '12px 24px',
-          border:         'none',
-          borderRadius:   '100px',
-          background:     `linear-gradient(135deg, ${T.forestPrimary} 0%, ${T.leaf} 100%)`,
-          cursor:         'pointer',
-          fontFamily:     FONT.display,
-          fontSize:       '0.9rem',
-          fontWeight:     700,
-          color:          '#fff',
-          boxShadow:      '0 4px 14px rgba(26,58,42,0.22)',
-          transition:     'opacity 0.2s',
-        }}
-      >
-        <PlusIcon color="#fff" />
-        முதல் முகவரி சேர்
-      </button>
+      {/* Botanical SVG illustration */}
+      <div style={{ flexShrink: 0, width: 84, height: 84, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg
+          width="84"
+          height="84"
+          viewBox="0 0 110 110"
+          fill="none"
+          aria-hidden="true"
+          style={{ width: '100%', height: '100%', display: 'block' }}
+        >
+          {/* Ground circle */}
+          <circle cx="55" cy="55" r="50" fill={T.creamAlt} opacity="0.7"/>
+          {/* Map pin body */}
+          <path
+            d="M55 22c-10.5 0-19 8.5-19 19 0 14.25 19 37 19 37s19-22.75 19-37c0-10.5-8.5-19-19-19z"
+            fill={T.forestPrimary} opacity="0.15"
+          />
+          <path
+            d="M55 26c-8.3 0-15 6.7-15 15 0 11.3 15 30 15 30s15-18.7 15-30c0-8.3-6.7-15-15-15z"
+            fill={T.forestPrimary} opacity="0.28"
+          />
+          <path
+            d="M55 30c-6.1 0-11 4.9-11 11 0 8.25 11 22 11 22s11-13.75 11-22c0-6.1-4.9-11-11-11z"
+            fill={T.forestPrimary}
+          />
+          {/* Inner dot */}
+          <circle cx="55" cy="41" r="4.5" fill={T.creamBase}/>
+          {/* Leaf sprigs left */}
+          <path d="M34 60 Q28 52 30 45 Q36 50 34 60Z" fill={T.leaf} opacity="0.55"/>
+          <path d="M30 66 Q22 58 24 51 Q31 56 30 66Z" fill={T.leaf} opacity="0.4"/>
+          {/* Leaf sprigs right */}
+          <path d="M76 60 Q82 52 80 45 Q74 50 76 60Z" fill={T.leaf} opacity="0.55"/>
+          <path d="M80 66 Q88 58 86 51 Q79 56 80 66Z" fill={T.leaf} opacity="0.4"/>
+          {/* Gold dots */}
+          <circle cx="38" cy="80" r="3" fill={T.goldPale} opacity="0.8"/>
+          <circle cx="72" cy="80" r="3" fill={T.goldPale} opacity="0.8"/>
+          <circle cx="55" cy="84" r="3.5" fill={T.gold} opacity="0.6"/>
+        </svg>
+      </div>
     </div>
   );
 }
@@ -828,11 +816,11 @@ export default function AddressBook({
     <section
       aria-label="முகவரி புத்தகம்"
       style={{
-        background:   '#FFFFFF',
+        background:   'var(--vt-card)',
         border:       `1px solid ${T.border}`,
         borderRadius: '24px',
         overflow:     'hidden',
-        boxShadow:    '0 2px 16px rgba(26,58,42,0.07)',
+        boxShadow:    'var(--vt-shadow-sm)',
       }}
     >
       {/* ── Header ──────────────────────────────────────────────────────── */}

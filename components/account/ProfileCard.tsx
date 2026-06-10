@@ -164,7 +164,7 @@ export default function ProfileCard({
             style={{
               width:          '88px',
               height:         '88px',
-              borderRadius:   '50%',
+              borderRadius:   '16px',
               border:         `3px solid var(--vt-border-strong)`,
               boxShadow:      '0 2px 12px rgba(0,0,0,0.14)',
               overflow:       'hidden',
@@ -173,7 +173,7 @@ export default function ProfileCard({
               flexShrink:     0,
               background:     user.photoUrl
                 ? 'transparent'
-                : `linear-gradient(135deg, ${T.forestPrimary} 0%, ${T.leaf} 100%)`,
+                : `linear-gradient(135deg, #c9922a, #a8761a)`,
               display:        'flex',
               alignItems:     'center',
               justifyContent: 'center',
@@ -191,10 +191,10 @@ export default function ProfileCard({
               <span
                 aria-hidden="true"
                 style={{
-                  fontFamily:  FONT.display,
-                  fontSize:    '28px',
+                  fontFamily:  FONT.serif,
+                  fontSize:    '32px',
                   fontWeight:  700,
-                  color:       T.goldPale,
+                  color:       '#ffffff',
                   lineHeight:  1,
                   userSelect:  'none',
                 }}
@@ -253,7 +253,7 @@ export default function ProfileCard({
               gap:            '6px',
               padding:        '9px 18px',
               borderRadius:   '100px',
-              border:         `1.5px solid var(--vt-border)`,
+              border:         `1.5px solid var(--vt-gold-300)`,
               background:     'transparent',
               cursor:         'pointer',
               fontFamily:     FONT.display,
@@ -272,31 +272,16 @@ export default function ProfileCard({
         {/* Name */}
         <h2
           style={{
-            fontFamily:  FONT.display,
-            fontSize:    'clamp(18px, 5vw, 22px)',
-            fontWeight:  800,
-            color:       T.darkText,
-            margin:      '0 0 4px',
+            fontFamily:  FONT.serif,
+            fontSize:    'clamp(20px, 5vw, 24px)',
+            fontWeight:  700,
+            color:       'var(--vt-cream-50)',
+            margin:      '0 0 16px',
             lineHeight:  1.2,
           }}
         >
           {user.name}
         </h2>
-
-        {/* Member since */}
-        {memberSince && (
-          <p
-            style={{
-              fontFamily:  FONT.body,
-              fontSize:    '12px',
-              color:       T.muted,
-              margin:      '0 0 16px',
-              lineHeight:  1.4,
-            }}
-          >
-            உறுப்பினர்: {memberSince} முதல்
-          </p>
-        )}
 
         {/* Info rows */}
         <div
@@ -375,7 +360,7 @@ function InfoRow({
           width:          '34px',
           height:         '34px',
           borderRadius:   '10px',
-          background:     'rgba(61,138,92,0.12)',
+          background:     'rgba(61,138,92,0.15)',
           display:        'flex',
           alignItems:     'center',
           justifyContent: 'center',
@@ -462,7 +447,7 @@ function EditPenIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <path d="M12.5 2.5l3 3L5 16H2v-3L12.5 2.5z"
-        stroke={T.forestPrimary} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -471,7 +456,7 @@ function PhoneIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <path d="M3 3.5C3 3.2 3.3 3 3.5 3H6l1 3-1.5 1c.8 1.6 2 2.8 3.5 3.5L10.5 9l3 1V12.5c0 .3-.2.5-.5.5C7 13.5 3 9.5 3 5.5V3.5z"
-        stroke={T.forestPrimary} strokeWidth="1.4" strokeLinejoin="round" />
+        stroke="var(--vt-gold-300)" strokeWidth="1.4" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -479,8 +464,8 @@ function PhoneIcon() {
 function MailIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <rect x="2" y="4" width="14" height="10" rx="2" stroke={T.forestPrimary} strokeWidth="1.4" />
-      <path d="M2 6l7 5 7-5" stroke={T.forestPrimary} strokeWidth="1.4" strokeLinecap="round" />
+      <rect x="2" y="4" width="14" height="10" rx="2" stroke="var(--vt-gold-300)" strokeWidth="1.4" />
+      <path d="M2 6l7 5 7-5" stroke="var(--vt-gold-300)" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }

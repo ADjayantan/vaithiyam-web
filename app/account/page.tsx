@@ -631,21 +631,7 @@ export default function AccountPage() {
               </div>
             </div>
 
-            {/* ── Divider ─────────────────────────────────────────────── */}
-            <div
-              aria-hidden="true"
-              style={{
-                display:    'flex',
-                alignItems: 'center',
-                gap:        '12px',
-              }}
-            >
-              <div style={{ flex: 1, height: '1px', background: T.border }} />
-              <span style={{ fontFamily: FONT.body, fontSize: '0.72rem', color: T.muted, letterSpacing: '0.06em', textTransform: 'uppercase', userSelect: 'none', whiteSpace: 'nowrap' }}>
-                டெலிவரி முகவரிகள்
-              </span>
-              <div style={{ flex: 1, height: '1px', background: T.border }} />
-            </div>
+
 
             {/* ── 3. AddressBook ───────────────────────────────────────── */}
             <AddressBook
