@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/adminAuth';
 import { addProduct } from '@/lib/db/products';
 import { MEDICINE_CATEGORIES } from '@/lib/medicineData';
+import { db } from '@/lib/mockDb';
+import { getSupabaseServiceClient } from '@/lib/db/client';
 
 export async function POST(req: NextRequest) {
   const { response } = await requireAdmin(req);
@@ -77,3 +79,36 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: error instanceof Error ? error.message : 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  const { response } = await requireAdmin(req);
+  if (response) return response;
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ message: 'Missing product ID' }, { status: 400 });
+    }
+
+    const supabase = getSupabaseServiceClient();
+    if (supabase) {
+      const { error } = await supabase.from('medicines').delete().eq('id', id);
+      if (error) {
+        return NextResponse.json({ message: error.message }, { status: 500 });
+      }
+    }
+
+    // Always delete from local mockDb fallback list to keep dev synced
+    const idx = db.products.findIndex((p) => p.id === id);
+    if (idx !== -1) {
+      db.products.splice(idx, 1);
+    }
+
+    return NextResponse.json({ message: 'Medicine deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting medicine:', error);
+    return NextResponse.json({ message: error instanceof Error ? error.message : 'Internal Server Error' }, { status: 500 });
+  }
+}
+

@@ -3,9 +3,25 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLeaf, faLock, faShieldHalved } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@/components/ui/Button';
+import { faEnvelope, faLeaf, faLock } from '@fortawesome/free-solid-svg-icons';
+
+// ─── Design Tokens (matches register palette) ──────────────────────────────
+const T = {
+  creamBg:      '#F4EDE4',        // light warm cream sand background
+  forestDark:    '#1E472E',        // deep forest green primary
+  leafGreen:     '#3D8A5C',        // standard botanical leaf green
+  borderGreen:   '#A4BAAD',        // soft light border green
+  textDark:      '#102A1A',        // dark forest ink text
+  textMuted:     '#6B7A70',        // muted gray-green
+  errorRed:      '#C43E2C',        // warm terracotta red
+};
+
+const FONT = {
+  display: 'var(--vt-font-display)',
+  body:    'var(--vt-font-body)',
+};
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -13,6 +29,9 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('admin1234');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Focus States
+  const [focusedField, setFocusedField] = useState('');
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,50 +45,216 @@ export default function AdminLoginPage() {
       });
       const data = await res.json().catch(() => ({})) as { token?: string; user?: { role?: string }; message?: string };
       if (!res.ok) throw new Error(data.message ?? 'Login failed.');
-      if (data.user?.role !== 'admin') throw new Error('This account is not an admin.');
+      if (data.user?.role !== 'admin') throw new Error('உங்களுக்கு இந்த பக்கத்தை அணுக அனுமதி இல்லை.');
+      
       localStorage.setItem('vt_token', data.token ?? '');
       router.push('/admin/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed.');
+      setError(err instanceof Error ? err.message : 'உள்நுழைவு தோல்வி.');
     } finally {
       setLoading(false);
     }
   }
 
+  const inputStyle = (fieldName: string) => ({
+    width: '100%',
+    padding: '12px 14px 12px 36px', // left padding leaves space for icon
+    border: 'none',
+    borderBottom: `1.5px solid ${focusedField === fieldName ? T.forestDark : T.borderGreen}`,
+    background: 'transparent',
+    outline: 'none',
+    fontFamily: FONT.body,
+    fontSize: '0.96rem',
+    color: T.textDark,
+    transition: 'border-color 0.2s',
+  });
+
+  const labelStyle = {
+    fontFamily: FONT.body,
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    color: T.textMuted,
+    textAlign: 'left' as const,
+    display: 'block',
+    marginTop: 8,
+  };
+
   return (
-    <div className="vt-admin-shell" style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', padding: 20 }}>
-      <form onSubmit={submit} className="vt-admin-card" style={{ width: 'min(460px, 100%)', padding: 26, display: 'grid', gap: 16 }}>
-        <div className="vt-brand">
-          <span className="vt-brand-mark"><FontAwesomeIcon icon={faLeaf} style={{width: 22, height: 22}} /></span>
-          <span>
-            <span className="vt-brand-title">Vaithiyam Admin</span>
-            <span className="vt-brand-subtitle">Protected portal</span>
-          </span>
+    <div
+      style={{
+        minHeight: '100dvh',
+        background: T.creamBg,
+        display: 'grid',
+        placeItems: 'center',
+        padding: '24px 16px',
+      }}
+    >
+      <div style={{ width: 'min(420px, 100%)', textAlign: 'center' }}>
+        {/* Logo & Header */}
+        <div style={{ display: 'grid', gap: 6, placeItems: 'center', marginBottom: 28 }}>
+          <h1
+            style={{
+              fontFamily: FONT.display,
+              fontSize: '2.5rem',
+              fontWeight: 700,
+              color: T.forestDark,
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+          >
+            Vaithiyam
+          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: T.textDark, marginTop: 12 }}>
+            <span style={{ color: T.leafGreen, display: 'inline-flex' }}>
+              <FontAwesomeIcon icon={faLeaf} style={{ width: 32, height: 32 }} />
+            </span>
+            <span
+              style={{
+                fontFamily: FONT.display,
+                fontSize: '2rem',
+                fontWeight: 700,
+                color: T.textDark,
+              }}
+            >
+              Admin Portal
+            </span>
+          </div>
+          <p style={{ margin: '6px 0 0', fontFamily: FONT.body, fontSize: '0.86rem', color: T.textMuted }}>
+            நிர்வாகி உள்நுழைவு பக்கம்
+          </p>
         </div>
-        <div style={{ display: 'grid', placeItems: 'center', width: 68, height: 68, borderRadius: 22, background: 'rgba(244,213,129,0.16)', color: 'var(--vt-gold-300)' }}>
-          <FontAwesomeIcon icon={faShieldHalved} style={{width: 34, height: 34}} />
-        </div>
-        <div>
-          <h1 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '2rem' }}>Admin login</h1>
-          <p style={{ margin: '6px 0 0', color: 'rgba(236,255,248,0.62)' }}>Use demo admin credentials or configure Supabase role-based auth.</p>
-        </div>
-        <label style={{ display: 'grid', gap: 8 }}>
-          <span style={{ color: 'rgba(236,255,248,0.74)', fontWeight: 800 }}>Email</span>
-          <span style={{ position: 'relative' }}>
-            <FontAwesomeIcon icon={faEnvelope} style={{width: 17, height: 17, ...{ position: 'absolute', left: 13, top: 15, color: 'rgba(236,255,248,0.46)' }}} />
-            <input className="vt-input" value={email} onChange={(event) => setEmail(event.target.value)} style={{ paddingLeft: 40, background: 'rgba(255,255,255,0.08)', color: '#fff', borderColor: 'rgba(255,255,255,0.12)' }} />
-          </span>
-        </label>
-        <label style={{ display: 'grid', gap: 8 }}>
-          <span style={{ color: 'rgba(236,255,248,0.74)', fontWeight: 800 }}>Password</span>
-          <span style={{ position: 'relative' }}>
-            <FontAwesomeIcon icon={faLock} style={{width: 17, height: 17, ...{ position: 'absolute', left: 13, top: 15, color: 'rgba(236,255,248,0.46)' }}} />
-            <input className="vt-input" type="password" value={password} onChange={(event) => setPassword(event.target.value)} style={{ paddingLeft: 40, background: 'rgba(255,255,255,0.08)', color: '#fff', borderColor: 'rgba(255,255,255,0.12)' }} />
-          </span>
-        </label>
-        {error && <p style={{ color: 'var(--vt-coral-600)', margin: 0 }}>{error}</p>}
-        <Button type="submit" variant="gold" disabled={loading}>{loading ? 'Signing in...' : 'Enter admin portal'}</Button>
-      </form>
+
+        {/* Form Container */}
+        <form
+          onSubmit={submit}
+          style={{
+            display: 'grid',
+            gap: 18,
+            marginTop: 10,
+          }}
+        >
+          {error && (
+            <div
+              style={{
+                background: 'rgba(196,62,44,0.08)',
+                border: `1px solid ${T.errorRed}40`,
+                borderRadius: 8,
+                padding: '10px 14px',
+                fontSize: '0.85rem',
+                color: T.errorRed,
+                fontWeight: 600,
+                textAlign: 'left',
+              }}
+            >
+              ⚠️ {error}
+            </div>
+          )}
+
+          {/* Email */}
+          <div>
+            <label htmlFor="login-email" style={labelStyle}>Email Address</label>
+            <div style={{ position: 'relative' }}>
+              <FontAwesomeIcon
+                icon={faEnvelope}
+                style={{
+                  position: 'absolute',
+                  left: 10,
+                  top: 15,
+                  width: 16,
+                  height: 16,
+                  color: focusedField === 'email' ? T.forestDark : T.textMuted,
+                  transition: 'color 0.2s',
+                }}
+              />
+              <input
+                id="login-email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                disabled={loading}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField('')}
+                style={inputStyle('email')}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label htmlFor="login-pass" style={labelStyle}>Password</label>
+            <div style={{ position: 'relative' }}>
+              <FontAwesomeIcon
+                icon={faLock}
+                style={{
+                  position: 'absolute',
+                  left: 10,
+                  top: 15,
+                  width: 16,
+                  height: 16,
+                  color: focusedField === 'password' ? T.forestDark : T.textMuted,
+                  transition: 'color 0.2s',
+                }}
+              />
+              <input
+                id="login-pass"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                disabled={loading}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField('')}
+                style={inputStyle('password')}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Sign In Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              marginTop: 12,
+              background: T.forestDark,
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: 8,
+              padding: '14px 24px',
+              fontFamily: FONT.display,
+              fontSize: '1.15rem',
+              fontWeight: 700,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              boxShadow: '0 4px 14px rgba(30,71,46,0.25)',
+              transition: 'background 0.2s, transform 0.1s',
+              opacity: loading ? 0.75 : 1,
+            }}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+
+          {/* Register Link */}
+          <div style={{ marginTop: 14 }}>
+            <Link
+              href="/admin/register"
+              style={{
+                fontFamily: FONT.body,
+                fontSize: '0.88rem',
+                color: T.textDark,
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Don't have an account? <span style={{ textDecoration: 'underline', color: T.leafGreen }}>Create one</span>
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

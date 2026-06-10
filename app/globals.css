@@ -1749,3 +1749,391 @@ input, select, textarea { font: inherit; }
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   ADMIN PORTAL REDESIGN — Light-Cream Botanical Theme
+   ───────────────────────────────────────────────────────────────── */
+.vt-admin-shell {
+  min-height: 100vh;
+  background-color: #F5EFEB; /* warm cream sand */
+  color: #1E3024;
+  font-family: var(--vt-font-body);
+  display: flex;
+  flex-direction: column;
+}
+
+.vt-admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 36px;
+  background-color: #F5EFEB;
+  border-bottom: 1.5px solid #E4DACF;
+}
+
+.vt-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1E472E;
+  font-family: var(--vt-font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.vt-admin-brand-mark {
+  color: #3D8A5C;
+  display: inline-flex;
+  align-items: center;
+}
+
+.vt-admin-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.vt-admin-nav-link {
+  color: #5A665D;
+  font-family: var(--vt-font-body);
+  font-size: 0.94rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.vt-admin-nav-link:hover {
+  color: #1E472E;
+  background: rgba(30, 71, 46, 0.05);
+}
+
+.vt-admin-nav-link.active {
+  color: #1E472E;
+  font-weight: 700;
+}
+
+.vt-admin-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1E3024;
+  font-family: var(--vt-font-body);
+  font-size: 0.94rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.vt-admin-user-badge:hover {
+  background: rgba(30, 71, 46, 0.05);
+}
+
+/* Sub-header and Search area */
+.vt-admin-toolbar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 36px;
+  gap: 16px;
+}
+
+.vt-admin-search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 800px;
+}
+
+.vt-admin-search-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border: 1px solid #FFFFFF;
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  color: #1E3024;
+  font-family: var(--vt-font-body);
+  font-size: 0.96rem;
+  outline: none;
+  box-shadow: 0 2px 12px rgba(30, 71, 46, 0.02);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.vt-admin-search-input:focus {
+  border-color: #A4BAAD;
+  box-shadow: 0 4px 18px rgba(30, 71, 46, 0.05);
+}
+
+.vt-admin-icon-btn {
+  background: transparent;
+  border: none;
+  color: #5A665D;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.vt-admin-icon-btn:hover {
+  background: rgba(30, 71, 46, 0.05);
+  color: #1E472E;
+}
+
+/* KPI Section */
+.vt-admin-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 12px 36px 24px;
+}
+
+.vt-admin-kpi-card {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #E6DCD1;
+  box-shadow: 0 4px 16px rgba(30, 71, 46, 0.02);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vt-admin-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(30, 71, 46, 0.05);
+}
+
+.vt-admin-kpi-label {
+  font-family: var(--vt-font-body);
+  font-size: 0.88rem;
+  color: #5A665D;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.vt-admin-kpi-value {
+  font-family: var(--vt-font-body);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #1E472E;
+  line-height: 1.1;
+  margin: 0 0 14px;
+}
+
+.vt-admin-kpi-footer {
+  font-family: var(--vt-font-body);
+  font-size: 0.78rem;
+  color: #5A665D;
+  margin-top: auto;
+}
+
+.vt-admin-kpi-trend-green {
+  color: #2C7A4F;
+  font-weight: 700;
+}
+
+.vt-admin-sparkline-container {
+  height: 48px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Dashboard main container */
+.vt-admin-content {
+  padding: 0 36px 48px;
+  display: grid;
+  gap: 24px;
+}
+
+/* Panels */
+.vt-admin-panel {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #E6DCD1;
+  box-shadow: 0 4px 16px rgba(30, 71, 46, 0.02);
+  padding: 24px;
+  overflow: hidden;
+}
+
+.vt-admin-panel-title {
+  margin: 0 0 20px;
+  font-family: var(--vt-font-display);
+  font-size: 1.35rem;
+  color: #1E472E;
+  font-weight: 700;
+}
+
+/* Premium Light Theme Table */
+.vt-admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.vt-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vt-admin-table th {
+  padding: 12px 16px;
+  border-bottom: 1.5px solid #E6DCD1;
+  font-family: var(--vt-font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #5A665D;
+}
+
+.vt-admin-table td {
+  padding: 16px;
+  border-bottom: 1px solid #EFEBE4;
+  font-family: var(--vt-font-body);
+  font-size: 0.94rem;
+  color: #1E3024;
+}
+
+.vt-admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.vt-admin-table tbody tr {
+  transition: background-color 0.15s;
+}
+
+.vt-admin-table tbody tr:hover {
+  background-color: #FAF8F5;
+}
+
+/* Badges for status */
+.vt-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.80rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.vt-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Status styles mapping */
+.vt-status-shipped { background-color: #E2F2E9; color: #1E7040; }
+.vt-status-shipped .vt-status-dot { background-color: #1E7040; }
+
+.vt-status-delivered { background-color: #E2F2E9; color: #1E7040; }
+.vt-status-delivered .vt-status-dot { background-color: #1E7040; }
+
+.vt-status-processing { background-color: #FFF6E0; color: #B57F00; }
+.vt-status-processing .vt-status-dot { background-color: #B57F00; }
+
+.vt-status-pending { background-color: #FFF0EB; color: #C44E2C; }
+.vt-status-pending .vt-status-dot { background-color: #C44E2C; }
+
+.vt-status-cancelled { background-color: #F5F5F5; color: #666666; }
+.vt-status-cancelled .vt-status-dot { background-color: #666666; }
+
+/* Custom light theme inputs for forms */
+.vt-admin-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #C4D3C9;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+  font-family: var(--vt-font-body);
+  font-size: 0.94rem;
+  color: #102A1A;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.vt-admin-input:focus {
+  border-color: #1E472E;
+}
+
+.vt-admin-select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #C4D3C9;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+  font-family: var(--vt-font-body);
+  font-size: 0.94rem;
+  color: #102A1A;
+  outline: none;
+  cursor: pointer;
+}
+
+.vt-admin-select:focus {
+  border-color: #1E472E;
+}
+
+.vt-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--vt-font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vt-admin-btn-primary {
+  background-color: #1E472E;
+  color: #FFFFFF;
+}
+
+.vt-admin-btn-primary:hover {
+  background-color: #143520;
+}
+
+.vt-admin-btn-secondary {
+  background-color: #FAF8F5;
+  color: #1E472E;
+  border: 1.5px solid #E6DCD1;
+}
+
+.vt-admin-btn-secondary:hover {
+  background-color: #EFEBE4;
+}
+
+@media (max-width: 900px) {
+  .vt-admin-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+  .vt-admin-nav {
+    justify-content: space-between;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .vt-admin-toolbar-row {
+    padding: 10px 20px;
+  }
+  .vt-admin-kpi-row {
+    padding: 10px 20px;
+  }
+  .vt-admin-content {
+    padding: 0 20px 30px;
+  }
+}
+
