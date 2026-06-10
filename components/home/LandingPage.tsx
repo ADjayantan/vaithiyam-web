@@ -264,7 +264,7 @@ const STATIC_PRODUCTS = [
     badge: 'MYTHOLOGY',
     nameTa: 'நூல் அஸ்வந்தர சாறு',
     nameEn: 'Restoration Adaptogen',
-    price: null,
+    price: '₹1,450',
     accent: '#C9922A',
     href: '/products',
   },
