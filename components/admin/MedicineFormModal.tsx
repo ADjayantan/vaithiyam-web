@@ -5,25 +5,27 @@ import type { FormEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTimes, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { MEDICINE_CATEGORIES } from '@/lib/medicineData';
+import type { SeedMedicine } from '@/lib/medicineData';
 
 interface MedicineFormModalProps {
+  initialData?: SeedMedicine;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export function MedicineFormModal({ onClose, onSuccess }: MedicineFormModalProps) {
-  const [nameTa, setNameTa] = useState('');
-  const [nameEn, setNameEn] = useState('');
-  const [categorySlug, setCategorySlug] = useState('digestive-care');
-  const [tradition, setTradition] = useState<'siddha' | 'ayurveda' | 'natural'>('siddha');
-  const [price, setPrice] = useState('');
-  const [mrp, setMrp] = useState('');
-  const [stockCount, setStockCount] = useState('');
-  const [inStock, setInStock] = useState(true);
-  const [prescriptionRequired, setPrescriptionRequired] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const [overview, setOverview] = useState('');
-  const [ingredients, setIngredients] = useState('');
+export function MedicineFormModal({ initialData, onClose, onSuccess }: MedicineFormModalProps) {
+  const [nameTa, setNameTa] = useState(initialData?.nameTa || '');
+  const [nameEn, setNameEn] = useState(initialData?.nameEn || '');
+  const [categorySlug, setCategorySlug] = useState(initialData?.categorySlug || 'digestive-care');
+  const [tradition, setTradition] = useState<'siddha' | 'ayurveda' | 'natural'>(initialData?.tradition || 'siddha');
+  const [price, setPrice] = useState(initialData?.price !== undefined ? String(initialData.price) : '');
+  const [mrp, setMrp] = useState(initialData?.mrp !== undefined ? String(initialData.mrp) : '');
+  const [stockCount, setStockCount] = useState(initialData?.stockCount !== undefined ? String(initialData.stockCount) : '');
+  const [inStock, setInStock] = useState(initialData?.inStock ?? true);
+  const [prescriptionRequired, setPrescriptionRequired] = useState(initialData?.prescriptionRequired ?? false);
+  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+  const [overview, setOverview] = useState(initialData?.overview || '');
+  const [ingredients, setIngredients] = useState(initialData?.ingredients || '');
   const [generalUses, setGeneralUses] = useState('');
   const [safetyNotes, setSafetyNotes] = useState('');
 
@@ -90,15 +92,19 @@ export function MedicineFormModal({ onClose, onSuccess }: MedicineFormModalProps
     setSaving(true);
 
     const token = localStorage.getItem('vt_token') ?? sessionStorage.getItem('vt_token');
+    const isEdit = !!initialData;
+    const url = '/api/admin/medicines';
+    const method = isEdit ? 'PATCH' : 'POST';
 
     try {
-      const res = await fetch('/api/admin/medicines', {
-        method: 'POST',
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          id: initialData?.id,
           nameTa,
           nameEn,
           categorySlug,
@@ -159,7 +165,7 @@ export function MedicineFormModal({ onClose, onSuccess }: MedicineFormModalProps
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <h2 style={{ margin: 0, fontSize: '1.4rem', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-cream-50)' }}>
-            Add New Medicine
+            {initialData ? 'Edit Medicine' : 'Add New Medicine'}
           </h2>
           <button
             type="button"

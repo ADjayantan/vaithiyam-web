@@ -161,3 +161,93 @@ export async function addProduct(
     updatedAt: data.updated_at,
   };
 }
+
+export async function updateProduct(
+  id: string,
+  productData: Partial<Omit<SeedMedicine, 'id' | 'createdAt' | 'updatedAt' | 'rating' | 'reviewCount' | 'categoryId' | 'categoryNameTa' | 'categoryNameEn' | 'slug'>> & {
+    categorySlug?: string;
+  }
+): Promise<SeedMedicine> {
+  const supabase = getSupabaseServiceClient();
+
+  const updateFields: Partial<SeedMedicine> = {};
+  if (productData.nameTa !== undefined) updateFields.nameTa = productData.nameTa;
+  if (productData.nameEn !== undefined) updateFields.nameEn = productData.nameEn;
+  if (productData.categorySlug !== undefined) {
+    const categoryInfo = MEDICINE_CATEGORIES.find((c) => c.slug === productData.categorySlug);
+    updateFields.categorySlug = productData.categorySlug;
+    updateFields.categoryId = categoryInfo ? categoryInfo.id : 'cat_wellness';
+    updateFields.categoryNameTa = categoryInfo ? categoryInfo.nameTa : '';
+    updateFields.categoryNameEn = categoryInfo ? categoryInfo.nameEn : '';
+  }
+  if (productData.tradition !== undefined) updateFields.tradition = productData.tradition;
+  if (productData.price !== undefined) updateFields.price = Number(productData.price);
+  if (productData.mrp !== undefined) updateFields.mrp = Number(productData.mrp);
+  if (productData.stockCount !== undefined) updateFields.stockCount = Number(productData.stockCount);
+  if (productData.inStock !== undefined) updateFields.inStock = Boolean(productData.inStock);
+  if (productData.prescriptionRequired !== undefined) updateFields.prescriptionRequired = Boolean(productData.prescriptionRequired);
+  if (productData.imageUrl !== undefined) updateFields.imageUrl = productData.imageUrl;
+  if (productData.overview !== undefined) updateFields.overview = productData.overview;
+  if (productData.ingredients !== undefined) updateFields.ingredients = productData.ingredients;
+  if (productData.generalUses !== undefined) updateFields.generalUses = productData.generalUses;
+  if (productData.safetyNotes !== undefined) updateFields.safetyNotes = productData.safetyNotes;
+
+  updateFields.updatedAt = new Date().toISOString();
+
+  if (supabase) {
+    // Lookup database category_id from slug if changing categorySlug
+    let dbCategoryId = undefined;
+    if (productData.categorySlug !== undefined) {
+      const { data: catData } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('slug', productData.categorySlug)
+        .maybeSingle();
+      if (catData) {
+        dbCategoryId = catData.id;
+      }
+    }
+
+    const pgFields: Record<string, string | number | boolean | null> = {};
+    if (productData.nameTa !== undefined) pgFields.name_ta = productData.nameTa;
+    if (productData.nameEn !== undefined) pgFields.name_en = productData.nameEn;
+    if (dbCategoryId !== undefined) pgFields.category_id = dbCategoryId;
+    if (productData.tradition !== undefined) pgFields.tradition = productData.tradition;
+    if (productData.price !== undefined) pgFields.price = Number(productData.price);
+    if (productData.mrp !== undefined) pgFields.mrp = Number(productData.mrp);
+    if (productData.stockCount !== undefined) pgFields.stock_count = Number(productData.stockCount);
+    if (productData.inStock !== undefined) pgFields.in_stock = Boolean(productData.inStock);
+    if (productData.prescriptionRequired !== undefined) pgFields.prescription_required = Boolean(productData.prescriptionRequired);
+    if (productData.imageUrl !== undefined) pgFields.image_url = productData.imageUrl;
+    if (productData.overview !== undefined) pgFields.overview = productData.overview;
+    if (productData.ingredients !== undefined) pgFields.ingredients = productData.ingredients;
+    if (productData.generalUses !== undefined) pgFields.general_uses = productData.generalUses;
+    if (productData.safetyNotes !== undefined) pgFields.safety_notes = productData.safetyNotes;
+    
+    pgFields.updated_at = updateFields.updatedAt;
+
+    const { error } = await supabase
+      .from('medicines')
+      .update(pgFields)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating medicine in Supabase:', error);
+      throw error;
+    }
+  }
+
+  // Update memory
+  const idx = db.products.findIndex((p) => p.id === id);
+  if (idx !== -1) {
+    const original = db.products[idx];
+    const updated = {
+      ...original,
+      ...updateFields,
+    };
+    db.products[idx] = updated;
+    return updated;
+  }
+
+  throw new Error('Product not found in memory database');
+}

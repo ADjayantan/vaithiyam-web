@@ -1,26 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/mockDb';
-import { verifyToken, extractBearerToken } from '@/lib/auth';
+import { getAuthenticatedUserId, unauthorized } from '@/lib/apiAuth';
 
 export async function GET(req: NextRequest) {
-  const token = extractBearerToken(req.headers.get('authorization'));
-  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  const userId = await getAuthenticatedUserId(req);
+  if (!userId) return unauthorized();
 
   const url   = new URL(req.url);
   const page  = parseInt(url.searchParams.get('page')  ?? '1', 10);
   const limit = parseInt(url.searchParams.get('limit') ?? '10', 10);
 
-  const result = db.getWishlistForUser(payload.sub, page, limit);
+  const result = db.getWishlistForUser(userId, page, limit);
   return NextResponse.json(result);
 }
 
 export async function POST(req: NextRequest) {
-  const token = extractBearerToken(req.headers.get('authorization'));
-  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  const userId = await getAuthenticatedUserId(req);
+  if (!userId) return unauthorized();
 
   const body = await req.json() as { productId?: string };
   const product = db.products.find((item) => item.id === body.productId || item.slug === body.productId);
@@ -28,14 +24,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'பொருள் கண்டுபிடிக்கவில்லை.' }, { status: 404 });
   }
 
-  const existing = db.getWishlistForUser(payload.sub, 1, 500).items.find((item) => item.productId === product.id);
+  const existing = db.getWishlistForUser(userId, 1, 500).items.find((item) => item.productId === product.id);
   if (existing) {
     return NextResponse.json({ item: existing, message: 'ஏற்கனவே விருப்பப்பட்டியலில் உள்ளது.' });
   }
 
   const item = {
     id: `wl_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-    userId: payload.sub,
+    userId,
     productId: product.id,
     slug: product.slug,
     nameTa: product.nameTa,

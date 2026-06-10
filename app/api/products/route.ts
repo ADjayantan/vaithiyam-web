@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/mockDb';
+import { listProducts } from '@/lib/db/products';
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const page = parseInt(url.searchParams.get('page') ?? '1', 10);
   const limit = parseInt(url.searchParams.get('limit') ?? '24', 10);
 
-  let products = [...db.products];
+  let products = await listProducts();
 
   if (tradition && tradition !== 'all') {
     products = products.filter((product) => product.tradition === tradition);

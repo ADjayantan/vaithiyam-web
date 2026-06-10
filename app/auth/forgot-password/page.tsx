@@ -46,10 +46,24 @@ export default function ForgotPasswordPage() {
   const requestOtp = useCallback(async () => {
     if (!identifier.trim()) { setError('Enter your mobile number or email.'); return; }
     setError(''); setBusy(true);
-    await new Promise(r => setTimeout(r, 700)); // demo
-    setBusy(false);
-    setStep('otp');
-    startCooldown();
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'request', identifier }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStep('otp');
+        startCooldown();
+      } else {
+        setError(data.message || 'Failed to request OTP.');
+      }
+    } catch {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setBusy(false);
+    }
   }, [identifier]);
 
   /* Step 2: verify OTP */
@@ -57,21 +71,49 @@ export default function ForgotPasswordPage() {
     const code = otp.join('');
     if (code.length < 6) { setError('Enter the 6-digit OTP.'); return; }
     setError(''); setBusy(true);
-    await new Promise(r => setTimeout(r, 700));
-    setBusy(false);
-    // Demo: accept any 6-digit code
-    setStep('reset');
-  }, [otp]);
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'verify', identifier, otp: code }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStep('reset');
+      } else {
+        setError(data.message || 'Invalid OTP.');
+      }
+    } catch {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  }, [otp, identifier]);
 
   /* Step 3: set new password */
   const setNewPassword = useCallback(async () => {
     if (password.length < 8) { setError('Password must be at least 8 characters.'); return; }
     if (password !== confirm) { setError('Passwords do not match.'); return; }
     setError(''); setBusy(true);
-    await new Promise(r => setTimeout(r, 700));
-    setBusy(false);
-    setStep('done');
-  }, [password, confirm]);
+    try {
+      const code = otp.join('');
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'reset', identifier, otp: code, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStep('done');
+      } else {
+        setError(data.message || 'Failed to reset password.');
+      }
+    } catch {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  }, [password, confirm, identifier, otp]);
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--vt-void)', display: 'grid', gridTemplateRows: 'auto 1fr' }}>

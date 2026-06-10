@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     console.log(`[Vaithiyam] OTP for ${mobile}: ${otp}`);
 
     return NextResponse.json({
-      message: `OTP ${mobile}-க்கு அனுப்பப்பட்டது. (Dev: ${otp})`,
+      message: `OTP ${mobile}-க்கு அனுப்பப்பட்டது.`,
     });
   } catch {
     return NextResponse.json({ message: 'சர்வர் பிழை.' }, { status: 500 });

@@ -2,7 +2,7 @@
  * In-memory demo store. Supabase-ready repository modules in lib/db/* wrap this
  * fallback so local development keeps working without environment variables.
  */
-import { SEED_PRODUCTS, type SeedMedicine } from '@/lib/medicineData';
+import { SEED_PRODUCTS, MEDICINE_CATEGORIES, type SeedMedicine, type MedicineCategory } from '@/lib/medicineData';
 
 export interface DbUser {
   id: string;
@@ -216,6 +216,7 @@ class MockDb {
   orders: Map<string, DbOrder> = new Map();
   prescriptions: Map<string, DbPrescription> = new Map();
   products: SeedMedicine[] = [...SEED_PRODUCTS];
+  categories: MedicineCategory[] = [...MEDICINE_CATEGORIES];
   reviews: DbReview[] = [];
 
   constructor() {

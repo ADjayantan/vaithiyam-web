@@ -30,17 +30,34 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Validate form slightly
     if (!formData.name || !formData.email || !formData.message) return;
     
-    setShowToast(true);
-    setFormData({ name: '', email: '', phone: '', message: '' });
-    
-    setTimeout(() => {
-      setShowToast(false);
-    }, 4000);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setShowToast(true);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        
+        setTimeout(() => {
+          setShowToast(false);
+        }, 4000);
+      } else {
+        alert('Failed to submit message. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (

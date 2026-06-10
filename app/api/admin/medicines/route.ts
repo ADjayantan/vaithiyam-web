@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/adminAuth';
-import { addProduct } from '@/lib/db/products';
+import { addProduct, updateProduct } from '@/lib/db/products';
 import { MEDICINE_CATEGORIES } from '@/lib/medicineData';
 import { db } from '@/lib/mockDb';
 import { getSupabaseServiceClient } from '@/lib/db/client';
@@ -108,6 +108,26 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: 'Medicine deleted successfully' });
   } catch (error) {
     console.error('Error deleting medicine:', error);
+    return NextResponse.json({ message: error instanceof Error ? error.message : 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  const { response } = await requireAdmin(req);
+  if (response) return response;
+
+  try {
+    const body = await req.json();
+    const { id, ...updateData } = body;
+
+    if (!id) {
+      return NextResponse.json({ message: 'Missing product ID' }, { status: 400 });
+    }
+
+    const updated = await updateProduct(id, updateData);
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error('Error updating medicine:', error);
     return NextResponse.json({ message: error instanceof Error ? error.message : 'Internal Server Error' }, { status: 500 });
   }
 }

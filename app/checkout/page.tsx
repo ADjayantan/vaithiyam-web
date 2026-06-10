@@ -115,12 +115,37 @@ export default function CheckoutPage() {
   const registerPrescription = useCallback(async (file: File) => {
     const token = getToken();
     if (!token) return;
+
+    // 1. Upload the file to storage first
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const uploadRes = await fetch('/api/prescriptions/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!uploadRes.ok) {
+      const data = await uploadRes.json().catch(() => ({})) as { message?: string };
+      throw new Error(data.message ?? 'Prescription file upload failed.');
+    }
+
+    const { fileUrl } = await uploadRes.json() as { fileUrl: string };
+
+    // 2. Register prescription metadata
     const res = await fetch('/api/prescriptions', {
       method: 'POST',
-      headers: authHeaders(),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         fileName: file.name,
         fileType: file.type || 'unknown',
+        fileUrl,
         notes: 'Uploaded during checkout. Pending pharmacist/admin verification.',
       }),
     });

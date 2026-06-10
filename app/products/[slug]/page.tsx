@@ -684,35 +684,64 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Buy Now */}
-            <button
-              type="button"
-              disabled={!product.inStock || busy}
-              onClick={() => void addToCart(true)}
-              style={{
-                width: '100%',
-                height: '48px',
-                background: '#D4890A',
-                color: '#030C07',
-                border: 'none',
-                borderRadius: '12px',
-                fontWeight: 700,
-                fontSize: '0.88rem',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: (!product.inStock || busy) ? 'not-allowed' : 'pointer',
-                opacity: (!product.inStock || busy) ? 0.6 : 1,
-                marginBottom: 20,
-                transition: 'background 0.2s',
-              }}
-              onMouseEnter={(e) => { if (product.inStock && !busy) e.currentTarget.style.background = '#e8a820'; }}
-              onMouseLeave={(e) => { if (product.inStock && !busy) e.currentTarget.style.background = '#D4890A'; }}
-            >
-              Buy Now
-            </button>
+            {/* Buy Now & Wishlist Row */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
+              <button
+                type="button"
+                disabled={!product.inStock || busy}
+                onClick={() => void addToCart(true)}
+                style={{
+                  flex: 1,
+                  height: '48px',
+                  background: '#D4890A',
+                  color: '#030C07',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '0.88rem',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: (!product.inStock || busy) ? 'not-allowed' : 'pointer',
+                  opacity: (!product.inStock || busy) ? 0.6 : 1,
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={(e) => { if (product.inStock && !busy) e.currentTarget.style.background = '#e8a820'; }}
+                onMouseLeave={(e) => { if (product.inStock && !busy) e.currentTarget.style.background = '#D4890A'; }}
+              >
+                Buy Now
+              </button>
+              <button
+                type="button"
+                onClick={() => void addWishlist()}
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(61,138,92,0.22)',
+                  background: 'rgba(13,34,24,0.60)',
+                  color: '#F5EDD6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s, border-color 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(61,138,92,0.15)';
+                  e.currentTarget.style.borderColor = 'rgba(61,138,92,0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(13,34,24,0.60)';
+                  e.currentTarget.style.borderColor = 'rgba(61,138,92,0.22)';
+                }}
+                aria-label="Wishlist"
+              >
+                <FontAwesomeIcon icon={faHeart} style={{ width: 18, height: 18 }} />
+              </button>
+            </div>
 
             {/* Trust Badges */}
             <div style={{

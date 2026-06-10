@@ -7,6 +7,7 @@ import {
   faMagnifyingGlass,
   faPlus,
   faTrash,
+  faPen,
   faBell,
   faCircleQuestion,
   faCircleUser,
@@ -18,6 +19,7 @@ import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminShell } from '@/components/admin/AdminShell';
 import type { MedicineCategory, SeedMedicine } from '@/lib/medicineData';
 import { MedicineFormModal } from '@/components/admin/MedicineFormModal';
+import { CategoryFormModal } from '@/components/admin/CategoryFormModal';
 
 interface AdminOverview {
   stats: {
@@ -114,8 +116,34 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
   const [data, setData] = useState<AdminOverview | null>(null);
   const [query, setQuery] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingMedicine, setEditingMedicine] = useState<SeedMedicine | null>(null);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<MedicineCategory | null>(null);
   const [isEnvModalOpen, setIsEnvModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const deleteCategory = async (categoryId: string) => {
+    if (!confirm('Are you sure you want to delete this category?')) return;
+    const token = getToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch(`/api/admin/categories?id=${categoryId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        load();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || 'Failed to delete category');
+      }
+    } catch {
+      alert('Error deleting category');
+    }
+  };
 
   const load = useCallback(() => {
     const token = getToken();
@@ -723,21 +751,38 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                                 )}
                               </td>
                               <td>
-                                <button
-                                  type="button"
-                                  onClick={() => deleteMedicine(item.id)}
-                                  className="vt-admin-btn"
-                                  style={{
-                                    backgroundColor: 'transparent',
-                                    color: '#C44E2C',
-                                    padding: 6,
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                  }}
-                                  title="Delete Product"
-                                >
-                                  <FontAwesomeIcon icon={faTrash} style={{ width: 14, height: 14 }} />
-                                </button>
+                                <div style={{ display: 'flex', gap: 8 }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingMedicine(item)}
+                                    className="vt-admin-btn"
+                                    style={{
+                                      backgroundColor: 'transparent',
+                                      color: '#D4890A',
+                                      padding: 6,
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                    }}
+                                    title="Edit Product"
+                                  >
+                                    <FontAwesomeIcon icon={faPen} style={{ width: 14, height: 14 }} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => deleteMedicine(item.id)}
+                                    className="vt-admin-btn"
+                                    style={{
+                                      backgroundColor: 'transparent',
+                                      color: '#C44E2C',
+                                      padding: 6,
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                    }}
+                                    title="Delete Product"
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} style={{ width: 14, height: 14 }} />
+                                  </button>
+                                </div>
                               </td>
                             </tr>
                           ))
@@ -751,7 +796,27 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
               {/* ── Categories View ── */}
               {view === 'categories' && (
                 <div className="vt-admin-panel">
-                  <h2 className="vt-admin-panel-title">Medicine Categories ({filteredCategories.length})</h2>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: 12,
+                      marginBottom: 20,
+                    }}
+                  >
+                    <h2 className="vt-admin-panel-title" style={{ margin: 0 }}>
+                      Medicine Categories ({filteredCategories.length})
+                    </h2>
+                    <button
+                      className="vt-admin-btn vt-admin-btn-primary"
+                      type="button"
+                      onClick={() => setIsCategoryModalOpen(true)}
+                    >
+                      <FontAwesomeIcon icon={faPlus} style={{ width: 14, height: 14 }} /> Add New Category
+                    </button>
+                  </div>
                   <div className="vt-admin-table-wrap">
                     <table className="vt-admin-table">
                       <thead>
@@ -761,6 +826,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           <th>English Name</th>
                           <th>Slug Identifier</th>
                           <th>System Type</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -776,6 +842,43 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                               <span style={{ fontSize: '0.8rem', background: '#E2F2E9', color: '#1E7040', padding: '3px 8px', borderRadius: 6, fontWeight: 600 }}>
                                 Active
                               </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 8 }}>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingCategory(cat);
+                                    setIsCategoryModalOpen(true);
+                                  }}
+                                  className="vt-admin-btn"
+                                  style={{
+                                    backgroundColor: 'transparent',
+                                    color: '#D4890A',
+                                    padding: 6,
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                  }}
+                                  title="Edit Category"
+                                >
+                                  <FontAwesomeIcon icon={faPen} style={{ width: 14, height: 14 }} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteCategory(cat.id)}
+                                  className="vt-admin-btn"
+                                  style={{
+                                    backgroundColor: 'transparent',
+                                    color: '#C44E2C',
+                                    padding: 6,
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                  }}
+                                  title="Delete Category"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} style={{ width: 14, height: 14 }} />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -1102,6 +1205,34 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
           onClose={() => setIsAddModalOpen(false)}
           onSuccess={() => {
             setIsAddModalOpen(false);
+            load();
+          }}
+        />
+      )}
+
+      {/* ── Edit Medicine Form Modal Overlay ── */}
+      {editingMedicine && (
+        <MedicineFormModal
+          initialData={editingMedicine}
+          onClose={() => setEditingMedicine(null)}
+          onSuccess={() => {
+            setEditingMedicine(null);
+            load();
+          }}
+        />
+      )}
+
+      {/* ── Category Form Modal Overlay (Add & Edit) ── */}
+      {isCategoryModalOpen && (
+        <CategoryFormModal
+          initialData={editingCategory || undefined}
+          onClose={() => {
+            setIsCategoryModalOpen(false);
+            setEditingCategory(null);
+          }}
+          onSuccess={() => {
+            setIsCategoryModalOpen(false);
+            setEditingCategory(null);
             load();
           }}
         />
