@@ -1,140 +1,365 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faChevronDown, faChevronUp, faEnvelope, faHeadphones,
-  faPhone, faShieldHalved, faTruck, faRotate,
-  faFileArrowUp, faCircleCheck,
+  faChevronDown,
+  faChevronUp,
+  faEnvelope,
+  faPhone,
+  faShieldHalved,
+  faTruck,
+  faRotate,
+  faClipboardList,
+  faCircleCheck,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
+import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/layout/CustomerShell';
 
-const FAQS = [
-  { q: 'How do I order a prescription medicine?', a: 'Go to the product page and tap "Add to cart". During checkout you will be prompted to upload a prescription. Our licensed pharmacist reviews it within 2–4 hours before dispatch.' },
-  { q: 'What delivery options are available?', a: 'Standard delivery (3–5 days) is free for orders above ₹499. Express delivery in Coimbatore city is available within 4 hours for ₹49. Pan-India delivery is available.' },
-  { q: 'Can I return a medicine I ordered?', a: 'Medicines can be returned within 7 days if they are unopened, sealed, and not temperature-sensitive. Prescription medicines cannot be returned once approved. Contact support with your order ID.' },
-  { q: 'How do I track my order?', a: 'Go to "My Orders" in your account, or use "Track Order" in the header. You will also receive SMS updates at each delivery stage.' },
-  { q: 'Is the product information on Vaithiyam medical advice?', a: 'No. All product information is educational only. It describes traditional uses and should not be used for self-diagnosis or self-medication. Always consult a qualified doctor or pharmacist.' },
-  { q: 'Are the medicines authentic and genuine?', a: 'Yes. Every product is sourced from licensed manufacturers and verified by our team. We stock only AYUSH-compliant and FSSAI-registered products.' },
-  { q: 'I forgot my password. How do I reset it?', a: 'Click "Forgot password" on the login page, enter your registered mobile number, and verify the OTP you receive. You can then set a new password.' },
-  { q: 'My payment failed but money was deducted. What do I do?', a: 'Failed payment refunds are processed automatically within 5–7 working days. If not received after 7 days, contact support with your order ID and payment screenshot.' },
-  { q: 'Can I cancel or change my order?', a: 'Orders can be cancelled within 30 minutes of placing them, before pharmacist review begins. Go to "My Orders" → select order → "Cancel order". After that, cancellation may not be possible.' },
-  { q: 'How do I upload a prescription?', a: 'Upload at checkout or via the Prescriptions page. Accepted formats: JPG, PNG, PDF up to 5MB. The prescription must be legible, recent (within 6 months), and include the doctor\'s name and registration number.' },
-];
+const T = {
+  forestPrimary: 'var(--vt-forest-800)',
+  gold: 'var(--vt-gold-500)',
+  leaf: 'var(--vt-forest-600)',
+  darkText: 'var(--vt-ink)',
+  muted: 'var(--vt-muted)',
+  border: 'var(--vt-border)',
+} as const;
 
-const POLICIES = [
+const FONT = {
+  display: 'var(--vt-font-display)',
+  body: 'var(--vt-font-body)',
+} as const;
+
+interface FAQItem {
+  q: string;
+  a: string;
+}
+
+const FAQS: FAQItem[] = [
   {
-    icon: faTruck, title: 'Shipping',
-    points: ['Free delivery on orders ₹499+', 'Standard: 3–5 business days pan-India', 'Express (Coimbatore): 4 hours, ₹49', 'Orders before 2 PM dispatched same day'],
+    q: 'How do I order a prescription medicine?',
+    a: 'Go to the product page and tap "Add to cart". During checkout you will be prompted to upload a prescription. Our licensed pharmacist reviews it within 2–4 hours before dispatch.',
   },
   {
-    icon: faRotate, title: 'Returns',
-    points: ['7-day return window for unopened items', 'Prescription medicines non-returnable after approval', 'Refund processed in 5–7 working days', 'Contact support with order ID to initiate'],
+    q: 'Are the medicines authentic and genuine?',
+    a: 'Yes. Every product is sourced from AYUSH-licensed manufacturers, FSSAI-registered, and verified by our medical quality assurance team.',
   },
   {
-    icon: faShieldHalved, title: 'Prescriptions',
-    points: ['Rx items require valid prescription', 'Pharmacist review within 2–4 hours', 'Invalid prescription = order on hold', 'Prescriptions stored securely, never shared'],
+    q: 'What delivery options are available?',
+    a: 'Standard delivery (3–5 business days) is free on orders over ₹499. Express delivery in Coimbatore is available within 4 hours.',
   },
   {
-    icon: faFileArrowUp, title: 'Upload Guidelines',
-    points: ['Accepted: JPG, PNG, PDF up to 5MB', 'Must be legible and within 6 months', 'Must include doctor name & registration', 'Patient name must match your account'],
+    q: 'Can I return a medicine I ordered?',
+    a: 'Medicines can be returned within 7 days if they are unopened and sealed. Prescription medications are non-returnable once pharmacists approve them.',
   },
 ];
 
 export default function HelpPage() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
-  const [form, setForm] = useState({ name: '', mobile: '', subject: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [formData, setFormData] = useState({ name: '', mobile: '', subject: 'Order Issue', message: '' });
+  const [showToast, setShowToast] = useState(false);
 
-  const handleSubmit = useCallback(async () => {
-    if (!form.name.trim() || !form.mobile.trim() || !form.message.trim()) {
-      setFormError('Please fill in all required fields.');
-      return;
-    }
-    setFormError('');
-    setSubmitting(true);
-    await new Promise(r => setTimeout(r, 900));
-    setSubmitted(true);
-    setSubmitting(false);
-  }, [form]);
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.mobile || !formData.message) return;
+
+    setShowToast(true);
+    setFormData({ name: '', mobile: '', subject: 'Order Issue', message: '' });
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 4000);
+  };
 
   return (
-    <div className="vt-page-shell">
+    <div style={{ backgroundColor: '#030C07', minHeight: '100dvh', color: '#F5EDD6', fontFamily: FONT.body }}>
       <CustomerHeader />
 
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="vt-hero" style={{ padding: '56px 0 44px' }}>
-        <div className="vt-container" style={{ maxWidth: 720 }}>
-          <p className="vt-hero-eyebrow">
-            <FontAwesomeIcon icon={faHeadphones} style={{ width: 14 }} aria-hidden />
-            HELP &amp; SUPPORT
-          </p>
-          <h1 className="vt-hero-h1" style={{ fontSize: 'clamp(1.9rem,5vw,3.2rem)' }}>
-            உதவி மற்றும் ஆதரவு
-          </h1>
-          <p className="vt-hero-copy" style={{ marginBottom: 22 }}>
-            Available every day 9 AM – 9 PM. WhatsApp is the fastest channel for order issues.
-          </p>
-          <a
-            href="https://wa.me/918800000000?text=Hello%20Vaithiyam%2C%20I%20need%20help."
-            target="_blank" rel="noopener noreferrer"
-            className="vt-button"
-            style={{ width: 'fit-content', background: '#25D366', color: '#fff', border: 'none', fontFamily: 'var(--vt-font-body)', fontWeight: 700, fontSize: '1rem', gap: 10 }}
-          >
-            <FontAwesomeIcon icon={faWhatsapp} style={{ width: 20, height: 20 }} />
-            Chat on WhatsApp
-          </a>
-        </div>
-      </section>
+      <main style={{ paddingBottom: '90px' }}>
+        {/* HERO SECTION */}
+        <section
+          style={{
+            padding: '60px 24px 48px 24px',
+            textAlign: 'center',
+            background: 'radial-gradient(circle at center, rgba(13,34,24,0.3) 0%, #030C07 100%)',
+            borderBottom: '1px solid rgba(61,138,92,0.1)',
+          }}
+        >
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <span
+              style={{
+                fontFamily: FONT.body,
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                color: T.gold,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                display: 'block',
+                marginBottom: '12px',
+              }}
+            >
+              SUPPORT CENTER
+            </span>
+            <h1
+              style={{
+                fontFamily: FONT.display,
+                fontSize: '2.8rem',
+                fontWeight: 600,
+                color: T.leaf,
+                margin: '0 0 4px 0',
+              }}
+            >
+              உதவி மற்றும் ஆதரவு
+            </h1>
+            <h2
+              style={{
+                fontFamily: FONT.display,
+                fontSize: '1.9rem',
+                fontWeight: 400,
+                color: '#F5EDD6',
+                margin: '0 0 16px 0',
+              }}
+            >
+              Help & Support
+            </h2>
+            <p style={{ color: T.muted, fontSize: '0.95rem', margin: '0 0 32px 0', lineHeight: 1.5 }}>
+              Available every day 9 AM – 9 PM. WhatsApp is the fastest channel for order issues.
+            </p>
 
-      {/* ── Quick contact bar ─────────────────────────────────────── */}
-      <div style={{ background: 'var(--vt-cream-100)', borderBottom: '1px solid var(--vt-border)' }}>
-        <div className="vt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))' }}>
-          {[
-            { icon: faPhone,    label: 'Phone',    value: '+91 88000 00000',        sub: 'Mon–Sun 9 AM – 9 PM' },
-            { icon: faEnvelope, label: 'Email',    value: 'support@vaithiyam.in',   sub: 'Reply within 24 hours' },
-            { icon: faWhatsapp, label: 'WhatsApp', value: '+91 88000 00000',         sub: 'Fastest response' },
-          ].map(({ icon, label, value, sub }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 20px', borderRight: '1px solid var(--vt-border)' }}>
-              <span style={{ display: 'grid', width: 38, height: 38, placeItems: 'center', borderRadius: 10, background: 'var(--vt-emerald-100)', color: 'var(--vt-emerald-600)', flexShrink: 0 }}>
-                <FontAwesomeIcon icon={icon} style={{ width: 16 }} />
-              </span>
+            {/* Search Bar */}
+            <div
+              style={{
+                position: 'relative',
+                maxWidth: '480px',
+                margin: '0 auto',
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                style={{
+                  position: 'absolute',
+                  left: '16px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: T.muted,
+                  width: '16px',
+                  height: '16px',
+                  pointerEvents: 'none',
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Search for help topics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  background: 'rgba(13,34,24,0.60)',
+                  border: '1px solid rgba(61,138,92,0.22)',
+                  color: '#F5EDD6',
+                  borderRadius: '10px',
+                  padding: '12px 16px 12px 48px',
+                  fontSize: '0.95rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                }}
+                onFocus={(e) => (e.target.style.borderColor = T.gold)}
+                onBlur={(e) => (e.target.style.borderColor = 'rgba(61,138,92,0.22)')}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT CHANNELS */}
+        <section style={{ padding: '60px 24px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '24px',
+            }}
+          >
+            {/* Phone Card */}
+            <div
+              style={{
+                background: 'rgba(13,34,24,0.60)',
+                border: `1px solid ${T.border}`,
+                borderRadius: '18px',
+                padding: '32px 24px',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '14px',
+              }}
+            >
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(212, 137, 10, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: T.gold }}>
+                <FontAwesomeIcon icon={faPhone} style={{ width: 18, height: 18 }} />
+              </div>
+              <h3 style={{ margin: 0, fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600 }}>Phone</h3>
               <div>
-                <p style={{ margin: 0, fontSize: 'var(--vt-text-xs)', fontWeight: 700, color: 'var(--vt-muted)', letterSpacing: '.06em', textTransform: 'uppercase' }}>{label}</p>
-                <p style={{ margin: '2px 0 0', fontSize: 'var(--vt-text-sm)', fontWeight: 700, color: 'var(--vt-ink)' }}>{value}</p>
-                <p style={{ margin: 0, fontSize: 'var(--vt-text-xs)', color: 'var(--vt-muted)' }}>{sub}</p>
+                <div style={{ color: T.gold, fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px' }}>+91 88000 00000</div>
+                <div style={{ color: T.muted, fontSize: '0.8rem' }}>Mon–Sat 9 AM – 9 PM</div>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      <main>
-        {/* ── FAQ Accordion ─────────────────────────────────────── */}
-        <section className="vt-section" style={{ background: 'var(--vt-card)' }}>
-          <div className="vt-container" style={{ maxWidth: 760 }}>
-            <p className="vt-eyebrow-label">FAQ</p>
-            <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(1.4rem,3vw,2rem)', fontWeight: 800, margin: '0 0 24px', color: 'var(--vt-forest-900)', letterSpacing: 0 }}>
-              அடிக்கடி கேட்கப்படும் கேள்விகள்
-            </h2>
-            <div style={{ display: 'grid', gap: 8 }}>
-              {FAQS.map((item, i) => {
-                const open = openIdx === i;
+            {/* WhatsApp Card */}
+            <div
+              style={{
+                background: 'rgba(13,34,24,0.60)',
+                border: `1px solid ${T.border}`,
+                borderRadius: '18px',
+                padding: '32px 24px',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '14px',
+              }}
+            >
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(212, 137, 10, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: T.gold }}>
+                <FontAwesomeIcon icon={faWhatsapp} style={{ width: 20, height: 20 }} />
+              </div>
+              <h3 style={{ margin: 0, fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600 }}>WhatsApp</h3>
+              <div style={{ color: T.muted, fontSize: '0.85rem' }}>Fastest response time</div>
+              <a
+                href="https://wa.me/918800000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: 'linear-gradient(135deg, #C9922A, #E8A820)',
+                  color: '#0A1A10',
+                  padding: '10px 24px',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  textDecoration: 'none',
+                  width: '100%',
+                  maxWidth: '200px',
+                  boxShadow: '0 4px 14px rgba(212, 137, 10, 0.2)',
+                  transition: 'transform 0.2s ease',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                onMouseOut={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+              >
+                CHAT NOW
+              </a>
+            </div>
+
+            {/* Email Card */}
+            <div
+              style={{
+                background: 'rgba(13,34,24,0.60)',
+                border: `1px solid ${T.border}`,
+                borderRadius: '18px',
+                padding: '32px 24px',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '14px',
+              }}
+            >
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(212, 137, 10, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: T.gold }}>
+                <FontAwesomeIcon icon={faEnvelope} style={{ width: 18, height: 18 }} />
+              </div>
+              <h3 style={{ margin: 0, fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600 }}>Email</h3>
+              <div>
+                <a href="mailto:support@vaithiyam.in" style={{ color: T.gold, fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px', textDecoration: 'underline' }}>
+                  support@vaithiyam.in
+                </a>
+                <div style={{ color: T.muted, fontSize: '0.8rem' }}>Reply within 24 hours</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ SECTION */}
+        <section style={{ padding: '40px 24px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '48px' }}>
+            {/* Left FAQ Description */}
+            <div style={{ flex: '1 1 300px' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: T.gold, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                FAQ
+              </span>
+              <h2
+                style={{
+                  fontFamily: FONT.display,
+                  fontSize: '2.2rem',
+                  fontWeight: 600,
+                  color: '#F5EDD6',
+                  margin: '12px 0 16px 0',
+                }}
+              >
+                அடிக்கடி கேட்கப்படும் கேள்விகள்
+              </h2>
+              <p style={{ color: T.muted, fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>
+                Find quick answers to common questions about our products and services.
+              </p>
+            </div>
+
+            {/* Right FAQ Accordions */}
+            <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {FAQS.map((faq, idx) => {
+                const isOpen = openIdx === idx;
                 return (
-                  <div key={i} style={{ border: `1px solid ${open ? 'var(--vt-emerald-600)' : 'var(--vt-border)'}`, borderRadius: 'var(--vt-radius-md)', background: open ? 'var(--vt-cream-100)' : 'var(--vt-card)', overflow: 'hidden', transition: 'border-color 160ms' }}>
+                  <div
+                    key={idx}
+                    style={{
+                      background: 'rgba(13,34,24,0.60)',
+                      border: `1px solid ${isOpen ? T.gold : T.border}`,
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      transition: 'border-color 0.2s ease',
+                    }}
+                  >
                     <button
-                      onClick={() => setOpenIdx(open ? null : i)}
-                      aria-expanded={open}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '15px 18px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                      onClick={() => setOpenIdx(isOpen ? null : idx)}
+                      style={{
+                        width: '100%',
+                        padding: '20px 24px',
+                        background: 'transparent',
+                        border: 'none',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        color: '#F5EDD6',
+                      }}
                     >
-                      <span style={{ fontFamily: 'var(--vt-font-body)', fontSize: 'var(--vt-text-base)', fontWeight: 700, color: open ? 'var(--vt-emerald-600)' : 'var(--vt-forest-900)', lineHeight: 1.4 }}>{item.q}</span>
-                      <FontAwesomeIcon icon={open ? faChevronUp : faChevronDown} style={{ width: 13, color: 'var(--vt-muted)', flexShrink: 0 }} />
+                      <span style={{ fontWeight: 600, fontSize: '0.98rem', paddingRight: '16px' }}>{faq.q}</span>
+                      <FontAwesomeIcon
+                        icon={isOpen ? faChevronUp : faChevronDown}
+                        style={{ width: 14, height: 14, color: T.muted, flexShrink: 0 }}
+                      />
                     </button>
-                    {open && <p style={{ margin: '0 18px 16px', fontSize: 'var(--vt-text-sm)', color: 'var(--vt-ink-80)', lineHeight: 1.7 }}>{item.a}</p>}
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div
+                            style={{
+                              padding: '0 24px 20px 24px',
+                              color: T.muted,
+                              fontSize: '0.9rem',
+                              lineHeight: 1.6,
+                              borderTop: '1px solid rgba(61,138,92,0.1)',
+                              paddingTop: '12px',
+                            }}
+                          >
+                            {faq.a}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })}
@@ -142,101 +367,281 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* ── Policies ─────────────────────────────────────────── */}
-        <section className="vt-section" style={{ background: 'var(--vt-cream-100)' }}>
-          <div className="vt-container">
-            <p className="vt-eyebrow-label">POLICIES</p>
-            <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(1.4rem,3vw,2rem)', fontWeight: 800, margin: '0 0 24px', color: 'var(--vt-forest-900)', letterSpacing: 0 }}>
-              Shipping &amp; Returns at a glance
+        {/* POLICIES SECTION */}
+        <section style={{ padding: '60px 24px', background: 'rgba(13,34,24,0.20)', borderTop: '1px solid rgba(61,138,92,0.08)', borderBottom: '1px solid rgba(61,138,92,0.08)' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: T.gold, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              POLICIES
+            </span>
+            <h2
+              style={{
+                fontFamily: FONT.display,
+                fontSize: '2.4rem',
+                fontWeight: 600,
+                color: '#F5EDD6',
+                margin: '12px 0 40px 0',
+              }}
+            >
+              Shipping & Returns at a glance
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
-              {POLICIES.map(({ icon, title, points }) => (
-                <div key={title} className="vt-card" style={{ padding: 20, display: 'grid', gap: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ display: 'grid', width: 40, height: 40, placeItems: 'center', borderRadius: 12, background: 'var(--vt-emerald-100)', color: 'var(--vt-emerald-600)' }}>
-                      <FontAwesomeIcon icon={icon} style={{ width: 17 }} />
-                    </span>
-                    <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: 'var(--vt-text-lg)', color: 'var(--vt-forest-900)' }}>{title}</h3>
-                  </div>
-                  <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 7 }}>
-                    {points.map(pt => (
-                      <li key={pt} style={{ display: 'flex', gap: 8, fontSize: 'var(--vt-text-sm)', color: 'var(--vt-ink-80)', lineHeight: 1.5 }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ width: 12, color: 'var(--vt-emerald-600)', marginTop: 3, flexShrink: 0 }} />
-                        {pt}
-                      </li>
-                    ))}
-                  </ul>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', textAlign: 'left' }}>
+              {/* Shipping */}
+              <div style={{ background: 'rgba(13,34,24,0.60)', border: `1px solid ${T.border}`, borderRadius: '14px', padding: '24px' }}>
+                <div style={{ color: '#3D8A5C', fontSize: '1.5rem', marginBottom: '16px' }}>
+                  <FontAwesomeIcon icon={faTruck} style={{ width: 24, height: 24 }} />
                 </div>
-              ))}
-            </div>
-            <div style={{ marginTop: 12, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <Link href="/returns" className="vt-see-all">Full Returns Policy →</Link>
-              <Link href="/privacy"  className="vt-see-all">Privacy Policy →</Link>
-              <Link href="/terms"    className="vt-see-all">Terms of Use →</Link>
+                <h3 style={{ fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Shipping</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', color: T.muted }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Free delivery on orders ₹499+</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Standard: 3–5 business days</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Express: 4 hours (Coimbatore)</li>
+                </ul>
+              </div>
+
+              {/* Returns */}
+              <div style={{ background: 'rgba(13,34,24,0.60)', border: `1px solid ${T.border}`, borderRadius: '14px', padding: '24px' }}>
+                <div style={{ color: '#3D8A5C', fontSize: '1.5rem', marginBottom: '16px' }}>
+                  <FontAwesomeIcon icon={faRotate} style={{ width: 24, height: 24 }} />
+                </div>
+                <h3 style={{ fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Returns</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', color: T.muted }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> 7-day window for unopened</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Refund in 5–7 working days</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Contact with Order ID</li>
+                </ul>
+              </div>
+
+              {/* Prescriptions */}
+              <div style={{ background: 'rgba(13,34,24,0.60)', border: `1px solid ${T.border}`, borderRadius: '14px', padding: '24px' }}>
+                <div style={{ color: '#3D8A5C', fontSize: '1.5rem', marginBottom: '16px' }}>
+                  <FontAwesomeIcon icon={faShieldHalved} style={{ width: 24, height: 24 }} />
+                </div>
+                <h3 style={{ fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Prescriptions</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', color: T.muted }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Pharmacist review (2 hours)</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Secure data handling</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Invalid Rx puts order on hold</li>
+                </ul>
+              </div>
+
+              {/* Guidelines */}
+              <div style={{ background: 'rgba(13,34,24,0.60)', border: `1px solid ${T.border}`, borderRadius: '14px', padding: '24px' }}>
+                <div style={{ color: '#3D8A5C', fontSize: '1.5rem', marginBottom: '16px' }}>
+                  <FontAwesomeIcon icon={faClipboardList} style={{ width: 24, height: 24 }} />
+                </div>
+                <h3 style={{ fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Guidelines</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.88rem', color: T.muted }}>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> JPG, PNG, PDF up to 5MB</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Legible &amp; within 6 months</li>
+                  <li style={{ display: 'flex', gap: '8px' }}><FontAwesomeIcon icon={faCircleCheck} style={{ color: '#3D8A5C', width: 14, height: 14, marginTop: '2px', flexShrink: 0 }} /> Must show Doctor Reg.</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Contact form ─────────────────────────────────────── */}
-        <section className="vt-section" style={{ background: 'var(--vt-card)' }}>
-          <div className="vt-container" style={{ maxWidth: 580 }}>
-            <p className="vt-eyebrow-label">CONTACT US</p>
-            <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(1.4rem,3vw,2rem)', fontWeight: 800, margin: '0 0 6px', color: 'var(--vt-forest-900)', letterSpacing: 0 }}>
-              Send us a message
-            </h2>
-            <p style={{ margin: '0 0 22px', color: 'var(--vt-muted)', fontSize: 'var(--vt-text-sm)' }}>
-              We reply via WhatsApp or email within 24 hours. For urgent issues WhatsApp is faster.
-            </p>
+        {/* SEND MESSAGE FORM */}
+        <section style={{ padding: '60px 24px', maxWidth: '1000px', margin: '0 auto' }}>
+          <div
+            style={{
+              background: 'rgba(13,34,24,0.60)',
+              border: `1px solid ${T.border}`,
+              borderRadius: '24px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Left side detail panel */}
+            <div
+              style={{
+                background: 'rgba(10,26,16,0.95)',
+                padding: '40px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: '20px',
+                borderRight: '1px solid rgba(61,138,92,0.15)',
+              }}
+            >
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: T.gold, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                CONTACT US
+              </span>
+              <h3
+                style={{
+                  fontFamily: FONT.display,
+                  fontSize: '2.2rem',
+                  fontWeight: 600,
+                  color: '#F5EDD6',
+                  margin: 0,
+                  lineHeight: 1.2,
+                }}
+              >
+                Send us a message
+              </h3>
+              <p style={{ color: T.muted, fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
+                We reply via WhatsApp or email within 24 hours. For urgent issues, WhatsApp is faster.
+              </p>
 
-            {submitted ? (
-              <div style={{ padding: 28, borderRadius: 'var(--vt-radius-lg)', border: '2px solid var(--vt-emerald-600)', background: 'var(--vt-cream-100)', textAlign: 'center', display: 'grid', gap: 10 }}>
-                <FontAwesomeIcon icon={faCircleCheck} style={{ width: 40, height: 40, color: 'var(--vt-emerald-600)', margin: '0 auto' }} />
-                <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', color: 'var(--vt-forest-900)' }}>Message sent!</h3>
-                <p style={{ margin: 0, color: 'var(--vt-muted)', fontSize: 'var(--vt-text-sm)' }}>We will get back to you within 24 hours. For faster help, WhatsApp us.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px', color: '#7EC89A', fontSize: '0.85rem' }}>
+                <FontAwesomeIcon icon={faCircleCheck} style={{ width: 16, height: 16 }} />
+                <span>Your data is encrypted and secure</span>
               </div>
-            ) : (
-              <div style={{ display: 'grid', gap: 14 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                  {([['name','Name *','Your full name','text'],['mobile','Mobile *','10-digit number','tel']] as const).map(([f,label,ph,type]) => (
-                    <label key={f} style={{ display: 'grid', gap: 6, fontSize: 'var(--vt-text-sm)', fontWeight: 700, color: 'var(--vt-ink-80)' }}>
-                      {label}
-                      <input type={type} className="vt-input" placeholder={ph} value={form[f as keyof typeof form]} onChange={e => setForm(prev => ({ ...prev, [f]: e.target.value }))} style={{ height: 44 }} />
-                    </label>
-                  ))}
-                </div>
-                <label style={{ display: 'grid', gap: 6, fontSize: 'var(--vt-text-sm)', fontWeight: 700, color: 'var(--vt-ink-80)' }}>
-                  Subject
-                  <select className="vt-select" value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))}>
-                    <option value="">Select a topic</option>
-                    {['Order issue','Prescription query','Payment or refund','Product information','Delivery status','Returns','Other'].map(o => <option key={o}>{o}</option>)}
-                  </select>
-                </label>
-                <label style={{ display: 'grid', gap: 6, fontSize: 'var(--vt-text-sm)', fontWeight: 700, color: 'var(--vt-ink-80)' }}>
-                  Message *
-                  <textarea
-                    className="vt-input"
-                    placeholder="Describe your issue. Include your Order ID if relevant."
-                    rows={5}
-                    value={form.message}
-                    onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
-                    style={{ resize: 'vertical', padding: '10px 14px', fontFamily: 'var(--vt-font-body)', fontSize: 'var(--vt-text-sm)', borderRadius: 'var(--vt-radius-sm)', border: '1px solid var(--vt-border)', outline: 'none', lineHeight: 1.6 }}
+            </div>
+
+            {/* Right side form input panel */}
+            <form onSubmit={handleFormSubmit} style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+                {/* Name */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label htmlFor="name" style={{ fontSize: '0.82rem', color: T.muted }}>NAME *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                    style={{
+                      background: 'rgba(13,34,24,0.60)',
+                      border: '1px solid rgba(61,138,92,0.22)',
+                      color: '#F5EDD6',
+                      borderRadius: '10px',
+                      padding: '10px 14px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
                   />
-                </label>
-                {formError && <p role="alert" style={{ margin: 0, color: 'var(--vt-danger-text)', fontSize: 'var(--vt-text-sm)' }}>{formError}</p>}
-                <p style={{ margin: 0, fontSize: 'var(--vt-text-xs)', color: 'var(--vt-muted)' }}>Do not include sensitive medical information or prescription details in this form.</p>
-                <button onClick={handleSubmit} disabled={submitting} className="vt-button"
-                  style={{ background: 'linear-gradient(135deg,var(--vt-emerald-600),var(--vt-teal-500))', color: '#fff', border: 'none', width: 'fit-content', opacity: submitting ? 0.65 : 1 }}>
-                  <FontAwesomeIcon icon={faEnvelope} style={{ width: 15 }} />
-                  {submitting ? 'Sending…' : 'Send message'}
-                </button>
+                </div>
+
+                {/* Mobile */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label htmlFor="mobile" style={{ fontSize: '0.82rem', color: T.muted }}>MOBILE *</label>
+                  <input
+                    type="tel"
+                    id="mobile"
+                    required
+                    value={formData.mobile}
+                    onChange={(e) => setFormData((p) => ({ ...p, mobile: e.target.value }))}
+                    style={{
+                      background: 'rgba(13,34,24,0.60)',
+                      border: '1px solid rgba(61,138,92,0.22)',
+                      color: '#F5EDD6',
+                      borderRadius: '10px',
+                      padding: '10px 14px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  />
+                </div>
               </div>
-            )}
+
+              {/* Subject */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label htmlFor="subject" style={{ fontSize: '0.82rem', color: T.muted }}>SUBJECT</label>
+                <select
+                  id="subject"
+                  value={formData.subject}
+                  onChange={(e) => setFormData((p) => ({ ...p, subject: e.target.value }))}
+                  style={{
+                    background: 'rgba(13,34,24,0.80)',
+                    border: '1px solid rgba(61,138,92,0.22)',
+                    color: '#F5EDD6',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    fontSize: '0.9rem',
+                    outline: 'none',
+                  }}
+                >
+                  <option value="Order Issue">Order Issue</option>
+                  <option value="Prescription Help">Prescription Help</option>
+                  <option value="Consultation Question">Consultation Question</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Message */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label htmlFor="message" style={{ fontSize: '0.82rem', color: T.muted }}>MESSAGE *</label>
+                <textarea
+                  id="message"
+                  required
+                  rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))}
+                  style={{
+                    background: 'rgba(13,34,24,0.60)',
+                    border: '1px solid rgba(61,138,92,0.22)',
+                    color: '#F5EDD6',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    fontSize: '0.9rem',
+                    outline: 'none',
+                    resize: 'none',
+                  }}
+                />
+                <span style={{ fontSize: '0.74rem', color: T.muted }}>
+                  Do not include any sensitive medical or financial information here.
+                </span>
+              </div>
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                style={{
+                  background: 'linear-gradient(135deg, #C9922A, #E8A820)',
+                  color: '#0A1A10',
+                  border: 'none',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  fontWeight: 600,
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease',
+                  boxShadow: '0 4px 14px rgba(212, 137, 10, 0.2)',
+                  marginTop: '8px',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+                onMouseOut={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+              >
+                SEND MESSAGE
+              </button>
+            </form>
           </div>
         </section>
       </main>
 
-      <CustomerFooter />
+      {/* Success Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            style={{
+              position: 'fixed',
+              bottom: '80px',
+              right: '24px',
+              background: '#0D2218',
+              border: '1px solid #7EC89A',
+              color: '#7EC89A',
+              borderRadius: '10px',
+              padding: '16px 24px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              zIndex: 150,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
+            <FontAwesomeIcon icon={faCircleCheck} style={{ color: '#7EC89A', width: 18, height: 18 }} />
+            <span style={{ fontWeight: 600 }}>உங்கள் செய்தி வெற்றிகரமாக அனுப்பப்பட்டது!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <MobileBottomNav />
+      <CustomerFooter />
     </div>
   );
 }
