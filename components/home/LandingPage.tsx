@@ -110,7 +110,7 @@ export function LandingPage() {
 ══════════════════════════════════════════════════════════════════ */
 function HeroSection() {
   return (
-    <section style={{
+    <section className="vt-landing-hero" style={{
       position: 'relative',
       minHeight: '100vh',
       display: 'flex', flexDirection: 'column',
@@ -202,12 +202,7 @@ function CategorySection() {
       background: '#030C07',
       padding: '0 0 80px',
     }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 0,
-        maxWidth: '100%',
-      }}>
+      <div className="vt-traditions-grid">
         {cats.map(({ img, badge, nameTa, nameEn, href }, i) => (
           <motion.div
             key={badge}
@@ -216,7 +211,7 @@ function CategorySection() {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ delay: i * 0.1, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Link href={href} style={{ display: 'block', position: 'relative', textDecoration: 'none', overflow: 'hidden', aspectRatio: '3/4' }}>
+            <Link href={href} className="vt-tradition-card" style={{ display: 'block', position: 'relative', textDecoration: 'none', overflow: 'hidden' }}>
               <Image
                 src={img}
                 alt={nameTa}
@@ -301,7 +296,7 @@ function CollectionsSection({ products, onAddToCart }: { products: SeedMedicine[
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 36px' }}>
 
         {/* Section header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40 }}>
+        <div className="vt-section-header">
           <div>
             <p style={{
               margin: '0 0 10px', fontSize: '0.65rem', letterSpacing: '0.22em',
@@ -325,7 +320,7 @@ function CollectionsSection({ products, onAddToCart }: { products: SeedMedicine[
         </div>
 
         {/* Product grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+        <div className="vt-products-grid" style={{ gap: 20 }}>
           {STATIC_PRODUCTS.map((p, i) => (
             <motion.div
               key={p.id}

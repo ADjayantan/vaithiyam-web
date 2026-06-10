@@ -1351,6 +1351,16 @@ input, select, textarea { font: inherit; }
 .vt-hscroll::-webkit-scrollbar { display: none; }
 .vt-hscroll > * { scroll-snap-align: start; }
 
+.vt-traditions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: 100%;
+}
+.vt-tradition-card {
+  aspect-ratio: 3/4;
+}
+
 /* ─────────────────────────────────────────────────────────────────
    RESPONSIVE
    ───────────────────────────────────────────────────────────────── */
@@ -1366,6 +1376,17 @@ input, select, textarea { font: inherit; }
     gap: 10px;
   }
   .vt-brand-suffix {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .vt-traditions-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .vt-tradition-card {
+    aspect-ratio: 16/9 !important;
+  }
+  .vt-landing-hero h1 br {
     display: none !important;
   }
 }
