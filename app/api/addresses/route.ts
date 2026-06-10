@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/mockDb';
+import { db, DbAddress } from '@/lib/mockDb';
 import { verifyToken, extractBearerToken } from '@/lib/auth';
 
 async function getUserId(req: NextRequest): Promise<string | null> {
@@ -20,10 +20,7 @@ export async function POST(req: NextRequest) {
   const userId = await getUserId(req);
   if (!userId) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json() as {
-    label: string; line1: string; line2?: string;
-    city: string; state: string; pincode: string; isDefault: boolean;
-  };
+  const body = await req.json() as Omit<DbAddress, 'id' | 'userId'>;
 
   const id = `addr_${Date.now()}`;
 

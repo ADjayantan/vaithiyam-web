@@ -20,7 +20,10 @@ export interface DbUser {
 export interface DbAddress {
   id: string;
   userId: string;
-  label: string;
+  type: 'home' | 'work' | 'other';
+  label?: string;
+  fullName: string;
+  mobile: string;
   line1: string;
   line2?: string;
   city: string;
@@ -120,6 +123,9 @@ const SEED_ADMIN: DbUser = {
 const SEED_ADDRESS: DbAddress = {
   id: 'addr_001',
   userId: 'usr_demo_001',
+  type: 'home',
+  fullName: 'கார்த்திக் ராஜன்',
+  mobile: '9876543210',
   label: 'வீடு',
   line1: '42, கோவிந்தசாமி நகர்',
   line2: 'அண்ணாநகர்',

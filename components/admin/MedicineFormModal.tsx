@@ -248,7 +248,7 @@ export function MedicineFormModal({ onClose, onSuccess }: MedicineFormModalProps
               <select
                 className="vt-select"
                 value={tradition}
-                onChange={(e) => setTradition(e.target.value as any)}
+                onChange={(e) => setTradition(e.target.value as 'siddha' | 'ayurveda' | 'natural')}
               >
                 <option value="siddha">Siddha (சித்தம்)</option>
                 <option value="ayurveda">Ayurveda (ஆயுர்வேதம்)</option>

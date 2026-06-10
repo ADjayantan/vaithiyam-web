@@ -82,7 +82,8 @@ const TYPE_CONFIG: Record<AddressType, { labelTa: string; icon: IconDefinition; 
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────────
-function formatMobile(m: string): string {
+function formatMobile(m?: string): string {
+  if (!m) return '';
   const d = m.replace(/\D/g, '');
   if (d.length === 10) return `+91 ${d.slice(0, 5)} ${d.slice(5)}`;
   return m;
@@ -111,7 +112,7 @@ export default function AddressCard({
   const [deleting,      setDeleting]      = useState(false);
   const [settingDef,    setSettingDef]    = useState(false);
 
-  const typeConf  = TYPE_CONFIG[address.type];
+  const typeConf  = (address.type ? TYPE_CONFIG[address.type] : null) || TYPE_CONFIG.other;
   const typeLabel = address.type === 'other' && address.label
     ? address.label
     : typeConf.labelTa;

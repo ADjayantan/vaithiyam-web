@@ -14,7 +14,7 @@ export async function listProducts(): Promise<SeedMedicine[]> {
   if (error || !data) return db.products;
 
   return data.map((row) => {
-    const cat = row.categories as any;
+    const cat = row.categories as { id: string; name_ta: string; name_en: string; slug: string; icon: string } | null;
     return {
       id: row.id,
       slug: row.slug,
