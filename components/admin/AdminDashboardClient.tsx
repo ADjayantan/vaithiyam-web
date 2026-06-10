@@ -1,14 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBox,
-  faClipboardCheck,
-  faCubes,
-  faHourglassHalf,
-  faIndianRupeeSign,
   faMagnifyingGlass,
   faPlus,
   faTrash,
@@ -17,7 +12,6 @@ import {
   faCircleUser,
   faCheck,
   faTimes,
-  faChevronRight,
   faDatabase,
 } from '@fortawesome/free-solid-svg-icons';
 import { AdminGuard } from '@/components/admin/AdminGuard';
@@ -216,15 +210,15 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
   };
 
   // User name mapping helper
-  const getCustomerName = (userId: string) => {
+  const getCustomerName = useCallback((userId: string) => {
     const u = data?.users.find((x) => x.id === userId);
     return u ? u.name : 'கார்த்திக் ராஜன்'; // fallback seed name
-  };
+  }, [data?.users]);
 
-  const getCustomerEmail = (userId: string) => {
+  const getCustomerEmail = useCallback((userId: string) => {
     const u = data?.users.find((x) => x.id === userId);
     return u ? u.email : 'karthik@example.com';
-  };
+  }, [data?.users]);
 
   const downloadCsv = (filename: string, rows: string[][]) => {
     const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -248,7 +242,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
       item.status.toLowerCase().includes(q) ||
       item.paymentMethod.toLowerCase().includes(q)
     );
-  }, [data?.orders, data?.users, query]);
+  }, [data?.orders, query, getCustomerName]);
 
   const filteredMedicines = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -272,7 +266,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
       getCustomerName(item.userId).toLowerCase().includes(q) ||
       item.status.toLowerCase().includes(q)
     );
-  }, [data?.prescriptions, data?.users, query]);
+  }, [data?.prescriptions, query, getCustomerName]);
 
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
