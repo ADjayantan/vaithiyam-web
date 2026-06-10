@@ -16,7 +16,7 @@ function HeaderNavLinks() {
     { label: 'முகப்பு', href: '/', active: pathname === '/' },
     { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' || pathname.startsWith('/products/') },
     { label: 'ஆலோசனை', href: '/help', active: pathname === '/help' },
-    { label: 'வலைப்பதிவு', href: '/#blog', active: pathname === '/#blog' },
+    { label: 'பற்றி', href: '/about', active: pathname === '/about' },
     { label: 'எங்களைத் தொடர்பு கொள்ள', href: '/contact', active: pathname === '/contact' },
   ];
 
@@ -236,6 +236,7 @@ export function CustomerFooter() {
             <Link href="/">முகப்பு</Link>
             <Link href="/products">மருந்துகள்</Link>
             <Link href="/help">ஆலோசனை</Link>
+            <Link href="/about">வைத்தியம் பற்றி</Link>
             <Link href="/contact">எங்களைத் தொடர்பு கொள்ள</Link>
           </div>
         </div>
