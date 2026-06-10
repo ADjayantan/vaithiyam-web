@@ -87,6 +87,13 @@ export function ProductCard({
     >
       {/* ── IMAGE AREA (Flipkart-style: white-ish bg, centered product art) ── */}
       <Link href={`/products/${product.slug}`} className="vt-fk-img-wrap" aria-label={`${product.nameEn} details`}>
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt={product.nameEn}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        )}
 
         {/* Tradition badge — top left */}
         <span
@@ -112,19 +119,21 @@ export function ProductCard({
         </button>
 
         {/* Artwork */}
-        <div className="vt-fk-art" style={{ background: bg }}>
-          {/* Large icon */}
-          <div className="vt-fk-art-icon-wrap">
-            <FontAwesomeIcon
-              icon={icon}
-              style={{ width: 52, height: 52, color: iconColor, filter: `drop-shadow(0 0 18px ${iconColor}60)` }}
-            />
+        {!product.imageUrl && (
+          <div className="vt-fk-art" style={{ background: bg }}>
+            {/* Large icon */}
+            <div className="vt-fk-art-icon-wrap">
+              <FontAwesomeIcon
+                icon={icon}
+                style={{ width: 52, height: 52, color: iconColor, filter: `drop-shadow(0 0 18px ${iconColor}60)` }}
+              />
+            </div>
+            {/* Initials sub-label */}
+            <span className="vt-fk-art-initials" style={{ color: iconColor }}>
+              {product.nameEn.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+            </span>
           </div>
-          {/* Initials sub-label */}
-          <span className="vt-fk-art-initials" style={{ color: iconColor }}>
-            {product.nameEn.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
-          </span>
-        </div>
+        )}
 
         {/* Discount ribbon — only when in stock */}
         {discount > 0 && !outOfStock && (

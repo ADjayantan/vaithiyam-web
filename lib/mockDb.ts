@@ -283,6 +283,11 @@ class MockDb {
     this.prescriptions.set(prescription.id, prescription);
     return prescription;
   }
+
+  addProduct(product: SeedMedicine): SeedMedicine {
+    this.products.push(product);
+    return product;
+  }
 }
 
 const globalForDb = globalThis as unknown as { __vaithiyamDb?: MockDb };

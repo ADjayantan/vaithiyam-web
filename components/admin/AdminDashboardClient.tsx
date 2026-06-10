@@ -7,6 +7,7 @@ import { faBox, faClipboardCheck, faCubes, faHourglassHalf, faIndianRupeeSign, f
 import { AdminGuard } from '@/components/admin/AdminGuard';
 import { AdminShell } from '@/components/admin/AdminShell';
 import type { MedicineCategory, SeedMedicine } from '@/lib/medicineData';
+import { MedicineFormModal } from '@/components/admin/MedicineFormModal';
 
 interface AdminOverview {
   stats: {
@@ -36,6 +37,7 @@ type AdminView = 'dashboard' | 'medicines' | 'categories' | 'orders' | 'prescrip
 export function AdminDashboardClient({ view }: { view: AdminView }) {
   const [data, setData] = useState<AdminOverview | null>(null);
   const [query, setQuery] = useState('');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const load = useCallback(() => {
     const token = getToken();
@@ -89,7 +91,12 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
 
             {view === 'medicines' && (
               <AdminPanel title="Medicine CRUD">
-                <AdminToolbar query={query} setQuery={setQuery} actionLabel="Add medicine" />
+                <AdminToolbar
+                  query={query}
+                  setQuery={setQuery}
+                  actionLabel="Add medicine"
+                  onActionClick={() => setIsAddModalOpen(true)}
+                />
                 <AdminTable
                   headers={['Medicine', 'Category', 'Price', 'Stock', 'Rx', 'Actions']}
                   rows={filteredMedicines.map((item) => [
@@ -152,6 +159,15 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
           </div>
         )}
       </AdminShell>
+      {isAddModalOpen && (
+        <MedicineFormModal
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={() => {
+            setIsAddModalOpen(false);
+            load();
+          }}
+        />
+      )}
     </AdminGuard>
   );
 }
@@ -192,14 +208,26 @@ function AdminPanel({ title, children }: { title: string; children: ReactNode })
   );
 }
 
-function AdminToolbar({ query, setQuery, actionLabel }: { query: string; setQuery: (value: string) => void; actionLabel: string }) {
+function AdminToolbar({
+  query,
+  setQuery,
+  actionLabel,
+  onActionClick,
+}: {
+  query: string;
+  setQuery: (value: string) => void;
+  actionLabel: string;
+  onActionClick?: () => void;
+}) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
       <div style={{ position: 'relative', flex: '1 1 280px' }}>
         <FontAwesomeIcon icon={faMagnifyingGlass} style={{width: 17, height: 17, ...{ position: 'absolute', top: 14, left: 12, color: 'rgba(236,255,248,0.46)' }}} />
         <input className="vt-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search table" style={{ paddingLeft: 40, background: 'rgba(255,255,255,0.08)', color: '#fff', borderColor: 'rgba(255,255,255,0.12)' }} />
       </div>
-      <button className="vt-button vt-button-gold" type="button"><FontAwesomeIcon icon={faPlus} style={{width: 17, height: 17}} /> {actionLabel}</button>
+      <button className="vt-button vt-button-gold" type="button" onClick={onActionClick}>
+        <FontAwesomeIcon icon={faPlus} style={{width: 17, height: 17}} /> {actionLabel}
+      </button>
       <button className="vt-button vt-button-danger" type="button"><FontAwesomeIcon icon={faTrashCan} style={{width: 17, height: 17}} /> Bulk delete</button>
     </div>
   );
