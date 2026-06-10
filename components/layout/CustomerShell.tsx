@@ -80,7 +80,7 @@ export function CustomerHeader({
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
           <span>
-            <span className="vt-brand-title">வைத்தியம் (Vaithiyam)</span>
+            <span className="vt-brand-title">வைத்தியம் <span className="vt-brand-suffix">(Vaithiyam)</span></span>
           </span>
         </Link>
 

@@ -1360,6 +1360,15 @@ input, select, textarea { font: inherit; }
   .vt-section { padding: 60px 18px; }
   .vt-storefront { padding: 20px 18px 60px; }
 }
+@media (max-width: 480px) {
+  .vt-header-inner {
+    padding: 0 12px;
+    gap: 10px;
+  }
+  .vt-brand-suffix {
+    display: none !important;
+  }
+}
 @media (max-width: 600px) {
   .vt-hero { padding: 90px 18px 50px; }
   .vt-footer { padding: 40px 18px 24px; }
