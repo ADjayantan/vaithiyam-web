@@ -10,16 +10,14 @@ import {
 import { Suspense, useEffect, useRef, useState } from 'react';
 
 function HeaderNavLinks() {
-  const searchParams = useSearchParams();
   const pathname = usePathname();
-  const tradition = searchParams.get('tradition');
 
   const links = [
-    { label: 'சித்த மருத்துவம்', href: '/products?tradition=siddha', active: pathname === '/products' && tradition === 'siddha' },
-    { label: 'ஆயுர்வேதம்',       href: '/products?tradition=ayurveda', active: pathname === '/products' && tradition === 'ayurveda' },
-    { label: 'இயற்கை',            href: '/products?tradition=natural', active: pathname === '/products' && tradition === 'natural' },
-    { label: 'ஆரோக்கியம்',        href: '/products', active: pathname === '/products' && !tradition },
-    { label: 'நம்பகம்',           href: '/help', active: pathname === '/help' },
+    { label: 'முகப்பு', href: '/', active: pathname === '/' },
+    { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' || pathname.startsWith('/products/') },
+    { label: 'ஆலோசனை', href: '/help', active: pathname === '/help' },
+    { label: 'வலைப்பதிவு', href: '/#blog', active: pathname === '/#blog' },
+    { label: 'எங்களைத் தொடர்பு கொள்ள', href: '/contact', active: pathname === '/contact' },
   ];
 
   return (
@@ -82,7 +80,7 @@ export function CustomerHeader({
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
           <span>
-            <span className="vt-brand-title">வைத்தியம்</span>
+            <span className="vt-brand-title">வைத்தியம் (Vaithiyam)</span>
           </span>
         </Link>
 
@@ -218,39 +216,43 @@ export function MobileBottomNav() {
 export function CustomerFooter() {
   return (
     <footer className="vt-footer">
-      <div className="vt-container vt-footer-grid">
+      <div className="vt-container vt-footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '30px' }}>
         <div>
-          <Link href="/" className="vt-brand">
+          <Link href="/" className="vt-brand" style={{ textDecoration: 'none' }}>
             <span className="vt-brand-mark">
               <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
             </span>
             <span>
               <span className="vt-brand-title" style={{ color: 'var(--vt-ink)' }}>வைத்தியம்</span>
-              <span className="vt-brand-subtitle" style={{ color: 'var(--vt-muted)' }}>Premium medical-commerce demo</span>
             </span>
           </Link>
-          <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520 }}>
-            Product information is educational only. Vaithiyam does not provide diagnosis, dosage advice,
-            or self-medication recommendations.
+          <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520, color: 'var(--vt-muted)' }}>
+            பண்டைய சித்த மருத்துவத்தின் புனிதத்தையும் நவீன அறிவியலின் நேர்த்தியையும் இணைக்கும் ஒரு உன்னத தளம்.
           </p>
         </div>
         <div>
-          <h3 style={{ margin: '0 0 12px', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-ink)' }}>Care</h3>
-          <div style={{ display: 'grid', gap: 9, color: 'var(--vt-muted)' }}>
-            <Link href="/prescriptions">Prescriptions</Link>
-            <Link href="/scanner">Scanner</Link>
-            <Link href="/help">Help center</Link>
+          <h3 style={{ margin: '0 0 12px', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-gold-500)', fontSize: '1.25rem' }}>விரைவு இணைப்புகள்</h3>
+          <div style={{ display: 'grid', gap: 9, color: 'var(--vt-muted)', fontSize: '0.9rem' }}>
+            <Link href="/">முகப்பு</Link>
+            <Link href="/products">மருந்துகள்</Link>
+            <Link href="/help">ஆலோசனை</Link>
+            <Link href="/contact">எங்களைத் தொடர்பு கொள்ள</Link>
           </div>
         </div>
         <div>
-          <h3 style={{ margin: '0 0 12px', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-ink)' }}>Legal</h3>
-          <div style={{ display: 'grid', gap: 9, color: 'var(--vt-muted)' }}>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/returns">Returns</Link>
-            <Link href="/admin/login">Admin</Link>
+          <h3 style={{ margin: '0 0 12px', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-gold-500)', fontSize: '1.25rem' }}>சட்டம் (Legal)</h3>
+          <div style={{ display: 'grid', gap: 9, color: 'var(--vt-muted)', fontSize: '0.9rem' }}>
+            <Link href="/privacy">தனியுரிமைக் கொள்கை</Link>
+            <Link href="/terms">விதிமுறைகள்</Link>
+            <Link href="/returns">திரும்பப் பெறும் கொள்கை</Link>
+            <Link href="/admin/login">அட்மின் (Admin)</Link>
           </div>
         </div>
+      </div>
+      <div className="vt-container" style={{ borderTop: '1px solid rgba(61,138,92,0.1)', marginTop: '30px', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
+        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--vt-muted)' }}>
+          © 2024 வைத்தியம் Siddha Care. All rights reserved.
+        </p>
       </div>
     </footer>
   );

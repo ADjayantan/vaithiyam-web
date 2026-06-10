@@ -14,6 +14,8 @@ export const viewport: Viewport = {
   themeColor: '#030C07',
 };
 
+import AgasthiyanWidget from '@/components/agasthiyan/AgasthiyanWidget';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ta" data-scroll-behavior="smooth">
@@ -25,7 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <AgasthiyanWidget />
+      </body>
     </html>
   );
 }

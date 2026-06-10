@@ -120,6 +120,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
   const [data, setData] = useState<AdminOverview | null>(null);
   const [query, setQuery] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEnvModalOpen, setIsEnvModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(() => {
@@ -223,6 +224,17 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
   const getCustomerEmail = (userId: string) => {
     const u = data?.users.find((x) => x.id === userId);
     return u ? u.email : 'karthik@example.com';
+  };
+
+  const downloadCsv = (filename: string, rows: string[][]) => {
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   // Search logic depending on active view
@@ -945,7 +957,22 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           <td style={{ fontWeight: 700 }}>₹{data.stats.revenue.toLocaleString()}</td>
                           <td>Cumulative sum of order receipts</td>
                           <td>
-                            <button type="button" className="vt-admin-btn vt-admin-btn-secondary" style={{ padding: '4px 10px', fontSize: '0.8rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const headers = ['Order ID', 'Customer Name', 'Total (INR)', 'Status', 'Date'];
+                                const rows = data.orders.map((o) => [
+                                  o.id,
+                                  getCustomerName(o.userId),
+                                  String(o.total),
+                                  o.status,
+                                  o.createdAt,
+                                ]);
+                                downloadCsv('sales_report.csv', [headers, ...rows]);
+                              }}
+                              className="vt-admin-btn vt-admin-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '0.8rem' }}
+                            >
                               Export CSV
                             </button>
                           </td>
@@ -957,7 +984,17 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           </td>
                           <td>Calculated across {data.orders.length} total orders</td>
                           <td>
-                            <button type="button" className="vt-admin-btn vt-admin-btn-secondary" style={{ padding: '4px 10px', fontSize: '0.8rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const aov = data.orders.length > 0 ? data.stats.revenue / data.orders.length : 0;
+                                const headers = ['Total Revenue (INR)', 'Total Orders', 'Average Order Value (AOV)'];
+                                const row = [String(data.stats.revenue), String(data.orders.length), aov.toFixed(2)];
+                                downloadCsv('aov_report.csv', [headers, row]);
+                              }}
+                              className="vt-admin-btn vt-admin-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '0.8rem' }}
+                            >
                               Export CSV
                             </button>
                           </td>
@@ -967,7 +1004,22 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           <td style={{ fontWeight: 700 }}>{data.stats.totalMedicines} Products</td>
                           <td>{data.stats.lowStock} item(s) low in stock</td>
                           <td>
-                            <button type="button" className="vt-admin-btn vt-admin-btn-secondary" style={{ padding: '4px 10px', fontSize: '0.8rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const headers = ['Medicine Name (Tamil)', 'Medicine Name (English)', 'Stock', 'Tradition', 'Price'];
+                                const rows = data.medicines.map((m) => [
+                                  m.nameTa,
+                                  m.nameEn,
+                                  String(m.stockCount),
+                                  m.tradition,
+                                  String(m.price),
+                                ]);
+                                downloadCsv('inventory_report.csv', [headers, ...rows]);
+                              }}
+                              className="vt-admin-btn vt-admin-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '0.8rem' }}
+                            >
                               Export CSV
                             </button>
                           </td>
@@ -977,7 +1029,22 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           <td style={{ fontWeight: 700 }}>{data.stats.pendingPrescriptions} Pending Review</td>
                           <td>Total reviews queued for pharmacist</td>
                           <td>
-                            <button type="button" className="vt-admin-btn vt-admin-btn-secondary" style={{ padding: '4px 10px', fontSize: '0.8rem' }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const headers = ['Prescription ID', 'User ID', 'Customer Name', 'Verification Status', 'Date Submitted'];
+                                const rows = data.prescriptions.map((p) => [
+                                  p.id,
+                                  p.userId,
+                                  getCustomerName(p.userId),
+                                  p.status,
+                                  p.createdAt,
+                                ]);
+                                downloadCsv('prescriptions_report.csv', [headers, ...rows]);
+                              }}
+                              className="vt-admin-btn vt-admin-btn-secondary"
+                              style={{ padding: '4px 10px', fontSize: '0.8rem' }}
+                            >
                               Export CSV
                             </button>
                           </td>
@@ -996,11 +1063,17 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                   <div style={{ display: 'grid', gap: 16 }}>
                     <div>
                       <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: '#1E472E' }}>Credential Information</h3>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#5A665D', lineHeight: 1.5 }}>
-                        The default system administrator is: <strong style={{ color: '#1E3024' }}>admin@vaithiyam.local</strong>
-                        <br />
-                        Default password: <strong style={{ color: '#1E3024' }}>admin1234</strong>
+                      <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: '#5A665D', lineHeight: 1.5 }}>
+                        Credentials are managed via your Supabase dashboard and environment variables. See .env.local.example for required keys.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => setIsEnvModalOpen(true)}
+                        className="vt-admin-btn vt-admin-btn-secondary"
+                        style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                      >
+                        View .env.local.example
+                      </button>
                     </div>
 
                     <div style={{ height: '1px', background: '#E6DCD1' }} />
@@ -1038,6 +1111,82 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
             load();
           }}
         />
+      )}
+
+      {/* ── Env Var Modal Overlay ── */}
+      {isEnvModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#FAF8F5',
+              borderRadius: 16,
+              padding: 24,
+              maxWidth: 500,
+              width: '100%',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              border: '1px solid #E6DCD1',
+            }}
+          >
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: '#1E472E', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>
+              Environment Variables Required
+            </h3>
+            <p style={{ fontSize: '0.88rem', color: '#5A665D', marginBottom: 16, lineHeight: 1.5 }}>
+              Configure the following keys in your local environment file (e.g. <code>.env.local</code>):
+            </p>
+            <pre
+              style={{
+                backgroundColor: '#1E3024',
+                color: '#EEE8D9',
+                padding: 16,
+                borderRadius: 8,
+                fontSize: '0.85rem',
+                fontFamily: 'monospace',
+                overflowX: 'auto',
+                margin: '0 0 20px 0',
+                lineHeight: 1.6,
+              }}
+            >
+              {`NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+JWT_SECRET
+NEXT_PUBLIC_RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
+NEXT_PUBLIC_ADMIN_EMAIL
+ANTHROPIC_API_KEY`}
+            </pre>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setIsEnvModalOpen(false)}
+                className="vt-admin-btn vt-admin-btn-primary"
+                style={{
+                  backgroundColor: '#1E7040',
+                  color: 'white',
+                  border: 'none',
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
+              >
+                Close Dialog
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </AdminGuard>
   );
