@@ -278,9 +278,8 @@ function VerifyOtpInner() {
       try {
         const { token, user } = await verifyOtpApi(mobile, otp);
 
-        // Persist auth — use sessionStorage as default;
-        // if the user chose "remember me" on the login page, that preference
-        // was already applied there. Here we only persist the session token.
+        localStorage.setItem('vt_token', token);
+        localStorage.setItem('vt_user',  JSON.stringify(user));
         sessionStorage.setItem('vt_token', token);
         sessionStorage.setItem('vt_user',  JSON.stringify(user));
 

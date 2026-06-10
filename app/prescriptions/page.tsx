@@ -97,15 +97,39 @@ export default function PrescriptionsPage() {
     setLoading(true);
     setStatusMsg('');
     try {
+      // 1. Upload file binary
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadRes = await fetch('/api/prescriptions/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json().catch(() => ({})) as { fileUrl?: string; message?: string };
+      if (!uploadRes.ok) {
+        throw new Error(uploadData.message ?? 'கோப்பை பதிவேற்ற முடியவில்லை.');
+      }
+
+      if (!uploadData.fileUrl) {
+        throw new Error('கோப்பு பதிவேற்ற முகவரி கிடைக்கவில்லை.');
+      }
+
+      // 2. Create prescription metadata with fileUrl
       const res = await fetch('/api/prescriptions', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
           fileName: file.name,
           fileType: file.type || 'unknown',
+          fileUrl: uploadData.fileUrl,
           notes: notes.trim() || 'Uploaded from prescriptions page.',
         }),
       });
+
       const data = await res.json().catch(() => ({})) as { message?: string };
       if (!res.ok) throw new Error(data.message ?? 'மேட்டாடேட்டா சேமிக்க இயலவில்லை.');
       setStatusMsg('மருந்துச் சீட்டு நிலுவையில் உள்ளது என சேமிக்கப்பட்டது.');
@@ -118,6 +142,7 @@ export default function PrescriptionsPage() {
       setLoading(false);
     }
   }, [file, load, notes]);
+
 
   const counts = useMemo(() => ({
     pending:  items.filter((i) => i.status === 'pending_review').length,

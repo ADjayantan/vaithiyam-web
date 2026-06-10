@@ -294,14 +294,39 @@ export function StorefrontPage({
           <section className="vt-catalogue-layout" style={{ display: 'grid', gridTemplateColumns: '303px minmax(0, 1fr)', gap: 27, alignItems: 'start' }}>
             <aside className="vt-catalogue-filter" style={{ position: 'sticky', top: 100, display: 'grid', gap: 40, paddingTop: 3 }}>
               <FilterGroup title="TRADITION">
-                <CatalogueCheck label="சித்த மருத்துவம்" checked={tradition === 'siddha'} />
-                <CatalogueCheck label="Ayurveda" checked={tradition === 'ayurveda'} />
+                <CatalogueCheck
+                  label="சித்த மருத்துவம் (Siddha)"
+                  checked={tradition === 'siddha'}
+                  onChange={() => setTradition(tradition === 'siddha' ? 'all' : 'siddha')}
+                />
+                <CatalogueCheck
+                  label="Ayurveda (ஆயுர்வேதம்)"
+                  checked={tradition === 'ayurveda'}
+                  onChange={() => setTradition(tradition === 'ayurveda' ? 'all' : 'ayurveda')}
+                />
+                <CatalogueCheck
+                  label="Natural (இயற்கை)"
+                  checked={tradition === 'natural'}
+                  onChange={() => setTradition(tradition === 'natural' ? 'all' : 'natural')}
+                />
               </FilterGroup>
 
               <FilterGroup title="HEALTH GOALS">
-                <CatalogueCheck label="நோய் எதிர்ப்பு சக்தி (Immunity)" checked={false} />
-                <CatalogueCheck label="செரிமானம் (Digestion)" checked={false} />
-                <CatalogueCheck label="வலி நிவாரணம் (Pain Relief)" checked={false} />
+                <CatalogueCheck
+                  label="நோய் எதிர்ப்பு சக்தி (Immunity)"
+                  checked={category === 'immunity-support'}
+                  onChange={() => setCategory(category === 'immunity-support' ? 'all' : 'immunity-support')}
+                />
+                <CatalogueCheck
+                  label="செரிமானம் (Digestive Care)"
+                  checked={category === 'digestive-care'}
+                  onChange={() => setCategory(category === 'digestive-care' ? 'all' : 'digestive-care')}
+                />
+                <CatalogueCheck
+                  label="வலி நிவாரணம் (Pain Relief)"
+                  checked={category === 'pain-relief'}
+                  onChange={() => setCategory(category === 'pain-relief' ? 'all' : 'pain-relief')}
+                />
               </FilterGroup>
 
               <div style={{ marginTop: 10, overflow: 'hidden' }}>
@@ -318,33 +343,42 @@ export function StorefrontPage({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
                 <span style={{ fontSize: '0.92rem', color: '#e8e4dd', fontWeight: 500 }}>
-                  Showing <strong style={{ color: '#e9c349' }}>24</strong> Premium {tradition === 'siddha' ? 'Siddha' : tradition === 'ayurveda' ? 'Ayurvedic' : 'Natural'} Formulations
+                  Showing <strong style={{ color: '#e9c349' }}>{products.length}</strong> Premium {tradition === 'siddha' ? 'Siddha' : tradition === 'ayurveda' ? 'Ayurvedic' : tradition === 'natural' ? 'Natural' : 'Traditional'} Formulations
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: '#e8e4dd', fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.05em' }}>
                   SORT BY
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 2 }}>
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as SortKey)}
+                    style={{ background: 'transparent', border: 'none', color: '#e9c349', fontWeight: 700, outline: 'none', cursor: 'pointer' }}
+                  >
+                    <option value="newest" style={{ background: '#050c08', color: '#fff' }}>Newest</option>
+                    <option value="price-low" style={{ background: '#050c08', color: '#fff' }}>Price: Low to High</option>
+                    <option value="price-high" style={{ background: '#050c08', color: '#fff' }}>Price: High to Low</option>
+                    <option value="rating" style={{ background: '#050c08', color: '#fff' }}>Rating</option>
+                  </select>
                 </div>
               </div>
 
               {loading && products.length === 0 ? (
                 <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
                   {Array.from({ length: 6 }, (_, index) => (
-                    <div key={index} style={{ minHeight: 526, background: 'rgba(30,29,29,0.78)' }} />
+                    <div key={index} style={{ minHeight: 420, background: 'rgba(30,29,29,0.78)' }} />
                   ))}
+                </div>
+              ) : products.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '60px 0', display: 'grid', gap: 12 }}>
+                  <FontAwesomeIcon icon={faBoxOpen} style={{ width: 44, height: 44, color: '#e9c349', margin: '0 auto' }} />
+                  <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.4rem' }}>No products found</h3>
+                  <p style={{ margin: 0, color: '#a5aca7', fontSize: '0.92rem' }}>Try modifying your search or sidebar filters.</p>
                 </div>
               ) : (
                 <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
-                  {CATALOGUE_CARDS.map((card, index) => (
+                  {products.map((product) => (
                     <CatalogueProductCard
-                      key={card.slug}
-                      card={card}
-                      actionProduct={actionProducts[index]}
-                      onAddToCart={(product) => {
-                        if (product) void addToCart(product);
-                        else showToast('Products are still loading. Please try again.');
-                      }}
+                      key={product.id}
+                      product={product}
+                      onAddToCart={addToCart}
                     />
                   ))}
                 </div>
@@ -615,20 +649,34 @@ function FilterGroup({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-function CatalogueCheck({ label, checked }: { label: string; checked: boolean }) {
+function CatalogueCheck({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange?: () => void;
+}) {
   return (
-    <label style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      minHeight: 32,
-      color: checked ? '#e8e4dd' : '#7e8781',
-      fontSize: '0.92rem',
-      fontWeight: checked ? 600 : 500,
-      cursor: 'pointer',
-      userSelect: 'none',
-      marginBottom: 10,
-    }}>
+    <label
+      onClick={(e) => {
+        e.preventDefault();
+        onChange?.();
+      }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        minHeight: 32,
+        color: checked ? '#e8e4dd' : '#7e8781',
+        fontSize: '0.92rem',
+        fontWeight: checked ? 600 : 500,
+        cursor: 'pointer',
+        userSelect: 'none',
+        marginBottom: 10,
+      }}
+    >
       <div style={{
         width: 18,
         height: 18,
@@ -652,14 +700,16 @@ function CatalogueCheck({ label, checked }: { label: string; checked: boolean })
 }
 
 function CatalogueProductCard({
-  card,
-  actionProduct,
+  product,
   onAddToCart,
 }: {
-  card: typeof CATALOGUE_CARDS[number];
-  actionProduct?: SeedMedicine;
-  onAddToCart: (product?: SeedMedicine) => void;
+  product: SeedMedicine;
+  onAddToCart: (product: SeedMedicine) => void;
 }) {
+  const discount = product.mrp > product.price
+    ? `${Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF`
+    : null;
+
   return (
     <article style={{
       background: '#040f0c',
@@ -670,10 +720,17 @@ function CatalogueProductCard({
       height: '100%',
     }}>
       <div style={{ position: 'relative', aspectRatio: '1 / 1', overflow: 'hidden', background: '#071711' }}>
-        <Link href={`/products/${card.slug}`} style={{ display: 'block', width: '100%', height: '100%' }}>
-          <Image src={card.image} alt={card.nameTa} fill sizes="(max-width: 900px) 50vw, 312px" style={{ objectFit: 'cover' }} />
+        <Link href={`/products/${product.slug}`} style={{ display: 'block', width: '100%', height: '100%' }}>
+          {product.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={product.imageUrl} alt={product.nameTa} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7570', fontSize: '2rem' }}>
+              🍃
+            </div>
+          )}
         </Link>
-        {card.discount && (
+        {discount && (
           <div style={{
             position: 'absolute',
             top: 12,
@@ -686,7 +743,7 @@ function CatalogueProductCard({
             letterSpacing: '0.05em',
             zIndex: 10,
           }}>
-            {card.discount}
+            {discount}
           </div>
         )}
       </div>
@@ -703,10 +760,10 @@ function CatalogueProductCard({
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
           }}>
-            {card.category}
+            {product.categoryNameEn || product.categorySlug}
           </span>
         </div>
-        <Link href={`/products/${card.slug}`} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <Link href={`/products/${product.slug}`} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', flexDirection: 'column', flex: 1 }}>
           <h2 style={{
             margin: '0 0 8px',
             fontFamily: "'Noto Serif Tamil','Catamaran',serif",
@@ -716,44 +773,45 @@ function CatalogueProductCard({
             color: '#f0efec',
             letterSpacing: 0,
           }}>
-            {card.nameTa}
+            {product.nameTa}
           </h2>
           <p style={{ margin: '0 0 20px', color: '#a5aca7', fontSize: '0.8rem', lineHeight: 1.4, fontWeight: 500 }}>
-            {card.nameEn}
+            {product.nameEn}
           </p>
         </Link>
         <div style={{ marginTop: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
-            <span style={{ fontSize: '1.25rem', color: '#e9c349', fontWeight: 700 }}>{card.price}</span>
-            {card.originalPrice && (
-              <span style={{ fontSize: '0.92rem', color: '#6b7570', textDecoration: 'line-through' }}>{card.originalPrice}</span>
+            <span style={{ fontSize: '1.25rem', color: '#e9c349', fontWeight: 700 }}>₹{product.price}</span>
+            {product.mrp > product.price && (
+              <span style={{ fontSize: '0.92rem', color: '#6b7570', textDecoration: 'line-through' }}>₹{product.mrp}</span>
             )}
             <span style={{
               fontSize: '0.78rem',
-              color: card.stock === 'In Stock' ? '#8fa096' : '#dca149',
+              color: product.inStock ? '#8fa096' : '#dca149',
               fontWeight: 600,
               marginLeft: 'auto',
             }}>
-              {card.stock}
+              {product.inStock ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
           <button
             type="button"
-            onClick={() => onAddToCart(actionProduct)}
+            onClick={() => onAddToCart(product)}
+            disabled={!product.inStock}
             style={{
               width: '100%',
               padding: '12px 0',
               border: 'none',
-              background: '#e9c349',
-              color: '#000',
+              background: product.inStock ? '#e9c349' : '#3c413e',
+              color: product.inStock ? '#000' : '#888',
               fontWeight: 700,
               fontSize: '0.85rem',
               letterSpacing: '0.08em',
-              cursor: 'pointer',
+              cursor: product.inStock ? 'pointer' : 'not-allowed',
               transition: 'background 0.2s',
             }}
           >
-            ADD TO CART
+            {product.inStock ? 'ADD TO CART' : 'OUT OF STOCK'}
           </button>
         </div>
       </div>

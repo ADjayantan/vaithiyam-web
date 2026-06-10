@@ -125,6 +125,26 @@ export default function ScannerPage() {
     } catch { showToast('Could not add to cart.'); }
   }, [showToast]);
 
+  const addToWishlist = useCallback(async (product: SeedMedicine) => {
+    const token = getToken();
+    if (!token) {
+      showToast('Please login to save wishlist items.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ productId: product.id }),
+      });
+      const data = await res.json().catch(() => ({})) as { message?: string };
+      if (!res.ok) throw new Error(data.message ?? 'Could not add to wishlist.');
+      showToast(data.message ?? 'Added to wishlist.');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Could not add to wishlist.');
+    }
+  }, [showToast]);
+
   const canOcr  = file && scriptReady;
   const canSearch = query.trim().length >= 2;
 
@@ -333,7 +353,7 @@ export default function ScannerPage() {
                 </h2>
                 <div className="vt-grid">
                   {results.map(product => (
-                    <ProductCard key={product.id} product={product} onAddToCart={addToCart} onWishlist={() => showToast('Please login to save items.')} />
+                    <ProductCard key={product.id} product={product} onAddToCart={addToCart} onWishlist={addToWishlist} />
                   ))}
                 </div>
               </div>

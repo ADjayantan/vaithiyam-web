@@ -3,6 +3,7 @@
  * Zustand cart store — persists to localStorage.
  */
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 export type { CartItem } from '../types/order';
 import type { CartItem } from '../types/order';
 
@@ -28,54 +29,61 @@ function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-export const useCartStore = create<CartState>()((set, get) => ({
-  items: [],
-  isLoading: false,
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      isLoading: false,
 
-  setItems(items) {
-    set({ items });
-  },
+      setItems(items) {
+        set({ items });
+      },
 
-  setLoading(isLoading) {
-    set({ isLoading });
-  },
+      setLoading(isLoading) {
+        set({ isLoading });
+      },
 
-  addItem(item) {
-    set((state) => {
-      const existing = state.items.find(i => i.productId === item.productId);
-      if (existing) {
-        return {
-          items: state.items.map(i =>
-            i.productId === item.productId
-              ? { ...i, qty: i.qty + item.qty }
-              : i
-          ),
-        };
-      }
-      return { items: [...state.items, { ...item, id: uid() }] };
-    });
-  },
+      addItem(item) {
+        set((state) => {
+          const existing = state.items.find(i => i.productId === item.productId);
+          if (existing) {
+            return {
+              items: state.items.map(i =>
+                i.productId === item.productId
+                  ? { ...i, qty: i.qty + item.qty }
+                  : i
+              ),
+            };
+          }
+          return { items: [...state.items, { ...item, id: uid() }] };
+        });
+      },
 
-  removeItem(productId) {
-    set(state => ({ items: state.items.filter(i => i.productId !== productId) }));
-  },
+      removeItem(productId) {
+        set(state => ({ items: state.items.filter(i => i.productId !== productId) }));
+      },
 
-  updateQty(productId, qty) {
-    if (qty <= 0) {
-      get().removeItem(productId);
-    } else {
-      set(state => ({
-        items: state.items.map(i =>
-          i.productId === productId ? { ...i, qty } : i
-        ),
-      }));
+      updateQty(productId, qty) {
+        if (qty <= 0) {
+          get().removeItem(productId);
+        } else {
+          set(state => ({
+            items: state.items.map(i =>
+              i.productId === productId ? { ...i, qty } : i
+            ),
+          }));
+        }
+      },
+
+      clearCart() {
+        set({ items: [] });
+      },
+    }),
+    {
+      name: 'vt-cart-storage',
     }
-  },
-
-  clearCart() {
-    set({ items: [] });
-  },
-}));
+  )
+);
 
 // ─── Selectors ────────────────────────────────────────────────────────────────
 
