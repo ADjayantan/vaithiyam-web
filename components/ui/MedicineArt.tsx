@@ -1,11 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faLeaf,
-  faSeedling,
-  faMortarPestle,
-  faShieldVirus,
-  faStar,
-} from '@fortawesome/free-solid-svg-icons';
+import { faLeaf, faSeedling, faMortarPestle, faShieldVirus, faStar, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { getMedicineInitials, type SeedMedicine } from '@/lib/medicineData';
 
@@ -34,9 +28,65 @@ export function MedicineArt({
   product,
   compact = false,
 }: {
-  product: SeedMedicine | { nameEn: string; artTone?: SeedMedicine['artTone']; tradition?: SeedMedicine['tradition']; prescriptionRequired?: boolean };
+  product: SeedMedicine | { nameEn: string; artTone?: SeedMedicine['artTone']; tradition?: SeedMedicine['tradition']; prescriptionRequired?: boolean; imageUrl?: string };
   compact?: boolean;
 }) {
+  if (product.imageUrl) {
+    return (
+      <div
+        className="vt-product-art"
+        style={{
+          background: 'rgba(13,34,24,0.60)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: compact ? '200px' : '100%',
+          aspectRatio: compact ? 'auto' : '1',
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: compact ? '14px' : '24px',
+        }}
+      >
+        <img
+          src={product.imageUrl}
+          alt={product.nameEn}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        {product.prescriptionRequired && (
+          <div
+            className="vt-badge vt-badge-danger"
+            style={{ position: 'absolute', top: 10, right: 10, zIndex: 2 }}
+          >
+            <FontAwesomeIcon icon={faShieldVirus} style={{ width: 12, height: 12 }} /> Rx
+          </div>
+        )}
+        {!compact && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(3,12,7,0.75)',
+              border: '1px solid rgba(61,138,92,0.28)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#F5EDD6',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            }}
+          >
+            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 15, height: 15 }} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   const initials   = getMedicineInitials(product.nameEn);
   const background = toneClass[(product as SeedMedicine).artTone ?? 'emerald'];
   const tradition  = (product as SeedMedicine).tradition ?? 'siddha';
