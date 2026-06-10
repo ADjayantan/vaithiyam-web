@@ -328,6 +328,56 @@ input, select, textarea { font: inherit; }
   color: white;
 }
 
+/* Center nav links (desktop first, hidden on mobile) */
+.vt-header-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+  justify-content: center;
+}
+
+.vt-header-nav-links a {
+  font-family: 'Cormorant Garamond', 'Noto Serif Tamil', serif;
+  font-size: 0.95rem;
+  color: rgba(245, 237, 214, 0.70);
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 4px 0;
+}
+
+.vt-header-nav-links a:hover {
+  color: var(--vt-gold-300, #e9c349);
+}
+
+.vt-header-nav-links a.active {
+  color: var(--vt-gold-300, #e9c349);
+}
+
+.vt-header-nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--vt-gold-300, #e9c349);
+  border-radius: 2px;
+}
+
+@media (max-width: 759px) {
+  .vt-header-nav-links {
+    display: none !important;
+  }
+  .vt-icon-desktop-only {
+    display: none !important;
+  }
+}
+
 .vt-cart-count {
   position: absolute;
   top: -4px;

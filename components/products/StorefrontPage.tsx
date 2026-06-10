@@ -254,7 +254,7 @@ export function StorefrontPage({
 
     return (
       <div className="vt-catalogue-page" style={{ minHeight: '100dvh', background: '#061711', color: '#e8e4dd', fontFamily: "'Outfit','Catamaran',system-ui,sans-serif" }}>
-        <CatalogueNav cartCount={cartCount} activeTradition={tradition} />
+        <CustomerHeader cartCount={cartCount} searchValue={search} onSearchChange={setSearch} />
 
         <main className="vt-catalogue-main" style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', padding: '34px 0 108px' }}>
           <section style={{
@@ -581,64 +581,7 @@ export function StorefrontPage({
   );
 }
 
-function CatalogueNav({ cartCount, activeTradition, activeCategory }: { cartCount: number; activeTradition?: string; activeCategory?: string }) {
-  const isSiddha = activeTradition === 'siddha';
-  const isAyurveda = activeTradition === 'ayurveda';
-  const isCancer = activeCategory === 'cancercare';
 
-  return (
-    <header style={{ height: 70, background: '#050c08', borderBottom: '1px solid rgba(61,138,92,0.1)', position: 'sticky', top: 0, zIndex: 100 }}>
-      <div style={{ width: 'min(1324px, calc(100% - 48px))', height: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
-        <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700 }}>
-          Vaithiyam
-        </Link>
-        <nav className="vt-catalogue-navlinks" style={{ display: 'flex', alignItems: 'center', gap: 38, color: '#c8c8c0', fontSize: 16, letterSpacing: '0.09em', fontWeight: 700 }}>
-          <Link href="/products" style={{ color: isCancer ? '#e9c349' : '#c8c8c0', textDecoration: 'none', borderBottom: isCancer ? '3px solid #e9c349' : 'none', paddingBottom: isCancer ? 8 : 0 }}>
-            Cancer Care
-          </Link>
-          <Link href="/products?tradition=siddha" style={{ color: isSiddha ? '#e9c349' : '#c8c8c0', textDecoration: 'none', borderBottom: isSiddha ? '3px solid #e9c349' : 'none', paddingBottom: isSiddha ? 8 : 0 }}>
-            Siddha
-          </Link>
-          <Link href="/products?tradition=ayurveda" style={{ color: isAyurveda ? '#e9c349' : '#c8c8c0', textDecoration: 'none', borderBottom: isAyurveda ? '3px solid #e9c349' : 'none', paddingBottom: isAyurveda ? 8 : 0 }}>
-            Ayurveda
-          </Link>
-          <Link href="/help" style={{ color: '#c8c8c0', textDecoration: 'none' }}>
-            Consultations
-          </Link>
-        </nav>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 22, color: '#e9c349' }}>
-          <Link href="/products" aria-label="Search" style={{ color: 'inherit' }}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ width: 18, height: 18 }} />
-          </Link>
-          <Link href="/cart" aria-label="Cart" style={{ color: 'inherit', position: 'relative' }}>
-            <FontAwesomeIcon icon={faBagShopping} style={{ width: 18, height: 18 }} />
-            {cartCount > 0 && (
-              <span style={{
-                position: 'absolute', top: -9, right: -9,
-                width: 14, height: 14, borderRadius: '50%',
-                background: '#e9c349', color: '#000',
-                fontSize: '0.62rem', fontWeight: 800,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>{cartCount}</span>
-            )}
-          </Link>
-          <Link href="/auth/login" style={{
-            border: '1px solid #e9c349',
-            color: '#e9c349',
-            padding: '6px 20px',
-            borderRadius: 4,
-            textDecoration: 'none',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            transition: 'all 0.2s',
-          }}>
-            Login
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
