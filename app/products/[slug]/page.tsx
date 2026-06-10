@@ -243,7 +243,7 @@ export default function ProductDetailPage() {
     reviews: (
       <div style={{ display: 'grid', gap: 20 }}>
         {/* Summary bar */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, alignItems: 'start', padding: 20, borderRadius: 18, background: 'rgba(3,12,7,0.40)', border: '1px solid rgba(61,138,92,0.12)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 20, alignItems: 'start', padding: 20, borderRadius: 18, background: 'rgba(3,12,7,0.40)', border: '1px solid rgba(61,138,92,0.12)' }}>
           <div style={{ textAlign: 'center' }}>
             <p style={{ margin: '0 0 4px', fontFamily: FONT.display, fontSize: '3rem', fontWeight: 700, fontStyle: 'italic', color: '#E8A820', lineHeight: 1 }}>
               {reviewAvg !== null ? reviewAvg.toFixed(1) : product.rating.toFixed(1)}
@@ -440,7 +440,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Product Details Section Grid */}
-        <section style={{ display: 'grid', gap: 32, gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', alignItems: 'start', marginBottom: 48 }}>
+        <section style={{ display: 'grid', gap: 32, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', alignItems: 'start', marginBottom: 48 }}>
           {/* Left Column: Image wrapper with Magnifier zoom overlay */}
           <div style={{
             background: 'rgba(13,34,24,0.60)',
@@ -802,7 +802,7 @@ export default function ProductDetailPage() {
             {/* Tab panel body */}
             <div style={{ minHeight: '180px', color: 'rgba(245,237,214,0.85)', lineHeight: 1.75 }}>
               {tab === 'overview' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 32 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 32 }}>
                   {/* Left Column Description */}
                   <div>
                     <h3 style={{ margin: '0 0 16px', fontFamily: FONT.display, fontSize: '1.6rem', color: '#F5EDD6', fontStyle: 'italic', fontWeight: 600 }}>
@@ -883,7 +883,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Recommended cards grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: 24 }}>
               {recommendations.map((rec) => (
                 <Link
                   href={`/products/${rec.slug}`}
