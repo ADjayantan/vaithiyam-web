@@ -328,16 +328,20 @@ function CollectionsSection({ products, onAddToCart }: { products: SeedMedicine[
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
             >
               <Link href={p.href} style={{
-                display: 'block', textDecoration: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                textDecoration: 'none',
                 background: 'rgba(10,20,15,0.90)',
                 border: '1px solid rgba(61,138,92,0.16)',
                 borderRadius: 4, overflow: 'hidden',
                 transition: 'transform 0.3s ease, border-color 0.3s ease',
               }}>
                 {/* Product image */}
-                <div style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '1', overflow: 'hidden' }}>
                   <Image
                     src={p.img}
                     alt={p.nameTa}
@@ -359,7 +363,7 @@ function CollectionsSection({ products, onAddToCart }: { products: SeedMedicine[
                 </div>
 
                 {/* Product info */}
-                <div style={{ padding: '18px 20px' }}>
+                <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                   <h3 style={{
                     margin: '0 0 4px',
                     fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
@@ -371,9 +375,13 @@ function CollectionsSection({ products, onAddToCart }: { products: SeedMedicine[
                   <p style={{ margin: 0, fontSize: '0.68rem', color: 'rgba(245,237,214,0.38)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     {p.nameEn}
                   </p>
+                  
+                  {/* Spacer to push price to the bottom */}
+                  <div style={{ flexGrow: 1, minHeight: 12 }} />
+                  
                   {p.price && (
                     <p style={{
-                      margin: '10px 0 0',
+                      margin: 0,
                       fontFamily: "'Cormorant Garamond',serif",
                       fontSize: '1.1rem', fontStyle: 'italic', fontWeight: 600,
                       color: '#F5EDD6',
