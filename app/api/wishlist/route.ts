@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/mockDb';
 import { getAuthenticatedUserId, unauthorized } from '@/lib/apiAuth';
+import { listProducts } from '@/lib/db/products';
 
 export async function GET(req: NextRequest) {
   const userId = await getAuthenticatedUserId(req);
@@ -19,7 +20,8 @@ export async function POST(req: NextRequest) {
   if (!userId) return unauthorized();
 
   const body = await req.json() as { productId?: string };
-  const product = db.products.find((item) => item.id === body.productId || item.slug === body.productId);
+  const products = await listProducts();
+  const product = products.find((item) => item.id === body.productId || item.slug === body.productId);
   if (!product) {
     return NextResponse.json({ message: 'பொருள் கண்டுபிடிக்கவில்லை.' }, { status: 404 });
   }

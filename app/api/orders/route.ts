@@ -46,10 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'டெலிவரி முகவரி தேர்வு செய்யவும்.' }, { status: 400 });
   }
 
-  const needsPrescription = cartItems.some((cartItem) => {
-    const product = db.products.find((item) => item.id === cartItem.productId);
-    return product?.prescriptionRequired;
-  });
+  const needsPrescription = cartItems.some((cartItem) => cartItem.requiresPrescription);
 
   const reviewedPrescription = db.getPrescriptionsForUser(userId).find((prescription) =>
     prescription.status === 'pending_review' || prescription.status === 'approved'

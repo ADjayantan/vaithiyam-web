@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ orderI
 
   let cartItemsAdded = 0;
   for (const item of order.items) {
-    const added = addProductToCart(userId, item.productId, item.qty);
+    const added = await addProductToCart(userId, item.productId, item.qty);
     if (added) cartItemsAdded += item.qty;
   }
 

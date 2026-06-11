@@ -1,5 +1,6 @@
 import { db, type DbCartItem } from '@/lib/mockDb';
 import type { CartItem } from '@/types/order';
+import { listProducts } from '@/lib/db/products';
 
 export interface CartTotals {
   subtotal: number;
@@ -17,13 +18,7 @@ export interface CartSnapshot {
   cartItemCount: number;
 }
 
-function findProduct(productId: string) {
-  return db.products.find((product) => product.id === productId);
-}
-
 export function toCartItem(item: DbCartItem): CartItem {
-  const product = findProduct(item.productId);
-
   return {
     id: item.id,
     productId: item.productId,
@@ -32,8 +27,8 @@ export function toCartItem(item: DbCartItem): CartItem {
     imageUrl: item.imageUrl,
     price: item.price,
     qty: item.qty,
-    mrp: product?.mrp ?? item.price,
-    requiresPrescription: product?.prescriptionRequired ?? false,
+    mrp: item.mrp ?? item.price,
+    requiresPrescription: item.requiresPrescription ?? false,
   };
 }
 
@@ -66,9 +61,10 @@ export function getCartSnapshot(userId: string): CartSnapshot {
   };
 }
 
-export function addProductToCart(userId: string, productId: string, qty = 1): DbCartItem | null {
+export async function addProductToCart(userId: string, productId: string, qty = 1): Promise<DbCartItem | null> {
   const safeQty = Math.max(1, Math.min(99, Math.floor(qty)));
-  const product = findProduct(productId);
+  const products = await listProducts();
+  const product = products.find((p) => p.id === productId);
   if (!product || !product.inStock) return null;
 
   const existing = db.getCartForUser(userId).find((item) => item.productId === productId);
@@ -91,6 +87,8 @@ export function addProductToCart(userId: string, productId: string, qty = 1): Db
     nameTa: product.nameTa,
     nameEn: product.nameEn,
     imageUrl: product.imageUrl,
+    mrp: product.mrp,
+    requiresPrescription: product.prescriptionRequired,
   };
 
   db.cart.set(id, item);

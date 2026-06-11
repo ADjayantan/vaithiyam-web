@@ -58,7 +58,6 @@ export function toOrderData(order: DbOrder) {
   const address = db.addresses.get(order.addressId);
 
   const items = order.items.map((item) => {
-    const product = db.products.find((candidate) => candidate.id === item.productId);
     return {
       productId: item.productId,
       nameTa: item.nameTa,
@@ -66,9 +65,9 @@ export function toOrderData(order: DbOrder) {
       imageUrl: item.imageUrl,
       qty: item.qty,
       price: item.price,
-      mrp: product?.mrp ?? item.price,
+      mrp: item.mrp ?? item.price,
       lineTotal: item.price * item.qty,
-      requiresPrescription: product?.prescriptionRequired ?? false,
+      requiresPrescription: item.requiresPrescription ?? false,
     };
   });
 

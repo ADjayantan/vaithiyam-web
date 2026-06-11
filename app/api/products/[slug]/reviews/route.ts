@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthenticatedUserId, unauthorized } from '@/lib/apiAuth';
 import { db } from '@/lib/mockDb';
+import { getProductBySlug } from '@/lib/db/products';
 
 type Ctx = { params: Promise<{ slug: string }> };
 
 /* ─── GET /api/products/[slug]/reviews ─────────────────────────────────── */
 export async function GET(_req: NextRequest, { params }: Ctx) {
   const { slug } = await params;
-  const product = db.products.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return NextResponse.json({ message: 'Product not found.' }, { status: 404 });
 
   const reviews = db.reviews
@@ -32,7 +33,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   if (!userId) return unauthorized();
 
   const { slug } = await params;
-  const product = db.products.find(p => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return NextResponse.json({ message: 'Product not found.' }, { status: 404 });
 
   const body = await req.json().catch(() => ({})) as {

@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
 
   const body   = await req.json() as { productId: string; qty?: number };
 
-  const item = addProductToCart(userId, body.productId, body.qty ?? 1);
+  const item = await addProductToCart(userId, body.productId, body.qty ?? 1);
   if (!item) {
     return NextResponse.json({ message: 'பொருள் கிடைக்கவில்லை அல்லது கையிருப்பில் இல்லை.' }, { status: 404 });
   }

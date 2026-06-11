@@ -60,6 +60,8 @@ export interface DbCartItem {
   nameTa: string;
   nameEn: string;
   imageUrl?: string;
+  mrp?: number;
+  requiresPrescription?: boolean;
 }
 
 export interface DbOrder {
@@ -164,6 +166,8 @@ const SEED_CART: DbCartItem[] = [
     nameTa: SEED_PRODUCTS[0].nameTa,
     nameEn: SEED_PRODUCTS[0].nameEn,
     imageUrl: SEED_PRODUCTS[0].imageUrl,
+    mrp: SEED_PRODUCTS[0].mrp,
+    requiresPrescription: SEED_PRODUCTS[0].prescriptionRequired,
   },
   {
     id: 'ci_002',
@@ -174,6 +178,8 @@ const SEED_CART: DbCartItem[] = [
     nameTa: SEED_PRODUCTS[3].nameTa,
     nameEn: SEED_PRODUCTS[3].nameEn,
     imageUrl: SEED_PRODUCTS[3].imageUrl,
+    mrp: SEED_PRODUCTS[3].mrp,
+    requiresPrescription: SEED_PRODUCTS[3].prescriptionRequired,
   },
 ];
 
