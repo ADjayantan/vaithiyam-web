@@ -146,14 +146,14 @@ function HeroSection() {
       >
         <h1 style={{
           fontFamily: "'Cormorant Garamond','Noto Serif Tamil',Georgia,serif",
-          fontSize: 'clamp(2.2rem, 6vw, 4.2rem)',
+          fontSize: 'clamp(1.8rem, 6vw, 4.2rem)',
           fontWeight: 300, lineHeight: 1.15,
           color: '#F5EDD6',
           margin: '0 0 36px',
           letterSpacing: '-0.01em',
           textShadow: '0 2px 40px rgba(0,0,0,0.60)',
         }}>
-          பாரம்பரிய சித்த மற்றும் ஆயுர்வேதம்.<br />
+          பாரம்பரிய சித்த மற்றும் ஆயுர்வேதம். <br />
           பண்டைய ஞானம், மேம்படுத்தப்பட்டது.
         </h1>
 
