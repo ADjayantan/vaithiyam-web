@@ -8,6 +8,8 @@ import {
   faHouse, faLeaf, faMagnifyingGlass, faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import { Suspense, useEffect, useRef, useState } from 'react';
+import { useCartStore } from '@/stores/cartStore';
+import type { CartItem } from '@/types/order';
 
 function HeaderNavLinks() {
   const pathname = usePathname();
@@ -15,7 +17,7 @@ function HeaderNavLinks() {
   const links = [
     { label: 'முகப்பு', href: '/', active: pathname === '/' },
     { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' || pathname.startsWith('/products/') },
-    { label: 'ஆலோசனை', href: '/help', active: pathname === '/help' },
+    { label: 'உதவி', href: '/help', active: pathname === '/help' },
     { label: 'பற்றி', href: '/about', active: pathname === '/about' },
     { label: 'எங்களைத் தொடர்பு கொள்ள', href: '/contact', active: pathname === '/contact' },
   ];
@@ -36,7 +38,7 @@ function HeaderNavLinks() {
 }
 
 export function CustomerHeader({
-  cartCount = 0,
+  cartCount,
   searchValue = '',
   onSearchChange,
 }: {
@@ -44,22 +46,29 @@ export function CustomerHeader({
   searchValue?: string;
   onSearchChange?: (value: string) => void;
 }) {
-  const [localCartCount, setLocalCartCount] = useState(cartCount);
+  const storeItems = useCartStore((state) => state.items);
+  const storeItemCount = storeItems.reduce((s, i) => s + i.qty, 0);
+
+  const [localCartCount, setLocalCartCount] = useState(cartCount !== undefined ? cartCount : storeItemCount);
   const [searchActive, setSearchActive] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setLocalCartCount(cartCount);
-  }, [cartCount]);
+    if (cartCount !== undefined) {
+      setLocalCartCount(cartCount);
+    } else {
+      setLocalCartCount(storeItemCount);
+    }
+  }, [cartCount, storeItemCount]);
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('vt_token') ?? sessionStorage.getItem('vt_token')) : null;
     if (!token) return;
     fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' })
       .then(res => res.ok ? res.json() : null)
-      .then((data: { cartItemCount?: number } | null) => {
-        if (data && typeof data.cartItemCount === 'number') {
-          setLocalCartCount(data.cartItemCount);
+      .then((data: { items?: CartItem[] } | null) => {
+        if (data?.items) {
+          useCartStore.getState().setItems(data.items);
         }
       })
       .catch(() => {});
@@ -235,7 +244,7 @@ export function CustomerFooter() {
           <div style={{ display: 'grid', gap: 9, color: 'var(--vt-muted)', fontSize: '0.9rem' }}>
             <Link href="/">முகப்பு</Link>
             <Link href="/products">மருந்துகள்</Link>
-            <Link href="/help">ஆலோசனை</Link>
+            <Link href="/help">உதவி</Link>
             <Link href="/about">வைத்தியம் பற்றி</Link>
             <Link href="/contact">எங்களைத் தொடர்பு கொள்ள</Link>
           </div>

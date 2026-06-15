@@ -45,6 +45,14 @@ export default function AgasthiyanWidget() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleOpenWidget = () => {
+      setIsOpen(true);
+    };
+    window.addEventListener('open-agasthiyan', handleOpenWidget);
+    return () => window.removeEventListener('open-agasthiyan', handleOpenWidget);
+  }, []);
+
   // Auto scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {

@@ -754,22 +754,34 @@ input, select, textarea { font: inherit; }
 /* ─────────────────────────────────────────────────────────────────
    BUTTONS
    ───────────────────────────────────────────────────────────────── */
-.vt-button-primary {
+.vt-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 13px 28px;
-  border: none;
   border-radius: var(--vt-radius-pill);
+  font-family: var(--vt-font-body);
+  font-size: 0.87rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease, border-color 200ms ease, color 200ms ease;
+  position: relative;
+  overflow: hidden;
+}
+.vt-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.vt-button-primary {
   background: linear-gradient(135deg, var(--vt-forest-700) 0%, var(--vt-forest-600) 100%);
   color: white;
-  font-family: var(--vt-font-body);
-  font-size: 0.87rem; font-weight: 500;
-  cursor: pointer; text-decoration: none;
-  transition: transform 200ms ease, box-shadow 200ms ease;
   box-shadow: 0 8px 32px rgba(45,104,69,0.40);
-  position: relative; overflow: hidden;
 }
 .vt-button-primary::after {
   content: '';
@@ -780,6 +792,40 @@ input, select, textarea { font: inherit; }
 .vt-button-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(45,104,69,0.50); }
 .vt-button-primary:hover::after { opacity: 1; }
 .vt-button-primary:disabled {
+  opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
+}
+
+.vt-button-gold {
+  background: linear-gradient(135deg, var(--vt-gold-600) 0%, var(--vt-gold-500) 100%);
+  color: white;
+  box-shadow: 0 8px 32px rgba(212,137,10,0.30);
+}
+.vt-button-gold::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1));
+  opacity: 0; transition: opacity 200ms;
+}
+.vt-button-gold:hover { transform: translateY(-3px); box-shadow: var(--vt-shadow-gold); }
+.vt-button-gold:hover::after { opacity: 1; }
+.vt-button-gold:disabled {
+  opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
+}
+
+.vt-button-danger {
+  background: linear-gradient(135deg, var(--vt-coral-600) 0%, var(--vt-coral-500) 100%);
+  color: white;
+  box-shadow: 0 8px 32px rgba(212,50,30,0.25);
+}
+.vt-button-danger::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1));
+  opacity: 0; transition: opacity 200ms;
+}
+.vt-button-danger:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(212,50,30,0.35); }
+.vt-button-danger:hover::after { opacity: 1; }
+.vt-button-danger:disabled {
   opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
 }
 

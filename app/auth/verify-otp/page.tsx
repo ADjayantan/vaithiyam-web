@@ -42,6 +42,7 @@ import Link                                            from 'next/link';
 import { FontAwesomeIcon }                             from '@fortawesome/react-fontawesome';
 import { faSeedling, faMobileScreen }                  from '@fortawesome/free-solid-svg-icons';
 import OtpVerification                                 from '../../../components/auth/OtpVerification';
+import { useCartStore }                                from '../../../stores/cartStore';
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const T = {
@@ -282,6 +283,25 @@ function VerifyOtpInner() {
         localStorage.setItem('vt_user',  JSON.stringify(user));
         sessionStorage.setItem('vt_token', token);
         sessionStorage.setItem('vt_user',  JSON.stringify(user));
+
+        // Sync local guest cart if items exist
+        const guestItems = useCartStore.getState().items;
+        if (guestItems.length > 0) {
+          try {
+            const res = await fetch('/api/cart/sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify({
+                items: guestItems.map(item => ({ productId: item.productId, qty: item.qty }))
+              }),
+            });
+            if (res.ok) {
+              useCartStore.getState().clearCart();
+            }
+          } catch (e) {
+            console.error('Failed to sync guest cart', e);
+          }
+        }
 
         setIsSuccess(true);
       } catch (err) {

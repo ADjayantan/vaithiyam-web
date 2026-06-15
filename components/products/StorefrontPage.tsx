@@ -4,13 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faBoxOpen, faCircleCheck, faFilter, faMagnifyingGlass, faShieldHalved, faStethoscope, faUpload, faLeaf, faCartShopping, faBagShopping, faUserCircle, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 import type { MedicineCategory, SeedMedicine, Tradition } from '@/lib/medicineData';
-import { ButtonLink } from '@/components/ui/Button';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
-import { ProductCard } from '@/components/products/ProductCard';
+import { useCartStore } from '@/stores/cartStore';
 
 type StockFilter = 'all' | 'in-stock' | 'rx';
 type SortKey = 'newest' | 'price-low' | 'price-high' | 'rating';
@@ -39,77 +37,7 @@ function productQuery({ search, tradition, category, stock, sort }: { search: st
   return `/api/products?${params.toString()}`;
 }
 
-const CATALOGUE_CARDS = [
-  {
-    image: '/catalogue-ref-1.png',
-    nameTa: 'அமுக்கரா மாத்திரை',
-    nameEn: 'Withania Somnifera · Vitality & Stress',
-    price: '₹425',
-    originalPrice: '₹500',
-    discount: '15% OFF',
-    stock: 'In Stock',
-    category: 'SIDDHA',
-    slug: 'ashwagandha-churnam',
-  },
-  {
-    image: '/catalogue-ref-2.png',
-    nameTa: 'நிலவேம்பு குடிநீர்',
-    nameEn: 'Andrographis Paniculata · Fever & Immunity',
-    price: '₹280',
-    originalPrice: '₹310',
-    discount: '10% OFF',
-    stock: 'In Stock',
-    category: 'SIDDHA',
-    slug: 'nilavembu-kudineer',
-  },
-  {
-    image: '/catalogue-ref-3.png',
-    nameTa: 'பஞ்ச முஷ்டி லேகியம்',
-    nameEn: 'Herbal Jam · Digestion & Gut Health',
-    price: '₹650',
-    originalPrice: '',
-    discount: '',
-    stock: 'Limited Stock',
-    category: 'SIDDHA',
-    slug: 'arugampul-powder',
-  },
-  {
-    image: '/catalogue-ref-4.png',
-    nameTa: 'திரிபலா மாத்திரை',
-    nameEn: 'Triphala · Detox & Rejuvenation',
-    price: '₹195',
-    originalPrice: '',
-    discount: '',
-    stock: 'In Stock',
-    category: 'SIDDHA',
-    slug: 'daily-wellness-combo',
-  },
-  {
-    image: '/catalogue-ref-5.png',
-    nameTa: 'பிரம்ம நிவாரணி',
-    nameEn: 'Brahmi Oil · Focus & Memory',
-    price: '₹390',
-    originalPrice: '',
-    discount: '',
-    stock: 'In Stock',
-    category: 'SIDDHA',
-    slug: 'brahmi-oil',
-  },
-  {
-    image: '/catalogue-ref-6.png',
-    nameTa: 'அரிஷ்டம்',
-    nameEn: 'Jeeraka Arishtam · Blood Purity',
-    price: '₹640',
-    originalPrice: '',
-    discount: '',
-    stock: 'In Stock',
-    category: 'SIDDHA',
-    slug: 'jeeraka-arishtam',
-  },
-] as const;
-
 export function StorefrontPage({
-  mode = 'home',
   initialCategory,
   initialTradition,
   initialSort,
@@ -124,7 +52,7 @@ export function StorefrontPage({
   const [search, setSearch] = useState('');
   const [tradition, setTradition] = useState<Tradition | 'all'>(initialTradition ?? 'all');
   const [category, setCategory] = useState(initialCategory ?? 'all');
-  const [stock, setStock] = useState<StockFilter>('all');
+  const [stock] = useState<StockFilter>('all');
   const [sort, setSort] = useState<SortKey>(initialSort ?? 'newest');
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
@@ -175,17 +103,19 @@ export function StorefrontPage({
       .catch(() => {});
   }, []);
 
-  const featured = useMemo(() => ({
-    popular: products.filter((product) => product.rating >= 4.5).slice(0, 4),
-    newlyAdded: [...products].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 4),
-    wellness: products.filter((product) => ['general-wellness', 'natural-wellness', 'immunity-support'].includes(product.categorySlug)).slice(0, 4),
-    prescription: products.filter((product) => product.prescriptionRequired).slice(0, 4),
-  }), [products]);
-
   const addToCart = useCallback(async (product: SeedMedicine) => {
     const token = getToken();
     if (!token) {
-      showToast('Please login to add medicines to cart.');
+      useCartStore.getState().addItem({
+        productId: product.id,
+        nameTa: product.nameTa,
+        nameEn: product.nameEn,
+        price: product.price,
+        qty: 1,
+        mrp: product.mrp,
+        requiresPrescription: product.prescriptionRequired,
+      });
+      showToast(`${product.nameTa} added to cart.`);
       return;
     }
 
@@ -204,366 +134,155 @@ export function StorefrontPage({
     }
   }, [showToast]);
 
-  const addToWishlist = useCallback(async (product: SeedMedicine) => {
-    const token = getToken();
-    if (!token) {
-      showToast('Please login to save wishlist items.');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/wishlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ productId: product.id }),
-      });
-      const data = await res.json().catch(() => ({})) as { message?: string };
-      if (!res.ok) throw new Error(data.message ?? 'Could not add to wishlist.');
-      showToast(data.message ?? 'Added to wishlist.');
-    } catch (error) {
-      showToast(error instanceof Error ? error.message : 'Could not add to wishlist.');
-    }
-  }, [showToast]);
-
-  if (mode === 'products') {
-    const actionProducts = CATALOGUE_CARDS.map((card, index) => (
-      products.find((product) => product.slug === card.slug) ?? products[index]
-    ));
-
-    let bannerSubtitle = 'HERBAL MEDICINES';
-    let bannerTitle = 'மூலிகை மருந்துகள்';
-    let bannerDesc = 'ஆய்வுக்கணக்கான ஆண்டுகளால் பாரம்பரியமும் நவீன மருத்துவ அறிவியலும் இணைந்த உயர்தர மூலிகை சிகிச்சைகள்.';
-    let breadcrumbText = 'மூலிகை மருந்துகள்';
-
-    if (tradition === 'siddha') {
-      bannerSubtitle = 'SIDDHA TRADITION';
-      bannerTitle = 'சித்த மருத்துவம்';
-      bannerDesc = 'சித்த மருத்துவம் என்பது சுமார் 5000 ஆண்டுகளுக்கு மேலான பழமை வாய்ந்தது. தமிழ் மண்ணிற்கே உரிய ஒரு தொன்மையான மருத்துவ முறையாகும். சித்தர்களால் உருவாக்கப்பட்ட இந்த மருத்துவம், \'உணவே மருந்து, மருந்தே உணவு\' என்ற தத்துவத்தின் அடிப்படையில் உடலையும் மனதையும் தூய்மைப்படுத்துகிறது.';
-      breadcrumbText = 'சித்த மருத்துவம்';
-    } else if (tradition === 'ayurveda') {
-      bannerSubtitle = 'AYURVEDA TRADITION';
-      bannerTitle = 'ஆயுர்வேத மருத்துவம்';
-      bannerDesc = 'ஆயுர்வேத மருத்துவம் என்பது இந்தியாவின் பழமையான பாரம்பரிய மருத்துவ முறையாகும். இது மனித உடலின் வாதம், பித்தம், கபம் ஆகிய மூன்று தோஷங்களைச் சமநிலைப்படுத்தி ஆரோக்கியத்தை மேம்படுத்துவதை நோக்கமாகக் கொண்டுள்ளது.';
-      breadcrumbText = 'ஆயுர்வேதம்';
-    } else if (tradition === 'natural') {
-      bannerSubtitle = 'NATURAL WELLNESS';
-      bannerTitle = 'இயற்கை நலம்';
-      bannerDesc = 'இயற்கை ஆரோக்கியம் என்பது மூலிகைகள், இயற்கை பொருட்கள் மற்றும் வாழ்க்கை முறை மாற்றங்கள் மூலம் உடலை ஆரோக்கியமாக வைத்திருக்கும் ஒரு முறையாகும்.';
-      breadcrumbText = 'இயற்கை நலம்';
-    }
-
-    return (
-      <div className="vt-catalogue-page" style={{ minHeight: '100dvh', background: '#061711', color: '#e8e4dd', fontFamily: "'Outfit','Catamaran',system-ui,sans-serif" }}>
-        <CustomerHeader cartCount={cartCount} searchValue={search} onSearchChange={setSearch} />
-
-        <main className="vt-catalogue-main" style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', padding: '34px 0 108px' }}>
-          <section style={{
-            marginBottom: 52,
-            border: '1px solid rgba(61,138,92,0.16)',
-            background: 'rgba(5, 12, 8, 0.25)',
-            padding: '38px 46px 42px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-              <div style={{ width: 24, height: 1, background: '#e9c349' }} />
-              <span style={{
-                fontSize: '0.78rem',
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                color: '#e9c349',
-                fontWeight: 700,
-              }}>
-                {bannerSubtitle}
-              </span>
-            </div>
-            <h1 style={{
-              margin: '0 0 24px',
-              fontFamily: "'Noto Serif Tamil','Catamaran',serif",
-              fontSize: 'clamp(1.8rem, 4vw, 2.2rem)',
-              lineHeight: 1.2,
-              fontWeight: 700,
-              color: '#f0efec',
-              letterSpacing: 0,
-            }}>
-              {bannerTitle}
-            </h1>
-            <p style={{ margin: 0, color: '#a5aca7', fontSize: '0.95rem', lineHeight: 1.8, fontWeight: 500 }}>
-              {bannerDesc}
-            </p>
-          </section>
-
-          <section className="vt-catalogue-layout" style={{ display: 'grid', gridTemplateColumns: '303px minmax(0, 1fr)', gap: 27, alignItems: 'start' }}>
-            <aside className="vt-catalogue-filter" style={{ position: 'sticky', top: 100, display: 'grid', gap: 40, paddingTop: 3 }}>
-              <FilterGroup title="TRADITION">
-                <CatalogueCheck
-                  label="சித்த மருத்துவம் (Siddha)"
-                  checked={tradition === 'siddha'}
-                  onChange={() => setTradition(tradition === 'siddha' ? 'all' : 'siddha')}
-                />
-                <CatalogueCheck
-                  label="Ayurveda (ஆயுர்வேதம்)"
-                  checked={tradition === 'ayurveda'}
-                  onChange={() => setTradition(tradition === 'ayurveda' ? 'all' : 'ayurveda')}
-                />
-                <CatalogueCheck
-                  label="Natural (இயற்கை)"
-                  checked={tradition === 'natural'}
-                  onChange={() => setTradition(tradition === 'natural' ? 'all' : 'natural')}
-                />
-              </FilterGroup>
-
-              <FilterGroup title="HEALTH GOALS">
-                <CatalogueCheck
-                  label="நோய் எதிர்ப்பு சக்தி (Immunity)"
-                  checked={category === 'immunity-support'}
-                  onChange={() => setCategory(category === 'immunity-support' ? 'all' : 'immunity-support')}
-                />
-                <CatalogueCheck
-                  label="செரிமானம் (Digestive Care)"
-                  checked={category === 'digestive-care'}
-                  onChange={() => setCategory(category === 'digestive-care' ? 'all' : 'digestive-care')}
-                />
-                <CatalogueCheck
-                  label="வலி நிவாரணம் (Pain Relief)"
-                  checked={category === 'pain-relief'}
-                  onChange={() => setCategory(category === 'pain-relief' ? 'all' : 'pain-relief')}
-                />
-              </FilterGroup>
-
-              <div style={{ marginTop: 10, overflow: 'hidden' }}>
-                <Image
-                  src="/cat-siddha.png"
-                  alt="Siddha Tradition"
-                  width={303}
-                  height={303}
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                />
-              </div>
-            </aside>
-
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-                <span style={{ fontSize: '0.92rem', color: '#e8e4dd', fontWeight: 500 }}>
-                  Showing <strong style={{ color: '#e9c349' }}>{products.length}</strong> Premium {tradition === 'siddha' ? 'Siddha' : tradition === 'ayurveda' ? 'Ayurvedic' : tradition === 'natural' ? 'Natural' : 'Traditional'} Formulations
-                </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: '#e8e4dd', fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.05em' }}>
-                  SORT BY
-                  <select
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value as SortKey)}
-                    style={{ background: 'transparent', border: 'none', color: '#e9c349', fontWeight: 700, outline: 'none', cursor: 'pointer' }}
-                  >
-                    <option value="newest" style={{ background: '#050c08', color: '#fff' }}>Newest</option>
-                    <option value="price-low" style={{ background: '#050c08', color: '#fff' }}>Price: Low to High</option>
-                    <option value="price-high" style={{ background: '#050c08', color: '#fff' }}>Price: High to Low</option>
-                    <option value="rating" style={{ background: '#050c08', color: '#fff' }}>Rating</option>
-                  </select>
-                </div>
-              </div>
-
-              {loading && products.length === 0 ? (
-                <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
-                  {Array.from({ length: 6 }, (_, index) => (
-                    <div key={index} style={{ minHeight: 420, background: 'rgba(30,29,29,0.78)' }} />
-                  ))}
-                </div>
-              ) : products.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 0', display: 'grid', gap: 12 }}>
-                  <FontAwesomeIcon icon={faBoxOpen} style={{ width: 44, height: 44, color: '#e9c349', margin: '0 auto' }} />
-                  <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.4rem' }}>No products found</h3>
-                  <p style={{ margin: 0, color: '#a5aca7', fontSize: '0.92rem' }}>Try modifying your search or sidebar filters.</p>
-                </div>
-              ) : (
-                <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
-                  {products.map((product) => (
-                    <CatalogueProductCard
-                      key={product.id}
-                      product={product}
-                      onAddToCart={addToCart}
-                    />
-                  ))}
-                </div>
-              )}
-
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 58 }}>
-                <button
-                  type="button"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '12px 36px',
-                    background: 'transparent',
-                    border: '1px solid #e9c349',
-                    color: '#e9c349',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    letterSpacing: '0.08em',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  LOAD MORE TRADITIONS
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <CatalogueFooter />
-        <MobileBottomNav />
-        {toast && (
-          <div role="status" style={{ position: 'fixed', left: '50%', bottom: 94, zIndex: 100, transform: 'translateX(-50%)', padding: '12px 18px', borderRadius: 2, background: '#1d1c1c', border: '1px solid rgba(233,195,73,0.28)', color: '#fff', fontWeight: 800, whiteSpace: 'nowrap' }}>
-            {toast}
-          </div>
-        )}
-      </div>
+  const healthGoals = useMemo(() => {
+    return categories.filter(cat =>
+      cat.slug !== 'all' &&
+      cat.slug !== 'siddha' &&
+      cat.slug !== 'ayurveda' &&
+      cat.slug !== 'natural-wellness'
     );
+  }, [categories]);
+
+  let bannerSubtitle = 'HERBAL MEDICINES';
+  let bannerTitle = 'மூலிகை மருந்துகள்';
+  let bannerDesc = 'ஆய்வுக்கணக்கான ஆண்டுகளால் பாரம்பரியமும் நவீன மருத்துவ அறிவியலும் இணைந்த உயர்தர மூலிகை சிகிச்சைகள்.';
+
+  if (tradition === 'siddha') {
+    bannerSubtitle = 'SIDDHA TRADITION';
+    bannerTitle = 'சித்த மருத்துவம்';
+    bannerDesc = 'சித்த மருத்துவம் என்பது சுமார் 5000 ஆண்டுகளுக்கு மேலான பழமை வாய்ந்தது. தமிழ் மண்ணிற்கே உரிய ஒரு தொன்மையான மருத்துவ முறையாகும். சித்தர்களால் உருவாக்கப்பட்ட இந்த மருத்துவம், \'உணவே மருந்து, மருந்தே உணவு\' என்ற தத்துவத்தின் அடிப்படையில் உடலையும் மனதையும் தூய்மைப்படுத்துகிறது.';
+  } else if (tradition === 'ayurveda') {
+    bannerSubtitle = 'AYURVEDA TRADITION';
+    bannerTitle = 'ஆயுர்வேத மருத்துவம்';
+    bannerDesc = 'ஆயுர்வேத மருத்துவம் என்பது இந்தியாவின் பழமையான பாரம்பரிய மருத்துவ முறையாகும். இது மனித உடலின் வாதம், பித்தம், கபம் ஆகிய மூன்று தோஷங்களைச் சமநிலைப்படுத்தி ஆரோக்கியத்தை மேம்படுத்துவதை நோக்கமாகக் கொண்டுள்ளது.';
+  } else if (tradition === 'natural') {
+    bannerSubtitle = 'NATURAL WELLNESS';
+    bannerTitle = 'இயற்கை நலம்';
+    bannerDesc = 'இயற்கை ஆரோக்கியம் என்பது மூலிகைகள், இயற்கை பொருட்கள் மற்றும் வாழ்க்கை முறை மாற்றங்கள் மூலம் உடலை ஆரோக்கியமாக வைத்திருக்கும் ஒரு முறையாகும்.';
   }
 
   return (
-    <div className="vt-page-shell">
+    <div className="vt-catalogue-page" style={{ minHeight: '100dvh', background: '#061711', color: '#e8e4dd', fontFamily: "'Outfit','Catamaran',system-ui,sans-serif" }}>
       <CustomerHeader cartCount={cartCount} searchValue={search} onSearchChange={setSearch} />
-      <section className="vt-hero">
-        <div className="vt-container vt-hero-grid">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-            <h1>Vaithiyam for verified traditional medicine shopping</h1>
-            <p className="vt-hero-copy">
-              Tamil-friendly Siddha, Ayurveda, and natural wellness products with prescription checks where needed. Educational product details only; always consult a doctor or pharmacist.
-            </p>
-            <div className="vt-search-panel" style={{ marginTop: 24 }}>
-              <div className="vt-search-box">
-                <FontAwesomeIcon aria-hidden="true" icon={faMagnifyingGlass} style={{width: 20, height: 20}} />
-                <input className="vt-input" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by Tamil, English, category, or slug" />
-              </div>
-              <ButtonLink href="/products" variant="gold">Shop Medicines <FontAwesomeIcon icon={faArrowRight} style={{width: 18, height: 18}} /></ButtonLink>
-              <ButtonLink href="/prescriptions" variant="ghost"><FontAwesomeIcon icon={faUpload} style={{width: 18, height: 18}} /> Upload Prescription</ButtonLink>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 18 }}>
-              {[
-                ['Safe checkout',      faShieldHalved],
-                ['Verified products',  faCircleCheck],
-                ['Tamil support',      faStethoscope],
-              ].map(([label, icon]) => (
-                <span key={String(label)} className="vt-badge vt-badge-cyan" style={{ color: '#dff8f6', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.16)' }}>
-                  <FontAwesomeIcon icon={icon as typeof faShieldHalved} style={{ width: 14, height: 14 }} /> {String(label)}
-                </span>
-              ))}
-            </div>
-          </motion.div>
 
-          <motion.div className="vt-card" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.08, duration: 0.45 }} style={{ padding: 20, background: 'rgba(255,255,255,0.12)', color: '#fff' }}>
-            <div style={{ display: 'grid', gap: 14 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
-                <div>
-                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.62)' }}>Prescription desk</p>
-                  <h2 style={{ margin: '4px 0 0', fontFamily: 'var(--vt-font-display)', fontSize: '1.65rem' }}>Verification before purchase</h2>
-                </div>
-                <FontAwesomeIcon icon={faShieldHalved} style={{width: 40, height: 40, color: "var(--vt-gold-300)"}} />
-              </div>
-              <p style={{ margin: 0, color: 'rgba(255,255,255,0.72)', lineHeight: 1.65 }}>
-                Products marked Rx cannot be ordered directly. Upload a prescription and proceed with pending verification or admin approval.
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-                {['Upload', 'Review', 'Order'].map((label, index) => (
-                  <div key={label} style={{ padding: 12, borderRadius: 16, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                    <strong>{index + 1}</strong>
-                    <p style={{ margin: '4px 0 0', color: 'rgba(255,255,255,0.72)' }}>{label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <main className="vt-catalogue-main" style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', padding: '34px 0 108px' }}>
+        <section style={{
+          marginBottom: 52,
+          border: '1px solid rgba(61,138,92,0.16)',
+          background: 'rgba(5, 12, 8, 0.25)',
+          padding: '38px 46px 42px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ width: 24, height: 1, background: '#e9c349' }} />
+            <span style={{
+              fontSize: '0.78rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: '#e9c349',
+              fontWeight: 700,
+            }}>
+              {bannerSubtitle}
+            </span>
+          </div>
+          <h1 style={{
+            margin: '0 0 24px',
+            fontFamily: "'Noto Serif Tamil','Catamaran',serif",
+            fontSize: 'clamp(1.8rem, 4vw, 2.2rem)',
+            lineHeight: 1.2,
+            fontWeight: 700,
+            color: '#f0efec',
+            letterSpacing: 0,
+          }}>
+            {bannerTitle}
+          </h1>
+          <p style={{ margin: 0, color: '#a5aca7', fontSize: '0.95rem', lineHeight: 1.8, fontWeight: 500 }}>
+            {bannerDesc}
+          </p>
+        </section>
 
-      <main>
-        <section className="vt-section">
-          <div className="vt-container">
-            <div className="vt-section-heading">
-              <div>
-                <h2>Shop by care category</h2>
-                <p>Siddha, Ayurveda, Natural, pain relief, fever care, digestive care, skin, hair, wellness, and prescription-required products.</p>
-              </div>
-            </div>
-            <div className="vt-chip-row" role="list" aria-label="Category filters">
-              {categories.map((item) => (
-                <button
+        <section className="vt-catalogue-layout" style={{ display: 'grid', gridTemplateColumns: '303px minmax(0, 1fr)', gap: 27, alignItems: 'start' }}>
+          <aside className="vt-catalogue-filter" style={{ position: 'sticky', top: 100, display: 'grid', gap: 40, paddingTop: 3 }}>
+            <FilterGroup title="TRADITION">
+              <CatalogueCheck
+                label="சித்த மருத்துவம் (Siddha)"
+                checked={tradition === 'siddha'}
+                onChange={() => setTradition(tradition === 'siddha' ? 'all' : 'siddha')}
+              />
+              <CatalogueCheck
+                label="Ayurveda (ஆயுர்வேதம்)"
+                checked={tradition === 'ayurveda'}
+                onChange={() => setTradition(tradition === 'ayurveda' ? 'all' : 'ayurveda')}
+              />
+              <CatalogueCheck
+                label="Natural (இயற்கை)"
+                checked={tradition === 'natural'}
+                onChange={() => setTradition(tradition === 'natural' ? 'all' : 'natural')}
+              />
+            </FilterGroup>
+
+            <FilterGroup title="HEALTH GOALS">
+              {healthGoals.map((item) => (
+                <CatalogueCheck
                   key={item.slug}
-                  type="button"
-                  className={`vt-chip ${category === item.slug ? 'vt-chip-active' : ''}`}
-                  onClick={() => setCategory(item.slug)}
-                >
-                  {item.nameEn}
-                </button>
+                  label={`${item.nameTa} (${item.nameEn})`}
+                  checked={category === item.slug}
+                  onChange={() => setCategory(category === item.slug ? 'all' : item.slug)}
+                />
               ))}
+            </FilterGroup>
+
+            <div style={{ marginTop: 10, overflow: 'hidden' }}>
+              <Image
+                src="/cat-siddha.png"
+                alt="Siddha Tradition"
+                width={303}
+                height={303}
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
             </div>
-          </div>
-        </section>
+          </aside>
 
-        <section className="vt-section" style={{ paddingTop: 4 }}>
-          <div className="vt-container">
-            <div className="vt-card" style={{ padding: 14, display: 'grid', gap: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 800, color: 'var(--vt-forest-800)' }}>
-                <FontAwesomeIcon icon={faFilter} style={{width: 18, height: 18}} /> Search, filter, and sort
-              </div>
-              <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-                <select className="vt-select" value={tradition} onChange={(event) => setTradition(event.target.value as Tradition | 'all')} aria-label="Filter by tradition">
-                  <option value="all">All traditions</option>
-                  <option value="siddha">Siddha</option>
-                  <option value="ayurveda">Ayurveda</option>
-                  <option value="natural">Natural</option>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+              <span style={{ fontSize: '0.92rem', color: '#e8e4dd', fontWeight: 500 }}>
+                Showing <strong style={{ color: '#e9c349' }}>{products.length}</strong> Premium {tradition === 'siddha' ? 'Siddha' : tradition === 'ayurveda' ? 'Ayurvedic' : tradition === 'natural' ? 'Natural' : 'Traditional'} Formulations
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: '#e8e4dd', fontSize: '0.82rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+                SORT BY
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortKey)}
+                  style={{ background: 'transparent', border: 'none', color: '#e9c349', fontWeight: 700, outline: 'none', cursor: 'pointer' }}
+                >
+                  <option value="newest" style={{ background: '#050c08', color: '#fff' }}>Newest</option>
+                  <option value="price-low" style={{ background: '#050c08', color: '#fff' }}>Price: Low to High</option>
+                  <option value="price-high" style={{ background: '#050c08', color: '#fff' }}>Price: High to Low</option>
+                  <option value="rating" style={{ background: '#050c08', color: '#fff' }}>Rating</option>
                 </select>
-                <select className="vt-select" value={stock} onChange={(event) => setStock(event.target.value as StockFilter)} aria-label="Filter by stock or prescription">
-                  <option value="all">All stock states</option>
-                  <option value="in-stock">In stock only</option>
-                  <option value="rx">Prescription required</option>
-                </select>
-                <select className="vt-select" value={sort} onChange={(event) => setSort(event.target.value as SortKey)} aria-label="Sort medicines">
-                  <option value="newest">Newest</option>
-                  <option value="price-low">Price low to high</option>
-                  <option value="price-high">Price high to low</option>
-                  <option value="rating">Rating</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {mode === 'home' && (
-          <>
-            <FeaturedSection title="Popular medicines" products={featured.popular} onAddToCart={addToCart} onWishlist={addToWishlist} />
-            <FeaturedSection title="Newly added" products={featured.newlyAdded} onAddToCart={addToCart} onWishlist={addToWishlist} />
-            <FeaturedSection title="Common wellness products" products={featured.wellness} onAddToCart={addToCart} onWishlist={addToWishlist} />
-            <FeaturedSection title="Prescription required" products={featured.prescription} onAddToCart={addToCart} onWishlist={addToWishlist} />
-          </>
-        )}
-
-        <section className="vt-section">
-          <div className="vt-container">
-            <div className="vt-section-heading">
-              <div>
-                <h2>Product catalogue</h2>
-                <p>Every product page includes educational information and doctor/pharmacist consultation warnings.</p>
               </div>
             </div>
-            {loading ? (
-              <div className="vt-grid">
-                {Array.from({ length: 8 }, (_, index) => <div key={index} className="vt-skeleton" style={{ height: 360 }} />)}
-              </div>
-            ) : products.length > 0 ? (
-              <div className="vt-grid">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} onAddToCart={addToCart} onWishlist={addToWishlist} />
+
+            {loading && products.length === 0 ? (
+              <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div key={index} style={{ minHeight: 420, background: 'rgba(30,29,29,0.78)' }} />
                 ))}
+              </div>
+            ) : products.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', display: 'grid', gap: 12 }}>
+                <FontAwesomeIcon icon={faBoxOpen} style={{ width: 44, height: 44, color: '#e9c349', margin: '0 auto' }} />
+                <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.4rem' }}>No products found</h3>
+                <p style={{ margin: 0, color: '#a5aca7', fontSize: '0.92rem' }}>Try modifying your search or sidebar filters.</p>
               </div>
             ) : (
-              <div className="vt-card vt-empty-state">
-                <FontAwesomeIcon icon={faBoxOpen} style={{width: 48, height: 48, color: "var(--vt-emerald-600)"}} />
-                <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)' }}>No products found</h3>
-                <p className="vt-muted" style={{ margin: 0 }}>Try a different category, tradition, or search term.</p>
+              <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
+                {products.map((product) => (
+                  <CatalogueProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={addToCart}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -573,15 +292,13 @@ export function StorefrontPage({
       <CustomerFooter />
       <MobileBottomNav />
       {toast && (
-        <div role="status" style={{ position: 'fixed', left: '50%', bottom: 94, zIndex: 100, transform: 'translateX(-50%)', padding: '12px 18px', borderRadius: 16, background: 'var(--vt-forest-900)', color: '#fff', boxShadow: 'var(--vt-shadow-soft)', fontWeight: 800, whiteSpace: 'nowrap' }}>
+        <div role="status" style={{ position: 'fixed', left: '50%', bottom: 94, zIndex: 100, transform: 'translateX(-50%)', padding: '12px 18px', borderRadius: 2, background: '#1d1c1c', border: '1px solid rgba(233,195,73,0.28)', color: '#fff', fontWeight: 800, whiteSpace: 'nowrap' }}>
           {toast}
         </div>
       )}
     </div>
   );
 }
-
-
 
 function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -759,73 +476,5 @@ function CatalogueProductCard({
         </div>
       </div>
     </article>
-  );
-}
-
-function CatalogueFooter() {
-  return (
-    <footer style={{ background: '#050c08', borderTop: '1px solid rgba(61,138,92,0.1)', padding: '64px 0 48px' }}>
-      <div style={{ width: 'min(1324px, calc(100% - 48px))', margin: '0 auto', display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: 48 }}>
-        <div>
-          <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, lineHeight: 1, color: '#f0d77a', textDecoration: 'none', fontWeight: 700, display: 'inline-block', marginBottom: 24 }}>
-            Vaithiyam
-          </Link>
-          <p style={{ color: '#a5aca7', lineHeight: 1.7, maxWidth: 360, margin: '0 0 28px', fontSize: '0.88rem', fontWeight: 500 }}>
-            A vanguard of holistic precision. We bridge the ancient wisdom of the Siddhars with the rigorous standards of modern oncology and lifestyle care.
-          </p>
-          <p style={{ margin: 0, color: '#6b7570', fontWeight: 500, fontSize: '0.8rem' }}>
-            © 2024 Vaithiyam. Precision Holistic Care. All Rights Reserved.
-          </p>
-        </div>
-        <div>
-          <h3 style={{ margin: '0 0 20px', color: '#e9c349', fontSize: '0.82rem', letterSpacing: '0.12em', fontWeight: 700 }}>MEDICAL</h3>
-          <div style={{ display: 'grid', gap: 12 }}>
-            <Link href="/products" style={{ color: '#a5aca7', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.2s' }}>Institutional Partners</Link>
-            <Link href="/products" style={{ color: '#a5aca7', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.2s' }}>Medical Ethics</Link>
-            <Link href="/products" style={{ color: '#a5aca7', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.2s' }}>Health Disclaimers</Link>
-          </div>
-        </div>
-        <div>
-          <h3 style={{ margin: '0 0 20px', color: '#e9c349', fontSize: '0.82rem', letterSpacing: '0.12em', fontWeight: 700 }}>CONTACT</h3>
-          <div style={{ display: 'grid', gap: 12, marginBottom: 20 }}>
-            <Link href="/privacy" style={{ color: '#a5aca7', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.2s' }}>Privacy Policy</Link>
-            <Link href="/contact" style={{ color: '#a5aca7', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.2s' }}>Contact Us</Link>
-          </div>
-          <div style={{ display: 'flex', gap: 12, color: '#a5aca7' }}>
-            <FontAwesomeIcon icon={faGlobe} style={{ width: 16, height: 16 }} />
-            <FontAwesomeIcon icon={faCircleCheck} style={{ width: 16, height: 16 }} />
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FeaturedSection({
-  title,
-  products,
-  onAddToCart,
-  onWishlist,
-}: {
-  title: string;
-  products: SeedMedicine[];
-  onAddToCart: (product: SeedMedicine) => void;
-  onWishlist: (product: SeedMedicine) => void;
-}) {
-  if (products.length === 0) return null;
-
-  return (
-    <section className="vt-section" style={{ paddingTop: 10, paddingBottom: 10 }}>
-      <div className="vt-container">
-        <div className="vt-section-heading">
-          <h2>{title}</h2>
-        </div>
-        <div className="vt-grid">
-          {products.map((product) => (
-            <ProductCard key={`${title}-${product.id}`} product={product} onAddToCart={onAddToCart} onWishlist={onWishlist} />
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }

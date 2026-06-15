@@ -23,7 +23,7 @@ const FONT = {
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
-  const [showToast, setShowToast] = useState(false);
+  const [toast, setToast] = useState<{ message: string; isError?: boolean } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -45,18 +45,20 @@ export default function ContactPage() {
       });
 
       if (res.ok) {
-        setShowToast(true);
+        setToast({ message: 'உங்கள் செய்தி அனுப்பப்பட்டது! (Message sent successfully!)' });
         setFormData({ name: '', email: '', phone: '', message: '' });
         
         setTimeout(() => {
-          setShowToast(false);
+          setToast(null);
         }, 4000);
       } else {
-        alert('Failed to submit message. Please try again.');
+        setToast({ message: 'செய்தி அனுப்ப முடியவில்லை. மீண்டும் முயலவும். (Failed to send message.)', isError: true });
+        setTimeout(() => setToast(null), 4000);
       }
     } catch (err) {
       console.error(err);
-      alert('An error occurred. Please try again.');
+      setToast({ message: 'ஒரு பிழை ஏற்பட்டது. மீண்டும் முயலவும். (An error occurred.)', isError: true });
+      setTimeout(() => setToast(null), 4000);
     }
   };
 
@@ -265,11 +267,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <div style={{ fontSize: '0.82rem', color: T.muted }}>வாட்ஸ்அப் (WhatsApp)</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 600, color: '#F5EDD6' }}>+91 98765 43210</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 600, color: '#F5EDD6' }}>+91 88000 00000</div>
                   </div>
                 </div>
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/918800000000"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -379,9 +381,9 @@ export default function ContactPage() {
         </div>
       </main>
 
-      {/* Success Toast */}
+      {/* Success/Error Toast */}
       <AnimatePresence>
-        {showToast && (
+        {toast && (
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -390,9 +392,9 @@ export default function ContactPage() {
               position: 'fixed',
               bottom: '80px',
               right: '24px',
-              background: '#0D2218',
-              border: '1px solid #7EC89A',
-              color: '#7EC89A',
+              background: toast.isError ? '#2D0D0D' : '#0D2218',
+              border: toast.isError ? '1px solid #C87E7E' : '1px solid #7EC89A',
+              color: toast.isError ? '#C87E7E' : '#7EC89A',
               borderRadius: '10px',
               padding: '16px 24px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
@@ -402,10 +404,16 @@ export default function ContactPage() {
               gap: '12px',
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span style={{ fontWeight: 600 }}>உங்கள் செய்தி அனுப்பப்பட்டது!</span>
+            {toast.isError ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            )}
+            <span style={{ fontWeight: 600 }}>{toast.message}</span>
           </motion.div>
         )}
       </AnimatePresence>

@@ -13,6 +13,7 @@ import {
 import { faStar as faStarEmpty } from '@fortawesome/free-regular-svg-icons';
 import type { SeedMedicine } from '@/lib/medicineData';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
+import { useCartStore } from '@/stores/cartStore';
 import { MedicineArt } from '@/components/ui/MedicineArt';
 import { ButtonLink } from '@/components/ui/Button';
 
@@ -170,7 +171,20 @@ export default function ProductDetailPage() {
     if (!product || busy) return;
     const token = getToken();
     if (!token) {
-      router.push(`/auth/login?next=/products/${encodeURIComponent(product.slug)}`);
+      useCartStore.getState().addItem({
+        productId: product.id,
+        nameTa: product.nameTa,
+        nameEn: product.nameEn,
+        price: product.price,
+        qty: qty,
+        mrp: product.mrp,
+        requiresPrescription: product.prescriptionRequired,
+      });
+      if (goCheckout) {
+        router.push('/auth/login?next=/checkout');
+      } else {
+        showToast('Added to cart.');
+      }
       return;
     }
     setBusy(true);

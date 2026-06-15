@@ -32,6 +32,7 @@ import Link                                            from 'next/link';
 import { FontAwesomeIcon }                             from '@fortawesome/react-fontawesome';
 import { faLeaf, faHandsPraying }                      from '@fortawesome/free-solid-svg-icons';
 import LoginForm, { type LoginCredentials }            from '../../../components/auth/LoginForm';
+import { useCartStore }                                from '../../../stores/cartStore';
 
 // ─── Design tokens (mirrors all existing Vaithiyam modules) ───────────────────
 const T = {
@@ -151,6 +152,25 @@ function LoginPageInner() {
         const storage = creds.rememberMe ? localStorage : sessionStorage;
         storage.setItem('vt_token', token);
         storage.setItem('vt_user',  JSON.stringify(user));
+
+        // Sync local guest cart if items exist
+        const guestItems = useCartStore.getState().items;
+        if (guestItems.length > 0) {
+          try {
+            const res = await fetch('/api/cart/sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify({
+                items: guestItems.map(item => ({ productId: item.productId, qty: item.qty }))
+              }),
+            });
+            if (res.ok) {
+              useCartStore.getState().clearCart();
+            }
+          } catch (e) {
+            console.error('Failed to sync guest cart', e);
+          }
+        }
 
         // Honour ?next= redirect or fall back to home
         const next = searchParams.get('next') ?? '/';

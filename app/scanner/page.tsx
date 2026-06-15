@@ -10,6 +10,7 @@ import {
 import type { SeedMedicine } from '@/lib/medicineData';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
 import { ProductCard } from '@/components/products/ProductCard';
+import { useCartStore } from '@/stores/cartStore';
 import { Button } from '@/components/ui/Button';
 
 /* ── Tesseract type shim (loaded via CDN script) ──────────────────────────── */
@@ -113,7 +114,19 @@ export default function ScannerPage() {
 
   const addToCart = useCallback(async (product: SeedMedicine) => {
     const token = getToken();
-    if (!token) { showToast('Please login to add to cart.'); return; }
+    if (!token) {
+      useCartStore.getState().addItem({
+        productId: product.id,
+        nameTa: product.nameTa,
+        nameEn: product.nameEn,
+        price: product.price,
+        qty: 1,
+        mrp: product.mrp,
+        requiresPrescription: product.prescriptionRequired,
+      });
+      showToast(`${product.nameTa} added to cart.`);
+      return;
+    }
     try {
       const res = await fetch('/api/cart/add', {
         method: 'POST',
@@ -330,7 +343,7 @@ export default function ScannerPage() {
                   results.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '20px 0', display: 'grid', gap: 8 }}>
                       <FontAwesomeIcon icon={faTriangleExclamation} style={{ width: 32, height: 32, color: 'var(--vt-gold-500)', margin: '0 auto' }} />
-                      <p style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: 'var(--vt-forest-900)' }}>No products found</p>
+                      <p style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: 'var(--vt-cream-50)' }}>No products found</p>
                       <p className="vt-muted" style={{ margin: 0, fontSize: 'var(--vt-text-sm)' }}>Try a different spelling or the English name.</p>
                     </div>
                   ) : (
@@ -348,7 +361,7 @@ export default function ScannerPage() {
           {results.length > 0 && (
             <section className="vt-section" style={{ paddingTop: 8 }}>
               <div className="vt-container">
-                <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: '1.3rem', fontWeight: 800, color: 'var(--vt-forest-900)', margin: '0 0 16px', letterSpacing: 0 }}>
+                <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: '1.3rem', fontWeight: 800, color: 'var(--vt-cream-50)', margin: '0 0 16px', letterSpacing: 0 }}>
                   Search results for &ldquo;{query}&rdquo;
                 </h2>
                 <div className="vt-grid">

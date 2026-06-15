@@ -316,10 +316,10 @@ export default function CheckoutPage() {
             <div style={{ display: 'grid', gap: 18, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
               <section className="vt-card" style={{ padding: 18, display: 'grid', gap: 14 }}>
                 <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)' }}>Payment method</h2>
-                <PaymentChoice value="cod" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faLandmark} style={{width: 20, height: 20}} />} title="Cash on delivery" copy="Collect payment after safe delivery confirmation." />
-                <PaymentChoice value="upi" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faMobileScreen} style={{width: 20, height: 20}} />} title="UPI placeholder" copy="Demo validation only. Real UPI collection needs payment gateway setup." />
+                <PaymentChoice value="cod" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faLandmark} style={{width: 20, height: 20}} />} title="Cash on delivery" copy="Pay with cash or UPI upon delivery." />
+                <PaymentChoice value="upi" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faMobileScreen} style={{width: 20, height: 20}} />} title="UPI Payment" copy="Pay instantly using any UPI app (GPay, PhonePe, Paytm, etc.)." />
                 {payment === 'upi' && <input className="vt-input" value={upiId} onChange={(event) => setUpiId(event.target.value)} placeholder="name@upi" aria-label="UPI ID" />}
-                <PaymentChoice value="razorpay" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faCreditCard} style={{width: 20, height: 20}} />} title="Razorpay skeleton" copy="Ready for real keys and checkout SDK integration." />
+                <PaymentChoice value="razorpay" selected={payment} onSelect={setPayment} icon={<FontAwesomeIcon icon={faCreditCard} style={{width: 20, height: 20}} />} title="Card / Net Banking" copy="Pay securely with Credit/Debit cards or Net Banking (Coming Soon)" disabled />
                 <textarea className="vt-textarea" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Order notes for pharmacist/admin review (optional)" />
               </section>
 
@@ -371,6 +371,7 @@ function PaymentChoice({
   icon,
   title,
   copy,
+  disabled = false,
 }: {
   value: UiPayment;
   selected: UiPayment;
@@ -378,12 +379,14 @@ function PaymentChoice({
   icon: ReactNode;
   title: string;
   copy: string;
+  disabled?: boolean;
 }) {
   const active = value === selected;
   return (
     <button
       type="button"
-      onClick={() => onSelect(value)}
+      onClick={() => !disabled && onSelect(value)}
+      disabled={disabled}
       className="vt-card"
       style={{
         width: '100%',
@@ -393,7 +396,8 @@ function PaymentChoice({
         textAlign: 'left',
         borderColor: active ? 'var(--vt-border-strong)' : 'var(--vt-border)',
         background: active ? 'rgba(61,138,92,0.12)' : 'rgba(255, 255, 255, 0.02)',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
       }}
     >
       <span style={{ color: 'var(--vt-emerald-600)' }}>{icon}</span>

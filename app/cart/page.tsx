@@ -68,7 +68,19 @@ export default function CartPage() {
   const loadCart = useCallback(async () => {
     const token = getToken();
     if (!token) {
-      router.replace('/auth/login?next=/cart');
+      const guestItems = useCartStore.getState().items;
+      setItems(guestItems);
+      const guestTotals = guestItems.reduce((s, i) => s + i.price * i.qty, 0);
+      const deliveryFee = guestTotals === 0 || guestTotals >= 500 ? 0 : 50;
+      setTotals({
+        subtotal: guestTotals,
+        deliveryFee,
+        total: guestTotals + deliveryFee,
+        itemCount: guestItems.reduce((s, i) => s + i.qty, 0),
+        discount: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+        savings: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+      });
+      setLoading(false);
       return;
     }
 
@@ -99,6 +111,28 @@ export default function CartPage() {
   const updateQty = useCallback(async (itemId: string, qty: number) => {
     setBusyItemId(itemId);
     setError('');
+    const token = getToken();
+    if (!token) {
+      const cartStore = useCartStore.getState();
+      const item = cartStore.items.find(i => i.id === itemId);
+      if (item) {
+        cartStore.updateQty(item.productId, qty);
+        const guestItems = useCartStore.getState().items;
+        setItems(guestItems);
+        const guestTotals = guestItems.reduce((s, i) => s + i.price * i.qty, 0);
+        const deliveryFee = guestTotals === 0 || guestTotals >= 500 ? 0 : 50;
+        setTotals({
+          subtotal: guestTotals,
+          deliveryFee,
+          total: guestTotals + deliveryFee,
+          itemCount: guestItems.reduce((s, i) => s + i.qty, 0),
+          discount: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+          savings: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+        });
+      }
+      setBusyItemId(null);
+      return;
+    }
     try {
       const res = await fetch('/api/cart', {
         method: 'PATCH',
@@ -120,6 +154,28 @@ export default function CartPage() {
   const removeItem = useCallback(async (itemId: string) => {
     setBusyItemId(itemId);
     setError('');
+    const token = getToken();
+    if (!token) {
+      const cartStore = useCartStore.getState();
+      const item = cartStore.items.find(i => i.id === itemId);
+      if (item) {
+        cartStore.removeItem(item.productId);
+        const guestItems = useCartStore.getState().items;
+        setItems(guestItems);
+        const guestTotals = guestItems.reduce((s, i) => s + i.price * i.qty, 0);
+        const deliveryFee = guestTotals === 0 || guestTotals >= 500 ? 0 : 50;
+        setTotals({
+          subtotal: guestTotals,
+          deliveryFee,
+          total: guestTotals + deliveryFee,
+          itemCount: guestItems.reduce((s, i) => s + i.qty, 0),
+          discount: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+          savings: guestItems.reduce((s, i) => s + ((i.mrp ?? i.price) - i.price) * i.qty, 0),
+        });
+      }
+      setBusyItemId(null);
+      return;
+    }
     try {
       const res = await fetch(`/api/cart?itemId=${encodeURIComponent(itemId)}`, {
         method: 'DELETE',
@@ -158,7 +214,7 @@ export default function CartPage() {
       <main className="vt-container" style={{ padding: '30px 0 0' }}>
         <div className="vt-section-heading">
           <div>
-            <h1 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--vt-forest-950)' }}>My cart</h1>
+            <h1 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--vt-cream-50)' }}>My cart</h1>
             <p>{totals.itemCount} items ready for verified checkout.</p>
           </div>
           <ButtonLink href="/products" variant="ghost">Continue shopping</ButtonLink>
@@ -188,7 +244,7 @@ export default function CartPage() {
                   <div style={{ display: 'grid', gap: 8, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 12 }}>
                       <div>
-                        <h2 style={{ margin: 0, color: 'var(--vt-forest-950)', fontFamily: 'var(--vt-font-display)', lineHeight: 1.2 }}>{item.nameTa}</h2>
+                        <h2 style={{ margin: 0, color: 'var(--vt-cream-50)', fontFamily: 'var(--vt-font-display)', lineHeight: 1.2 }}>{item.nameTa}</h2>
                         <p className="vt-muted" style={{ margin: '3px 0 0' }}>{item.nameEn}</p>
                       </div>
                       {item.requiresPrescription && <span className="vt-badge vt-badge-danger">Rx</span>}
@@ -256,7 +312,7 @@ function SummaryRow({ label, value, strong = false, accent = false }: { label: s
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
       <span className="vt-muted">{label}</span>
-      <strong style={{ color: accent ? 'var(--vt-emerald-600)' : 'var(--vt-forest-950)', fontFamily: strong ? 'var(--vt-font-serif)' : 'inherit', fontSize: strong ? '1.55rem' : '1rem' }}>{value}</strong>
+      <strong style={{ color: accent ? 'var(--vt-emerald-500)' : 'var(--vt-cream-50)', fontFamily: strong ? 'var(--vt-font-serif)' : 'inherit', fontSize: strong ? '1.55rem' : '1rem' }}>{value}</strong>
     </div>
   );
 }
