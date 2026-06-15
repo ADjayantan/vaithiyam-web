@@ -186,7 +186,8 @@ function HeroSection() {
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       overflow: 'hidden',
-      padding: '80px 32px 60px',
+      padding: '142px 32px 60px',
+      marginTop: -62,
     }}>
       {/* Background image */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
@@ -215,7 +216,7 @@ function HeroSection() {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1 style={{
-          fontFamily: "'Cormorant Garamond',Georgia,serif",
+          fontFamily: "'Cormorant Garamond', 'Noto Serif Tamil', Georgia, serif",
           fontSize: 'clamp(1.8rem, 6vw, 4.2rem)',
           fontWeight: 300, lineHeight: 1.15,
           color: '#F5EDD6',

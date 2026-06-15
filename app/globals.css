@@ -184,6 +184,7 @@ input, select, textarea { font: inherit; }
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-bottom: 1px solid rgba(61,138,92,0.14);
   color: var(--vt-ink);
+  transition: background-color 350ms ease, border-bottom-color 350ms ease, backdrop-filter 350ms ease, box-shadow 350ms ease;
 }
 
 .vt-header-inner {
@@ -207,15 +208,15 @@ input, select, textarea { font: inherit; }
 .vt-brand-mark {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--vt-forest-600), var(--vt-saffron));
-  box-shadow: 0 0 18px rgba(212,137,10,0.28);
-  font-size: 1rem;
+  background: var(--vt-forest-800);
+  border: 1px solid var(--vt-gold-500);
+  box-shadow: 0 0 12px rgba(212,137,10,0.15);
+  font-size: 0.95rem;
   color: white;
-  border: none;
 }
 
 .vt-brand-title {
@@ -306,7 +307,7 @@ input, select, textarea { font: inherit; }
 .vt-icon-link {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 50%;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(61,138,92,0.16);
   color: rgba(245,237,214,0.70);
@@ -376,6 +377,15 @@ input, select, textarea { font: inherit; }
   .vt-icon-desktop-only {
     display: none !important;
   }
+}
+
+/* Transparent Header for homepage overlay */
+.vt-app-header.vt-header-transparent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .vt-cart-count {

@@ -99,6 +99,19 @@ export function CustomerHeader({
       .catch(() => {});
   }, []);
 
+  const pathname = usePathname();
+  const isHomepage = pathname === '/';
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     if (searchActive && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -106,7 +119,7 @@ export function CustomerHeader({
   }, [searchActive]);
 
   return (
-    <header className="vt-app-header">
+    <header className={`vt-app-header ${isHomepage && !isScrolled ? 'vt-header-transparent' : ''}`}>
       {/* ── Top row: brand | search | actions ── */}
       <div className="vt-header-inner">
         <Link href="/" className="vt-brand" aria-label="Vaithiyam home" style={{ textDecoration: 'none' }}>
