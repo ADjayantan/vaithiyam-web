@@ -1547,12 +1547,20 @@ input, select, textarea { font: inherit; }
   text-transform: uppercase;
 }
 
-/* ── Tradition badge (top-left) ──────────────────────────────────── */
-.vt-fk-tradition-badge {
+/* ── Badge container (stacked left-side) ─────────────────────────── */
+.vt-fk-badge-container {
   position: absolute;
   top: 10px;
   left: 10px;
   z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+/* ── Tradition badge ────────────────────────────────────────────── */
+.vt-fk-tradition-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1567,10 +1575,6 @@ input, select, textarea { font: inherit; }
 
 /* ── Rx badge ────────────────────────────────────────────────────── */
 .vt-fk-rx-badge {
-  position: absolute;
-  top: 10px;
-  right: 42px;
-  z-index: 4;
   display: inline-flex;
   align-items: center;
   padding: 3px 8px;
@@ -1581,20 +1585,18 @@ input, select, textarea { font: inherit; }
   color: #FF8878;
   border: 1px solid rgba(212, 60, 40, 0.30);
   backdrop-filter: blur(6px);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* ── Wishlist heart ──────────────────────────────────────────────── */
 .vt-fk-wish-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   z-index: 5;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
   border: none;
-  background: rgba(10, 20, 15, 0.70);
-  backdrop-filter: blur(8px);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1604,7 +1606,6 @@ input, select, textarea { font: inherit; }
   padding: 0;
 }
 .vt-fk-wish-btn:hover {
-  background: rgba(244, 63, 94, 0.22);
   color: #fb7185;
   transform: scale(1.15);
 }
@@ -1625,20 +1626,27 @@ input, select, textarea { font: inherit; }
   backdrop-filter: blur(4px);
 }
 
-/* ── Out of stock ribbon ─────────────────────────────────────────── */
-.vt-fk-oos-ribbon {
+/* ── Out of stock overlay (centered grey banner) ─────────────────── */
+.vt-fk-oos-overlay {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  z-index: 4;
-  padding: 3px 9px;
+  inset: 0;
+  background: rgba(3, 12, 7, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  backdrop-filter: grayscale(1) contrast(0.8);
+}
+.vt-fk-oos-banner {
+  background: rgba(10, 20, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(245, 237, 214, 0.75);
+  padding: 6px 14px;
   border-radius: 6px;
-  background: rgba(100, 100, 100, 0.30);
-  color: rgba(245, 237, 214, 0.55);
-  border: 1px solid rgba(150, 150, 150, 0.25);
   font-size: 0.68rem;
   font-weight: 700;
-  backdrop-filter: blur(4px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 /* ── Card body ───────────────────────────────────────────────────── */
@@ -1720,7 +1728,7 @@ input, select, textarea { font: inherit; }
 .vt-fk-price {
   font-size: 1.28rem;
   font-weight: 800;
-  color: var(--vt-cream-50);
+  color: #E8A820;
   font-family: var(--vt-font-body);
   line-height: 1;
 }
@@ -1754,17 +1762,22 @@ input, select, textarea { font: inherit; }
   color: rgba(245, 237, 214, 0.35);
 }
 
-/* ── Rx note ─────────────────────────────────────────────────────── */
-.vt-fk-rx-note {
-  margin: 0;
-  padding: 6px 10px;
+/* ── Rx warning box ──────────────────────────────────────────────── */
+.vt-fk-rx-note-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 8px 12px;
   border-radius: 8px;
-  background: rgba(212, 137, 10, 0.10);
-  border: 1px solid rgba(212, 137, 10, 0.22);
-  color: var(--vt-turmeric);
-  font-size: 0.68rem;
-  font-weight: 600;
+  background: rgba(212, 137, 10, 0.06);
+  border: 1px solid rgba(212, 137, 10, 0.28);
+  color: #E8A820;
+  font-size: 0.62rem;
+  font-weight: 700;
   line-height: 1.45;
+  letter-spacing: 0.03em;
+  font-family: var(--vt-font-body);
 }
 
 /* ── Actions ─────────────────────────────────────────────────────── */
@@ -1785,21 +1798,21 @@ input, select, textarea { font: inherit; }
   height: 42px;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #1a6e40 0%, #3D8A5C 100%);
-  color: white;
+  background: linear-gradient(135deg, #C9922A 0%, #E8A820 100%);
+  color: #0A1A10;
   font-family: var(--vt-font-body);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   transition: all 220ms ease;
-  box-shadow: 0 4px 16px rgba(45,104,69,0.32);
+  box-shadow: 0 4px 16px rgba(201,146,42,0.22);
   text-transform: uppercase;
 }
 
 .vt-fk-cart-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #22885a 0%, #4da870 100%);
-  box-shadow: 0 8px 24px rgba(45,104,69,0.46);
+  background: linear-gradient(135deg, #D49A2D 0%, #F5B324 100%);
+  box-shadow: 0 8px 24px rgba(201,146,42,0.38);
   transform: translateY(-1px);
 }
 

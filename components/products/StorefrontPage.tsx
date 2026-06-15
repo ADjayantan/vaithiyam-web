@@ -4,11 +4,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 import type { MedicineCategory, SeedMedicine, Tradition } from '@/lib/medicineData';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
 import { useCartStore } from '@/stores/cartStore';
+import { ProductCard } from '@/components/products/ProductCard';
 
 type StockFilter = 'all' | 'in-stock' | 'rx';
 type SortKey = 'newest' | 'price-low' | 'price-high' | 'rating';
@@ -57,11 +59,31 @@ export function StorefrontPage({
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
   const [cartCount, setCartCount] = useState(0);
+  const router = useRouter();
 
   const showToast = useCallback((message: string) => {
     setToast(message);
     window.setTimeout(() => setToast(''), 2800);
   }, []);
+
+  const addToWishlist = useCallback(async (product: SeedMedicine) => {
+    const token = getToken();
+    if (!token) {
+      router.push(`/auth/login?next=/products`);
+      return;
+    }
+    try {
+      const res = await fetch('/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ productId: product.id }),
+      });
+      const data = await res.json().catch(() => ({})) as { message?: string };
+      showToast(data.message ?? (res.ok ? 'Saved to wishlist.' : 'Could not save wishlist item.'));
+    } catch {
+      showToast('Could not add to wishlist.');
+    }
+  }, [router, showToast]);
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
@@ -277,10 +299,11 @@ export function StorefrontPage({
             ) : (
               <div className="vt-catalogue-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 28 }}>
                 {products.map((product) => (
-                  <CatalogueProductCard
+                  <ProductCard
                     key={product.id}
                     product={product}
                     onAddToCart={addToCart}
+                    onWishlist={addToWishlist}
                   />
                 ))}
               </div>
@@ -359,122 +382,3 @@ function CatalogueCheck({
   );
 }
 
-function CatalogueProductCard({
-  product,
-  onAddToCart,
-}: {
-  product: SeedMedicine;
-  onAddToCart: (product: SeedMedicine) => void;
-}) {
-  const discount = product.mrp > product.price
-    ? `${Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF`
-    : null;
-
-  return (
-    <article style={{
-      background: '#040f0c',
-      border: '1px solid rgba(61,138,92,0.16)',
-      minWidth: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    }}>
-      <div style={{ position: 'relative', aspectRatio: '1 / 1', overflow: 'hidden', background: '#071711' }}>
-        <Link href={`/products/${product.slug}`} style={{ display: 'block', width: '100%', height: '100%' }}>
-          {product.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.imageUrl} alt={product.nameTa} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7570', fontSize: '2rem' }}>
-              🍃
-            </div>
-          )}
-        </Link>
-        {discount && (
-          <div style={{
-            position: 'absolute',
-            top: 12,
-            right: 12,
-            background: '#e9c349',
-            color: '#000',
-            fontSize: '0.68rem',
-            fontWeight: 800,
-            padding: '4px 8px',
-            letterSpacing: '0.05em',
-            zIndex: 10,
-          }}>
-            {discount}
-          </div>
-        )}
-      </div>
-      <div style={{ padding: '24px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <div style={{ marginBottom: 12 }}>
-          <span style={{
-            display: 'inline-block',
-            background: 'rgba(255,255,255,0.08)',
-            color: '#a5aca7',
-            fontSize: '0.62rem',
-            fontWeight: 700,
-            padding: '2px 8px',
-            borderRadius: 10,
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-          }}>
-            {product.categoryNameEn || product.categorySlug}
-          </span>
-        </div>
-        <Link href={`/products/${product.slug}`} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <h2 style={{
-            margin: '0 0 8px',
-            fontFamily: "'Noto Serif Tamil','Catamaran',serif",
-            fontSize: '1.35rem',
-            lineHeight: 1.25,
-            fontWeight: 700,
-            color: '#f0efec',
-            letterSpacing: 0,
-          }}>
-            {product.nameTa}
-          </h2>
-          <p style={{ margin: '0 0 20px', color: '#a5aca7', fontSize: '0.8rem', lineHeight: 1.4, fontWeight: 500 }}>
-            {product.nameEn}
-          </p>
-        </Link>
-        <div style={{ marginTop: 'auto' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 16 }}>
-            <span style={{ fontSize: '1.25rem', color: '#e9c349', fontWeight: 700 }}>₹{product.price}</span>
-            {product.mrp > product.price && (
-              <span style={{ fontSize: '0.92rem', color: '#6b7570', textDecoration: 'line-through' }}>₹{product.mrp}</span>
-            )}
-            <span style={{
-              fontSize: '0.78rem',
-              color: product.inStock ? '#8fa096' : '#dca149',
-              fontWeight: 600,
-              marginLeft: 'auto',
-            }}>
-              {product.inStock ? 'In Stock' : 'Out of Stock'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => onAddToCart(product)}
-            disabled={!product.inStock}
-            style={{
-              width: '100%',
-              padding: '12px 0',
-              border: 'none',
-              background: product.inStock ? '#e9c349' : '#3c413e',
-              color: product.inStock ? '#000' : '#888',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              letterSpacing: '0.08em',
-              cursor: product.inStock ? 'pointer' : 'not-allowed',
-              transition: 'background 0.2s',
-            }}
-          >
-            {product.inStock ? 'ADD TO CART' : 'OUT OF STOCK'}
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}

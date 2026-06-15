@@ -3,36 +3,18 @@
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCartShopping, faHeart, faStar,
-  faLeaf, faSeedling, faMortarPestle,
+  faCartShopping, faLeaf, faSeedling, faMortarPestle,
+  faClipboardList
 } from '@fortawesome/free-solid-svg-icons';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faStar as faStarReg, faHeart as faHeartReg } from '@fortawesome/free-regular-svg-icons';
 import type { SeedMedicine } from '@/lib/medicineData';
 import { Button } from '@/components/ui/Button';
 
 /* ─── Tradition meta ─────────────────────────────────────────── */
 const traditionLabel: Record<SeedMedicine['tradition'], string> = {
   siddha:   'சித்தம்',
-  ayurveda: 'Ayurveda',
-  natural:  'Natural',
-};
-
-const traditionIcon: Record<SeedMedicine['tradition'], IconDefinition> = {
-  siddha:   faMortarPestle,
-  ayurveda: faLeaf,
-  natural:  faSeedling,
-};
-
-const artBg: Record<SeedMedicine['tradition'], string> = {
-  siddha:   'linear-gradient(160deg, #071c12 0%, #0f3322 60%, #172e1e 100%)',
-  ayurveda: 'linear-gradient(160deg, #0e1600 0%, #1f2e00 60%, #243410 100%)',
-  natural:  'linear-gradient(160deg, #060d19 0%, #0f1d34 60%, #10243a 100%)',
-};
-
-const artIconColor: Record<SeedMedicine['tradition'], string> = {
-  siddha:   '#3D8A5C',
-  ayurveda: '#D4890A',
-  natural:  '#4DB8A8',
+  ayurveda: 'AYURVEDA',
+  natural:  'NATURAL',
 };
 
 const badgeColor: Record<SeedMedicine['tradition'], { bg: string; color: string; border: string }> = {
@@ -42,20 +24,11 @@ const badgeColor: Record<SeedMedicine['tradition'], { bg: string; color: string;
 };
 
 /* ─── Star helpers ───────────────────────────────────────────── */
-function StarBar({ rating }: { rating: number }) {
-  const full  = Math.floor(rating);
-  const half  = rating - full >= 0.5 ? 1 : 0;
-  const empty = 5 - full - half;
+function StarBar() {
   return (
     <span style={{ display: 'inline-flex', gap: 2, alignItems: 'center' }}>
-      {Array(full).fill(0).map((_, i) => (
-        <FontAwesomeIcon key={`f${i}`} icon={faStar} style={{ width: 11, height: 11, color: '#f0c050' }} />
-      ))}
-      {half === 1 && (
-        <FontAwesomeIcon icon={faStar} style={{ width: 11, height: 11, color: '#f0c050', opacity: 0.55 }} />
-      )}
-      {Array(empty).fill(0).map((_, i) => (
-        <FontAwesomeIcon key={`e${i}`} icon={faStar} style={{ width: 11, height: 11, color: 'rgba(245,237,214,0.15)' }} />
+      {Array(5).fill(0).map((_, i) => (
+        <FontAwesomeIcon key={i} icon={faStarReg} style={{ width: 11, height: 11, color: '#E8A820' }} />
       ))}
     </span>
   );
@@ -73,9 +46,6 @@ export function ProductCard({
 }) {
   const discount    = Math.max(0, Math.round((1 - product.price / product.mrp) * 100));
   const badge       = badgeColor[product.tradition];
-  const icon        = traditionIcon[product.tradition];
-  const iconColor   = artIconColor[product.tradition];
-  const bg          = artBg[product.tradition];
   const label       = traditionLabel[product.tradition];
   const outOfStock  = !product.inStock;
 
@@ -86,27 +56,47 @@ export function ProductCard({
       style={{ opacity: outOfStock ? 0.75 : 1 }}
     >
       {/* ── IMAGE AREA (Flipkart-style: white-ish bg, centered product art) ── */}
-      <Link href={`/products/${product.slug}`} className="vt-fk-img-wrap" aria-label={`${product.nameEn} details`}>
-        {product.imageUrl && (
-          <img
-            src={product.imageUrl}
-            alt={product.nameEn}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        )}
+      <div className="vt-fk-img-wrap-container" style={{ position: 'relative' }}>
+        <Link href={`/products/${product.slug}`} className="vt-fk-img-wrap" aria-label={`${product.nameEn} details`}>
+          {product.imageUrl && (
+            <img
+              src={product.imageUrl}
+              alt={product.nameEn}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          )}
 
-        {/* Tradition badge — top left */}
-        <span
-          className="vt-fk-tradition-badge"
-          style={{ background: badge.bg, color: badge.color, border: `1px solid ${badge.border}` }}
-        >
-          {label}
-        </span>
+          {/* Artwork fallback if no image */}
+          {!product.imageUrl && (
+            <div className="vt-fk-art" style={{ background: 'linear-gradient(160deg, #0e1600 0%, #1f2e00 60%, #243410 100%)' }}>
+              <div className="vt-fk-art-icon-wrap">
+                <FontAwesomeIcon
+                  icon={product.tradition === 'siddha' ? faMortarPestle : product.tradition === 'natural' ? faSeedling : faLeaf}
+                  style={{ width: 52, height: 52, color: '#D4890A', filter: 'drop-shadow(0 0 18px #D4890A60)' }}
+                />
+              </div>
+              <span className="vt-fk-art-initials" style={{ color: '#D4890A' }}>
+                {product.nameEn.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+              </span>
+            </div>
+          )}
+        </Link>
 
-        {/* Rx badge — top right */}
-        {product.prescriptionRequired && (
-          <span className="vt-fk-rx-badge">℞ Rx</span>
-        )}
+        {/* Badges container — top left stacked */}
+        <div className="vt-fk-badge-container">
+          <span
+            className="vt-fk-tradition-badge"
+            style={{ background: badge.bg, color: badge.color, border: `1px solid ${badge.border}` }}
+          >
+            {label}
+          </span>
+          {product.prescriptionRequired && (
+            <span className="vt-fk-rx-badge">
+              <FontAwesomeIcon icon={faClipboardList} style={{ width: 9, height: 9, marginRight: 4 }} />
+              Rx
+            </span>
+          )}
+        </div>
 
         {/* Wishlist heart — top right corner */}
         <button
@@ -115,34 +105,21 @@ export function ProductCard({
           onClick={(e) => { e.preventDefault(); onWishlist?.(product); }}
           aria-label={`Wishlist ${product.nameEn}`}
         >
-          <FontAwesomeIcon icon={faHeart} style={{ width: 15, height: 15 }} />
+          <FontAwesomeIcon icon={faHeartReg} style={{ width: 16, height: 16 }} />
         </button>
-
-        {/* Artwork */}
-        {!product.imageUrl && (
-          <div className="vt-fk-art" style={{ background: bg }}>
-            {/* Large icon */}
-            <div className="vt-fk-art-icon-wrap">
-              <FontAwesomeIcon
-                icon={icon}
-                style={{ width: 52, height: 52, color: iconColor, filter: `drop-shadow(0 0 18px ${iconColor}60)` }}
-              />
-            </div>
-            {/* Initials sub-label */}
-            <span className="vt-fk-art-initials" style={{ color: iconColor }}>
-              {product.nameEn.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()}
-            </span>
-          </div>
-        )}
 
         {/* Discount ribbon — only when in stock */}
         {discount > 0 && !outOfStock && (
           <span className="vt-fk-discount-ribbon">{discount}% off</span>
         )}
+
+        {/* Out of Stock banner overlay */}
         {outOfStock && (
-          <span className="vt-fk-oos-ribbon">Out of Stock</span>
+          <div className="vt-fk-oos-overlay">
+            <span className="vt-fk-oos-banner">OUT OF STOCK</span>
+          </div>
         )}
-      </Link>
+      </div>
 
       {/* ── PRODUCT INFO (Flipkart-style body) ─────────────────────── */}
       <div className="vt-fk-body">
@@ -156,7 +133,7 @@ export function ProductCard({
         {/* Rating row */}
         <div className="vt-fk-rating-row">
           <span className="vt-fk-rating-pill">
-            <StarBar rating={product.rating} />
+            <StarBar />
             <span className="vt-fk-rating-num">{product.rating.toFixed(1)}</span>
           </span>
           <span className="vt-fk-review-count">({product.reviewCount.toLocaleString()} reviews)</span>
@@ -184,9 +161,10 @@ export function ProductCard({
 
         {/* Rx warning */}
         {product.prescriptionRequired && (
-          <p className="vt-fk-rx-note">
-            ℞ Prescription required before checkout
-          </p>
+          <div className="vt-fk-rx-note-box">
+            <FontAwesomeIcon icon={faClipboardList} style={{ width: 12, height: 12, flexShrink: 0 }} />
+            <span>PRESCRIPTION REQUIRED BEFORE CHECKOUT</span>
+          </div>
         )}
 
         {/* Actions — Flipkart style: full-width Add to Cart */}
@@ -198,8 +176,8 @@ export function ProductCard({
             aria-label={`Add ${product.nameEn} to cart`}
             className={`vt-fk-cart-btn${outOfStock ? ' disabled' : ''}`}
           >
-            <FontAwesomeIcon icon={faCartShopping} style={{ width: 15, height: 15 }} />
-            {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+            <FontAwesomeIcon icon={faCartShopping} style={{ width: 14, height: 14 }} />
+            {outOfStock ? 'OUT OF STOCK' : 'ADD TO CART'}
           </Button>
         </div>
       </div>
