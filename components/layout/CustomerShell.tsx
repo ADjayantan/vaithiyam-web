@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarcode, faCartShopping, faCircleUser, faHeart,
@@ -13,13 +13,15 @@ import type { CartItem } from '@/types/order';
 
 function HeaderNavLinks() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tradition = searchParams?.get('tradition') || 'all';
 
   const links = [
-    { label: 'முகப்பு', href: '/', active: pathname === '/' },
-    { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' || pathname.startsWith('/products/') },
-    { label: 'உதவி', href: '/help', active: pathname === '/help' },
-    { label: 'பற்றி', href: '/about', active: pathname === '/about' },
-    { label: 'எங்களைத் தொடர்பு கொள்ள', href: '/contact', active: pathname === '/contact' },
+    { label: 'SIDDHA', href: '/products?tradition=siddha', active: pathname === '/products' && tradition === 'siddha' },
+    { label: 'AYURVEDA', href: '/products?tradition=ayurveda', active: pathname === '/products' && tradition === 'ayurveda' },
+    { label: 'NATURAL', href: '/products?tradition=natural', active: pathname === '/products' && tradition === 'natural' },
+    { label: 'CONSULTATION', href: '/help', active: pathname === '/help' },
+    { label: 'PHILOSOPHY', href: '/about', active: pathname === '/about' },
   ];
 
   return (
@@ -89,7 +91,7 @@ export function CustomerHeader({
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
           <span>
-            <span className="vt-brand-title">வைத்தியம் <span className="vt-brand-suffix">(Vaithiyam)</span></span>
+            <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>Vaithiyam</span>
           </span>
         </Link>
 
@@ -232,11 +234,11 @@ export function CustomerFooter() {
               <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
             </span>
             <span>
-              <span className="vt-brand-title" style={{ color: 'var(--vt-ink)' }}>வைத்தியம்</span>
+              <span className="vt-brand-title" style={{ color: 'var(--vt-ink)', fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em' }}>Vaithiyam</span>
             </span>
           </Link>
-          <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520, color: 'var(--vt-muted)' }}>
-            பண்டைய சித்த மருத்துவத்தின் புனிதத்தையும் நவீன அறிவியலின் நேர்த்தியையும் இணைக்கும் ஒரு உன்னத தளம்.
+          <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520, color: 'var(--vt-muted)', fontSize: '0.85rem' }}>
+            Elevating traditional Indian-medicine to the standards of global luxury medical couture.
           </p>
         </div>
         <div>
@@ -261,7 +263,7 @@ export function CustomerFooter() {
       </div>
       <div className="vt-container" style={{ borderTop: '1px solid rgba(61,138,92,0.1)', marginTop: '30px', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
         <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--vt-muted)' }}>
-          © 2024 வைத்தியம் Siddha Care. All rights reserved.
+          © 2023 VAITHIYAM, DEFINING MEDICAL COUTURE.
         </p>
       </div>
     </footer>

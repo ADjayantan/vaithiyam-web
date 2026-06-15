@@ -8,8 +8,7 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight, faFileArrowUp, faShieldHalved,
-  faTruck, faHeartPulse,
-  faAppleWhole, faSun, faDroplet, faStethoscope, faThermometer, faMessage
+  faTruck, faHeartPulse, faCalendarDays, faClock, faBolt
 } from '@fortawesome/free-solid-svg-icons';
 import type { SeedMedicine } from '@/lib/medicineData';
 import { CustomerHeader, MobileBottomNav, CustomerFooter } from '@/components/layout/CustomerShell';
@@ -21,6 +20,36 @@ function getToken(): string | null {
   try { return localStorage.getItem('vt_token') ?? sessionStorage.getItem('vt_token'); }
   catch { return null; }
 }
+
+const STATIC_PRODUCTS = [
+  {
+    id: 'prod-1',
+    img: '/prod-restoration.png',
+    badge: 'ORGANIC',
+    nameEn: 'Pure Ashwagandha Extract',
+    desc: 'Restoration Adaptogen',
+    price: '₹1,850',
+    href: '/products/ashwagandha-churnam',
+  },
+  {
+    id: 'prod-2',
+    img: '/prod-harmony.png',
+    badge: 'HERBAL',
+    nameEn: 'Triphala Churna Tablets',
+    desc: 'Digestive Harmony',
+    price: '₹1,200',
+    href: '/products/triphala-churnam',
+  },
+  {
+    id: 'prod-3',
+    img: '/prod-tonic.png',
+    badge: 'NATURAL',
+    nameEn: 'Karpasasthiyadi Thailam',
+    desc: 'Resolves Toxins',
+    price: '₹1,450',
+    href: '/products/neem-leaf-powder',
+  },
+];
 
 /* ══════════════════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -114,8 +143,8 @@ export function LandingPage() {
       {/* ══ TRUST STRIP ════════════════════════════════════════ */}
       <TrustStrip />
 
-      {/* ══ CONCERN SECTION ════════════════════════════════════ */}
-      <ConcernSection />
+      {/* ══ CONSULT SECTION ════════════════════════════════════ */}
+      <ConsultSection />
 
       {/* ══ FOOTER ══════════════════════════════════════════════ */}
       <CustomerFooter />
@@ -135,8 +164,6 @@ export function LandingPage() {
     </div>
   );
 }
-
-
 
 /* ══════════════════════════════════════════════════════════════════
    HERO — full viewport with tropical leaf photo background
@@ -178,7 +205,7 @@ function HeroSection() {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <h1 style={{
-          fontFamily: "'Cormorant Garamond','Noto Serif Tamil',Georgia,serif",
+          fontFamily: "'Cormorant Garamond',Georgia,serif",
           fontSize: 'clamp(1.8rem, 6vw, 4.2rem)',
           fontWeight: 300, lineHeight: 1.15,
           color: '#F5EDD6',
@@ -186,8 +213,8 @@ function HeroSection() {
           letterSpacing: '-0.01em',
           textShadow: '0 2px 40px rgba(0,0,0,0.60)',
         }}>
-          பாரம்பரிய சித்த மற்றும் ஆயுர்வேதம். <br />
-          பண்டைய ஞானம், மேம்படுத்தப்பட்டது.
+          Authentic Siddha & Ayurveda. <br />
+          Ancient Wisdom, Elevated.
         </h1>
 
         {/* Gold CTA */}
@@ -202,7 +229,7 @@ function HeroSection() {
           boxShadow: '0 8px 32px rgba(201,146,42,0.40)',
           transition: 'all 0.2s',
         }}>
-          தயாரிப்புகளை காணுங்கள்
+          SHOP MEDICINES
         </Link>
       </motion.div>
 
@@ -225,9 +252,9 @@ function HeroSection() {
 ══════════════════════════════════════════════════════════════════ */
 function CategorySection() {
   const cats = [
-    { img: '/cat-siddha.png',   badge: 'SIDDHA',   nameTa: 'சித்த மருத்துவம்',   nameEn: 'Siddha Medicine',   href: '/products?tradition=siddha'   },
-    { img: '/cat-ayurveda.png', badge: 'AYURVEDA', nameTa: 'ஆயுர்வேத மருத்துவம்', nameEn: 'Ayurveda Medicine', href: '/products?tradition=ayurveda' },
-    { img: '/cat-natural.png',  badge: 'NATURAL',  nameTa: 'இயற்கை ஆரோக்கியம்',  nameEn: 'Natural Wellness',  href: '/products?tradition=natural'  },
+    { img: '/cat-siddha.png',   badge: 'INSIGHTS', nameTa: 'Siddha Medicine',   href: '/products?tradition=siddha'   },
+    { img: '/cat-ayurveda.png', badge: 'GUIDES',   nameTa: 'Ayurvedic Medicine', href: '/products?tradition=ayurveda' },
+    { img: '/cat-natural.png',  badge: 'HERBS',    nameTa: 'Natural Wellness',   href: '/products?tradition=natural'  },
   ];
 
   return (
@@ -236,7 +263,7 @@ function CategorySection() {
       padding: '0 0 80px',
     }}>
       <div className="vt-traditions-grid">
-        {cats.map(({ img, badge, nameTa, nameEn, href }, i) => (
+        {cats.map(({ img, badge, nameTa, href }, i) => (
           <motion.div
             key={badge}
             initial={{ opacity: 0, y: 24 }}
@@ -269,15 +296,12 @@ function CategorySection() {
                   {badge}
                 </span>
                 <h2 style={{
-                  margin: 0, fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
+                  margin: 0, fontFamily: "'Cormorant Garamond',serif",
                   fontSize: 'clamp(1.2rem, 2.5vw, 1.7rem)', fontWeight: 300,
                   color: '#F5EDD6', lineHeight: 1.25,
                 }}>
                   {nameTa}
                 </h2>
-                <p style={{ margin: '4px 0 0', fontSize: '0.70rem', color: 'rgba(245,237,214,0.42)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  {nameEn}
-                </p>
               </div>
             </Link>
           </motion.div>
@@ -300,10 +324,10 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
               textTransform: 'uppercase', color: '#3D8A5C', fontWeight: 600,
             }}>COLLECTIONS</p>
             <h2 style={{
-              margin: 0, fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
+              margin: 0, fontFamily: "'Cormorant Garamond',serif",
               fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 300,
               color: '#F5EDD6', letterSpacing: '-0.01em', lineHeight: 1.1,
-            }}>சிறந்த விற்பனைப் பொருட்கள் (Bestsellers)</h2>
+            }}>The Apotheccary</h2>
           </div>
           <Link href="/products" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -311,29 +335,104 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
             textDecoration: 'none', borderBottom: '1px solid rgba(61,138,92,0.35)',
             paddingBottom: 2, whiteSpace: 'nowrap',
           }}>
-            அனைத்து மருந்துகளையும் காண்க (View All)
+            View All Products
             <FontAwesomeIcon icon={faArrowRight} style={{ width: 12 }} />
           </Link>
         </div>
 
-        {/* Product grid */}
-        {products.length === 0 ? (
-          <div className="vt-card vt-empty-state" style={{ padding: '40px 0' }}>
-            <p className="vt-muted" style={{ margin: 0 }}>இப்பொழுது தயாரிப்புகள் இல்லை.</p>
-          </div>
-        ) : (
-          <div className="vt-products-grid">
-            {products.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <ProductCard product={product} onAddToCart={onAddToCart} onWishlist={onWishlist} />
-              </motion.div>
-            ))}
+        {/* Static featured products grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, marginBottom: 50 }}>
+          {STATIC_PRODUCTS.map((p, i) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+            >
+              <Link href={p.href} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                textDecoration: 'none',
+                background: 'rgba(10,20,15,0.90)',
+                border: '1px solid rgba(61,138,92,0.16)',
+                borderRadius: 4, overflow: 'hidden',
+                transition: 'transform 0.3s ease, border-color 0.3s ease',
+              }}>
+                {/* Product image */}
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '1', overflow: 'hidden' }}>
+                  <Image
+                    src={p.img}
+                    alt={p.nameEn}
+                    fill
+                    style={{ objectFit: 'cover', objectPosition: 'center' }}
+                  />
+                  {p.badge && (
+                    <span style={{
+                      position: 'absolute', top: 14, left: 14,
+                      background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(255,255,255,0.12)',
+                      color: 'rgba(245,237,214,0.70)',
+                      fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em',
+                      padding: '4px 10px', borderRadius: 2, textTransform: 'uppercase',
+                    }}>
+                      {p.badge}
+                    </span>
+                  )}
+                </div>
+
+                {/* Product info */}
+                <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                  <h3 style={{
+                    margin: '0 0 4px',
+                    fontFamily: "'Cormorant Garamond',serif",
+                    fontSize: '1.2rem', fontWeight: 500,
+                    color: '#F5EDD6', lineHeight: 1.3,
+                  }}>
+                    {p.nameEn}
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '0.68rem', color: 'rgba(245,237,214,0.38)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    {p.desc}
+                  </p>
+                  
+                  {/* Spacer */}
+                  <div style={{ flexGrow: 1, minHeight: 12 }} />
+                  
+                  {p.price && (
+                    <p style={{
+                      margin: 0,
+                      fontFamily: "'Cormorant Garamond',serif",
+                      fontSize: '1.25rem', fontStyle: 'italic', fontWeight: 600,
+                      color: '#F5EDD6',
+                    }}>
+                      {p.price}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Dynamic DB products if available */}
+        {products.length > 0 && (
+          <div style={{ marginTop: 60 }}>
+            <p style={{
+              margin: '0 0 10px', fontSize: '0.65rem', letterSpacing: '0.22em',
+              textTransform: 'uppercase', color: '#3D8A5C', fontWeight: 600,
+            }}>MORE FROM THE CATALOGUE</p>
+            <h2 style={{
+              margin: '0 0 28px', fontFamily: "'Cormorant Garamond',serif",
+              fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 300,
+              color: '#F5EDD6', letterSpacing: '-0.01em', lineHeight: 1.1,
+            }}>Catalog Formulations</h2>
+            <div className="vt-products-grid">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} onWishlist={onWishlist} />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -346,10 +445,10 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
 ══════════════════════════════════════════════════════════════════ */
 function TrustStrip() {
   const items = [
-    { icon: faShieldHalved, en: 'VERIFIED CATALOGUE',  desc: 'Every product verified and certified to ensure its purity.' },
-    { icon: faFileArrowUp,  en: 'RX-SAFE CHECKOUT',   desc: 'Secure review of prescription recommendations to you.' },
-    { icon: faHeartPulse,   en: 'TAMIL FIRST',         desc: 'Wholly Tamil support. Heritage recommendations in your language.' },
-    { icon: faTruck,        en: 'TRACK EVERY ORDER',   desc: 'Worry-free delivery experience from our real-time systems.' },
+    { icon: faShieldHalved, en: 'VERIFIED CATALOGUE',  desc: 'Every batch lab-tested and certified to guarantee purity.' },
+    { icon: faFileArrowUp,  en: 'RX-SAFE CHECKOUT',   desc: 'Secure validation of practitioner recommendations.' },
+    { icon: faHeartPulse,   en: 'TAMIL FIRST',         desc: 'Rooted in heritage, personalized to your language.' },
+    { icon: faTruck,        en: 'TRACK EVERY ORDER',   desc: 'Worry-free delivery experience with real-time updates.' },
   ];
 
   return (
@@ -381,65 +480,80 @@ function TrustStrip() {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   CONCERN SECTION — 7 health goals + Agasthiyan AI card
+   CONSULT SECTION — matches screenshot's 3-card grid
 ══════════════════════════════════════════════════════════════════ */
-function ConcernSection() {
-  const concerns = [
-    { slug: 'digestive-care', nameTa: 'செரிமான பராமரிப்பு', nameEn: 'Digestive Care', icon: faAppleWhole, color: '#E8A820' },
-    { slug: 'skin-care', nameTa: 'தோல் பராமரிப்பு', nameEn: 'Skin Care', icon: faSun, color: '#3D8A5C' },
-    { slug: 'hair-care', nameTa: 'முடி பராமரிப்பு', nameEn: 'Hair Care', icon: faDroplet, color: '#3D8A5C' },
-    { slug: 'immunity-support', nameTa: 'நோய் எதிர்ப்பு ஆதரவு', nameEn: 'Immunity Support', icon: faShieldHalved, color: '#E8A820' },
-    { slug: 'general-wellness', nameTa: 'பொது நலன்', nameEn: 'General Wellness', icon: faHeartPulse, color: '#3D8A5C' },
-    { slug: 'pain-relief', nameTa: 'வலி நிவாரணம்', nameEn: 'Pain Relief', icon: faStethoscope, color: '#E8A820' },
-    { slug: 'fever-care', nameTa: 'காய்ச்சல் பராமரிப்பு', nameEn: 'Fever Care', icon: faThermometer, color: '#E8A820' },
-  ];
-
+function ConsultSection() {
   return (
     <section style={{ padding: '80px 36px', background: '#030C07', borderTop: '1px solid rgba(61,138,92,0.10)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         {/* Heading */}
-        <p style={{
-          margin: '0 0 10px', fontSize: '0.65rem', letterSpacing: '0.22em',
-          textTransform: 'uppercase', color: '#3D8A5C', fontWeight: 600,
-        }}>SHOP BY CONCERN</p>
         <h2 style={{
-          margin: '0 0 12px',
-          fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
+          margin: '0 0 40px',
+          fontFamily: "'Cormorant Garamond',serif",
           fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
           fontWeight: 300, color: '#F5EDD6', lineHeight: 1.2,
         }}>
-          சுகாதாரப் பிரச்சினைகள் வாரியாக வாங்குங்கள்
+          Your Health Consultations
         </h2>
-        <p style={{ margin: '0 0 40px', fontSize: '0.9rem', color: 'rgba(245,237,214,0.6)', lineHeight: 1.6 }}>
-          உங்கள் குறிப்பிட்ட ஆரோக்கிய தேவைகளுக்கான சரியான சித்த மற்றும் ஆயுர்வேத தீர்வுகளைக் கண்டறியவும்.
-        </p>
 
-        {/* 8-card grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
-          {concerns.map((c) => (
-            <Link key={c.slug} href={`/products?category=${c.slug}`} style={concernCardLink}>
-              <div style={concernCard}>
-                <FontAwesomeIcon icon={c.icon} style={{ width: 26, height: 26, color: c.color, marginBottom: 4 }} />
-                <h3 style={concernTitle}>{c.nameTa}</h3>
-                <p style={concernDesc}>{c.nameEn}</p>
-                <span style={concernBtn}>
-                  கண்டறியுங்கள் <FontAwesomeIcon icon={faArrowRight} style={{ width: 11 }} />
-                </span>
-              </div>
+        {/* 3 cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+
+          {/* Card 1 */}
+          <div style={consultCard}>
+            <span style={{ fontSize: '1.4rem', marginBottom: 4 }}>
+              <FontAwesomeIcon icon={faCalendarDays} style={{ width: 26, height: 26, color: '#C9922A' }} />
+            </span>
+            <h3 style={consultTitle}>Book New Consultation</h3>
+            <p style={consultDesc}>
+              Schedule with specialists like Oncologists, Nutritionists.
+            </p>
+            <Link href="/help" style={consultBtn}>
+              Book Appointment
             </Link>
-          ))}
+          </div>
 
-          {/* Agasthiyan AI Assistant Card */}
-          <div style={agasthiyanCard}>
-            <FontAwesomeIcon icon={faMessage} style={{ width: 26, height: 26, color: '#E8A820', marginBottom: 4 }} />
-            <h3 style={concernTitle}>அகஸ்தியன் AI உதவியாளர்</h3>
-            <p style={concernDesc}>உங்களுக்கு தேவையான மூலிகை மருந்துகளையும் அவற்றின் பயன்களையும் கண்டறிய எங்களது AI உதவியாளருடன் உரையாடுங்கள்.</p>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-agasthiyan'))}
-              style={agasthiyanBtn}
-            >
-              அகஸ்தியனுடன் பேசுங்கள் <FontAwesomeIcon icon={faArrowRight} style={{ width: 11 }} />
-            </button>
+          {/* Card 2 */}
+          <div style={consultCard}>
+            <span style={{ fontSize: '1.4rem', marginBottom: 4 }}>
+              <FontAwesomeIcon icon={faClock} style={{ width: 26, height: 26, color: '#4DA870' }} />
+            </span>
+            <h3 style={consultTitle}>Upcoming Appointments</h3>
+            <div style={{ margin: '4px 0', display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <p style={{ ...consultDesc, fontWeight: 600, color: '#F5EDD6' }}>Dr. Sharma (Oncologist)</p>
+              <p style={consultDesc}>Oct 25, 10:00 AM</p>
+              <p style={{ ...consultDesc, color: 'rgba(245,237,214,0.35)' }}>Virtual Call</p>
+            </div>
+            <Link href="/help" style={consultBtn}>
+              Join Meeting
+            </Link>
+            <Link href="/help" style={{ color: '#E8A820', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'underline', width: 'max-content', marginTop: 4 }}>
+              Message Doctor
+            </Link>
+          </div>
+
+          {/* Card 3 */}
+          <div style={consultCard}>
+            <span style={{ fontSize: '1.4rem', marginBottom: 4 }}>
+              <FontAwesomeIcon icon={faBolt} style={{ width: 26, height: 26, color: '#F5EDD6' }} />
+            </span>
+            <h3 style={consultTitle}>Past Consultation Summaries</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+              <div>
+                <p style={{ ...consultDesc, fontWeight: 600, color: '#F5EDD6' }}>Dr. Lee (Nutritionist)</p>
+                <p style={consultDesc}>Sept 15</p>
+                <Link href="/help" style={{ color: '#E8A820', fontSize: '0.76rem', fontWeight: 600, textDecoration: 'underline' }}>
+                  View Summary
+                </Link>
+              </div>
+              <div>
+                <p style={{ ...consultDesc, fontWeight: 600, color: '#F5EDD6' }}>Dr. Sharma</p>
+                <p style={consultDesc}>Aug 01</p>
+                <Link href="/help" style={{ color: '#E8A820', fontSize: '0.76rem', fontWeight: 600, textDecoration: 'underline' }}>
+                  View Summary
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -447,49 +561,23 @@ function ConcernSection() {
   );
 }
 
-const concernCardLink: React.CSSProperties = {
-  textDecoration: 'none',
-  display: 'block',
-};
-
-const concernCard: React.CSSProperties = {
-  background: 'linear-gradient(145deg, rgba(13,34,24,0.60), rgba(5,12,8,0.75))',
-  border: '1px solid rgba(61,138,92,0.12)',
-  borderRadius: 8, padding: '28px 24px',
+const consultCard: React.CSSProperties = {
+  background: 'linear-gradient(145deg, rgba(13,34,24,0.80), rgba(5,12,8,0.95))',
+  border: '1px solid rgba(61,138,92,0.18)',
+  borderRadius: 8, padding: '32px 28px',
   display: 'flex', flexDirection: 'column', gap: 10,
-  height: '100%',
-  transition: 'transform 0.2s, border-color 0.2s',
-  cursor: 'pointer',
 };
-
-const agasthiyanCard: React.CSSProperties = {
-  background: 'linear-gradient(145deg, rgba(20,34,13,0.60), rgba(12,8,5,0.75))',
-  border: '1px solid rgba(201,146,42,0.18)',
-  borderRadius: 8, padding: '28px 24px',
-  display: 'flex', flexDirection: 'column', gap: 10,
-  height: '100%',
+const consultTitle: React.CSSProperties = {
+  margin: 0, fontFamily: "'Cormorant Garamond',serif",
+  fontSize: '1.10rem', fontWeight: 500, color: '#F5EDD6', lineHeight: 1.35,
 };
-
-const concernTitle: React.CSSProperties = {
-  margin: 0, fontFamily: "'Cormorant Garamond','Noto Serif Tamil',serif",
-  fontSize: '1.15rem', fontWeight: 500, color: '#F5EDD6', lineHeight: 1.35,
+const consultDesc: React.CSSProperties = {
+  margin: 0, fontSize: '0.80rem', color: 'rgba(245,237,214,0.50)', lineHeight: 1.65,
 };
-
-const concernDesc: React.CSSProperties = {
-  margin: 0, fontSize: '0.80rem', color: 'rgba(245,237,214,0.45)', lineHeight: 1.6,
-  flexGrow: 1,
-};
-
-const concernBtn: React.CSSProperties = {
+const consultBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8,
-  fontSize: '0.82rem', fontWeight: 600, color: '#3D8A5C', transition: 'color 0.2s',
-};
-
-const agasthiyanBtn: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12,
-  padding: '10px 18px', borderRadius: 4,
+  padding: '10px 20px', borderRadius: 4,
   background: 'linear-gradient(135deg, #C9922A, #E8A820)',
   color: '#0A1A10', fontSize: '0.82rem', fontWeight: 700,
-  border: 'none', cursor: 'pointer',
-  letterSpacing: '0.03em', width: 'max-content',
+  textDecoration: 'none', letterSpacing: '0.03em', width: 'max-content',
 };
