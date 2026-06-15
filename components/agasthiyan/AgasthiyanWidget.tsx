@@ -42,7 +42,7 @@ export default function AgasthiyanWidget() {
     setMounted(true);
   }, []);
 
-  const currentLang = mounted ? language : 'en';
+  const currentLang = mounted ? language : 'ta';
 
   // Update initial greeting dynamically if chat has not started yet
   useEffect(() => {

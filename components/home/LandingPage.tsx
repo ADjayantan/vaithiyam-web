@@ -177,7 +177,7 @@ function HeroSection() {
     setMounted(true);
   }, []);
 
-  const currentLang = mounted ? language : 'en';
+  const currentLang = mounted ? language : 'ta';
 
   return (
     <section className="vt-landing-hero" style={{

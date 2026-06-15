@@ -23,7 +23,7 @@ function HeaderNavLinks() {
     setMounted(true);
   }, []);
 
-  const currentLang = mounted ? language : 'en';
+  const currentLang = mounted ? language : 'ta';
 
   const links = currentLang === 'ta' ? [
     { label: 'முகப்பு', href: '/', active: pathname === '/' },
@@ -76,7 +76,7 @@ export function CustomerHeader({
     setMounted(true);
   }, []);
 
-  const currentLang = mounted ? language : 'en';
+  const currentLang = mounted ? language : 'ta';
 
   useEffect(() => {
     if (cartCount !== undefined) {
