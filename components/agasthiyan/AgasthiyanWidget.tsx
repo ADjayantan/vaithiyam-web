@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguageStore } from '@/stores/languageStore';
 
 const T = {
   forestPrimary: 'var(--vt-forest-800)',
@@ -23,6 +24,8 @@ interface Message {
 }
 
 export default function AgasthiyanWidget() {
+  const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -34,6 +37,26 @@ export default function AgasthiyanWidget() {
   const [inputVal, setInputVal] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'en';
+
+  // Update initial greeting dynamically if chat has not started yet
+  useEffect(() => {
+    if (mounted && messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([
+        {
+          role: 'assistant',
+          content: currentLang === 'ta'
+            ? 'வணக்கம்! நான் அகஸ்தியன். சித்த மற்றும் ஆயுர்வேத மூலிகைகள் பற்றி நீங்கள் என்னிடம் கேட்கலாம்.'
+            : 'Hello! I am Agasthiyan. You can ask me about Siddha and Ayurveda herbs.',
+        }
+      ]);
+    }
+  }, [currentLang, mounted]);
 
   // Responsive state detection
   useEffect(() => {
@@ -91,7 +114,9 @@ export default function AgasthiyanWidget() {
         ...prev,
         {
           role: 'assistant',
-          content: 'மன்னிக்கவும், தகவல் பரிமாற்றத்தில் பிழை ஏற்பட்டுள்ளது. சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.',
+          content: currentLang === 'ta'
+            ? 'மன்னிக்கவும், தகவல் பரிமாற்றத்தில் பிழை ஏற்பட்டுள்ளது. சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.'
+            : 'Sorry, a communication error occurred. Please try again later.',
         },
       ]);
     } finally {
@@ -104,7 +129,7 @@ export default function AgasthiyanWidget() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="அகஸ்தியன் AI உதவியாளர்"
+        aria-label={currentLang === 'ta' ? 'அகஸ்தியன் AI உதவியாளர்' : 'Agasthiyan AI Assistant'}
         style={{
           position: 'fixed',
           bottom: isMobile ? '84px' : '24px',
@@ -174,7 +199,7 @@ export default function AgasthiyanWidget() {
                   <path d="M12 20c-4.4 0-8-3.6-8-8c0-5.4 7-10 8-10s8 4.6 8 10c0 4.4-3.6 8-8 8Z" />
                 </svg>
                 <span style={{ fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600, color: '#F5EDD6' }}>
-                  அகஸ்தியன் AI
+                  {currentLang === 'ta' ? 'அகஸ்தியன் AI' : 'Agasthiyan AI'}
                 </span>
               </div>
               <button
@@ -267,7 +292,7 @@ export default function AgasthiyanWidget() {
                 type="text"
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
-                placeholder="எழுதி அனுப்புங்கள்..."
+                placeholder={currentLang === 'ta' ? 'எழுதி அனுப்புங்கள்...' : 'Type your message...'}
                 style={{
                   flex: 1,
                   background: 'rgba(13,34,24,0.60)',
@@ -292,7 +317,7 @@ export default function AgasthiyanWidget() {
                   cursor: 'pointer',
                 }}
               >
-                அனுப்பு
+                {currentLang === 'ta' ? 'அனுப்பு' : 'Send'}
               </button>
             </form>
           </motion.div>
