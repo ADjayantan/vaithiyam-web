@@ -13,6 +13,7 @@ import {
 import type { SeedMedicine } from '@/lib/medicineData';
 import { CustomerHeader, MobileBottomNav, CustomerFooter } from '@/components/layout/CustomerShell';
 import { useCartStore } from '@/stores/cartStore';
+import { useLanguageStore } from '@/stores/languageStore';
 import { ProductCard } from '@/components/products/ProductCard';
 
 /* ─── token helpers ─────────────────────────────────────────────── */
@@ -169,6 +170,8 @@ export function LandingPage() {
    HERO — full viewport with tropical leaf photo background
 ══════════════════════════════════════════════════════════════════ */
 function HeroSection() {
+  const { language } = useLanguageStore();
+
   return (
     <section className="vt-landing-hero" style={{
       position: 'relative',
@@ -213,8 +216,19 @@ function HeroSection() {
           letterSpacing: '-0.01em',
           textShadow: '0 2px 40px rgba(0,0,0,0.60)',
         }}>
-          Authentic Siddha & Ayurveda. <br />
-          Ancient Wisdom, Elevated.
+          {language === 'ta' ? (
+            <>
+              பாரம்பரிய சித்த <br />
+              மற்றும் ஆயுர்வேதம். <br />
+              பண்டைய ஞானம், <br />
+              மேம்படுத்தப்பட்டது.
+            </>
+          ) : (
+            <>
+              Authentic Siddha & Ayurveda. <br />
+              Ancient Wisdom, Elevated.
+            </>
+          )}
         </h1>
 
         {/* Gold CTA */}
@@ -229,7 +243,7 @@ function HeroSection() {
           boxShadow: '0 8px 32px rgba(201,146,42,0.40)',
           transition: 'all 0.2s',
         }}>
-          SHOP MEDICINES
+          {language === 'ta' ? 'தயாரிப்புகளை காணுங்கள்' : 'SHOP MEDICINES'}
         </Link>
       </motion.div>
 

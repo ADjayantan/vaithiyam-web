@@ -9,14 +9,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useCartStore } from '@/stores/cartStore';
+import { useLanguageStore } from '@/stores/languageStore';
 import type { CartItem } from '@/types/order';
 
 function HeaderNavLinks() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tradition = searchParams?.get('tradition') || 'all';
+  const { language } = useLanguageStore();
 
-  const links = [
+  const links = language === 'ta' ? [
+    { label: 'முகப்பு', href: '/', active: pathname === '/' },
+    { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' && tradition === 'all' },
+    { label: 'உதவி', href: '/help', active: pathname === '/help' },
+    { label: 'பற்றி', href: '/about', active: pathname === '/about' },
+    { label: 'எங்களைத் தொடர்பு கொள்ள', href: '/contact', active: pathname === '/contact' },
+  ] : [
     { label: 'SIDDHA', href: '/products?tradition=siddha', active: pathname === '/products' && tradition === 'siddha' },
     { label: 'AYURVEDA', href: '/products?tradition=ayurveda', active: pathname === '/products' && tradition === 'ayurveda' },
     { label: 'NATURAL', href: '/products?tradition=natural', active: pathname === '/products' && tradition === 'natural' },
@@ -50,6 +58,7 @@ export function CustomerHeader({
 }) {
   const storeItems = useCartStore((state) => state.items);
   const storeItemCount = storeItems.reduce((s, i) => s + i.qty, 0);
+  const { language } = useLanguageStore();
 
   const [localCartCount, setLocalCartCount] = useState(cartCount !== undefined ? cartCount : storeItemCount);
   const [searchActive, setSearchActive] = useState(false);
@@ -91,7 +100,9 @@ export function CustomerHeader({
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
           <span>
-            <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>Vaithiyam</span>
+            <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>
+              {language === 'ta' ? 'வைத்தியம் (Vaithiyam)' : 'Vaithiyam'}
+            </span>
           </span>
         </Link>
 

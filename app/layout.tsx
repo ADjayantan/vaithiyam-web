@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import '@/lib/fontawesome';
 import AgasthiyanWidget from '@/components/agasthiyan/AgasthiyanWidget';
+import SideFloats from '@/components/ui/SideFloats';
 
 export const metadata: Metadata = {
   title: 'வைத்தியம் | Vaithiyam — Traditional Medicine',
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <AgasthiyanWidget />
+        <SideFloats />
       </body>
     </html>
   );
