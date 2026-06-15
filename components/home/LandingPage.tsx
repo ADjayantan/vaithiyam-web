@@ -171,6 +171,13 @@ export function LandingPage() {
 ══════════════════════════════════════════════════════════════════ */
 function HeroSection() {
   const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'en';
 
   return (
     <section className="vt-landing-hero" style={{
@@ -216,7 +223,7 @@ function HeroSection() {
           letterSpacing: '-0.01em',
           textShadow: '0 2px 40px rgba(0,0,0,0.60)',
         }}>
-          {language === 'ta' ? (
+          {currentLang === 'ta' ? (
             <>
               பாரம்பரிய சித்த <br />
               மற்றும் ஆயுர்வேதம். <br />
@@ -243,7 +250,7 @@ function HeroSection() {
           boxShadow: '0 8px 32px rgba(201,146,42,0.40)',
           transition: 'all 0.2s',
         }}>
-          {language === 'ta' ? 'தயாரிப்புகளை காணுங்கள்' : 'SHOP MEDICINES'}
+          {currentLang === 'ta' ? 'தயாரிப்புகளை காணுங்கள்' : 'SHOP MEDICINES'}
         </Link>
       </motion.div>
 

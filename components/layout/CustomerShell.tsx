@@ -17,8 +17,15 @@ function HeaderNavLinks() {
   const searchParams = useSearchParams();
   const tradition = searchParams?.get('tradition') || 'all';
   const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
 
-  const links = language === 'ta' ? [
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'en';
+
+  const links = currentLang === 'ta' ? [
     { label: 'முகப்பு', href: '/', active: pathname === '/' },
     { label: 'மருந்துகள்', href: '/products', active: pathname === '/products' && tradition === 'all' },
     { label: 'உதவி', href: '/help', active: pathname === '/help' },
@@ -59,10 +66,17 @@ export function CustomerHeader({
   const storeItems = useCartStore((state) => state.items);
   const storeItemCount = storeItems.reduce((s, i) => s + i.qty, 0);
   const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
 
   const [localCartCount, setLocalCartCount] = useState(cartCount !== undefined ? cartCount : storeItemCount);
   const [searchActive, setSearchActive] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'en';
 
   useEffect(() => {
     if (cartCount !== undefined) {
@@ -101,7 +115,7 @@ export function CustomerHeader({
           </span>
           <span>
             <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>
-              {language === 'ta' ? 'வைத்தியம் (Vaithiyam)' : 'Vaithiyam'}
+              {currentLang === 'ta' ? 'வைத்தியம் (Vaithiyam)' : 'Vaithiyam'}
             </span>
           </span>
         </Link>
