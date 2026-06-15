@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarcode, faCartShopping, faCircleUser, faHeart,
   faHouse, faLeaf, faMagnifyingGlass, faUpload,
+  faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useCartStore } from '@/stores/cartStore';
@@ -70,6 +71,7 @@ export function CustomerHeader({
 
   const [localCartCount, setLocalCartCount] = useState(cartCount !== undefined ? cartCount : storeItemCount);
   const [searchActive, setSearchActive] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -94,6 +96,15 @@ export function CustomerHeader({
       .then((data: { items?: CartItem[] } | null) => {
         if (data?.items) {
           useCartStore.getState().setItems(data.items);
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/auth/profile', { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.ok ? res.json() : null)
+      .then((user: { role?: string } | null) => {
+        if (user?.role === 'admin') {
+          setIsAdmin(true);
         }
       })
       .catch(() => {});
@@ -204,6 +215,12 @@ export function CustomerHeader({
           <Link className="vt-icon-link vt-icon-desktop-only" href="/account" aria-label="Account">
             <FontAwesomeIcon icon={faCircleUser} style={{ width: 18, height: 18 }} />
           </Link>
+          {isAdmin && (
+            <Link href="/admin/dashboard" className="vt-admin-badge" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+              <FontAwesomeIcon icon={faShieldHalved} style={{ width: 12, height: 12 }} />
+              நிர்வாகி
+            </Link>
+          )}
           <Link className="vt-icon-link" href="/cart" aria-label="Cart" style={{ position: 'relative' }}>
             <FontAwesomeIcon icon={faCartShopping} style={{ width: 18, height: 18 }} />
             {localCartCount > 0 && (

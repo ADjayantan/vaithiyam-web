@@ -8,26 +8,21 @@ import {
   faClipboardCheck,
   faCubes,
   faGear,
-  faHouse,
   faLeaf,
+  faPlus,
   faShieldHalved,
   faSignOutAlt,
-  faUsers,
-  faCircleUser,
 } from '@fortawesome/free-solid-svg-icons';
 import type { ReactNode } from 'react';
 
 const nav = [
-  { href: '/admin/dashboard',     label: 'Dashboard',     icon: faChartBar },
-  { href: '/admin/orders',        label: 'Orders',        icon: faClipboardCheck },
-  { href: '/admin/medicines',     label: 'Inventory',     icon: faCubes },
-  { href: '/admin/prescriptions', label: 'Prescriptions', icon: faShieldHalved },
-  { href: '/admin/users',         label: 'Customers',     icon: faUsers },
-  { href: '/admin/reports',       label: 'Reports',       icon: faChartBar },
-  { href: '/admin/settings',      label: 'Settings',      icon: faGear },
+  { href: '/admin/dashboard',     label: 'நிர்வாகப் பலகை',     icon: faChartBar },
+  { href: '/admin/medicines',     label: 'தயாரிப்புகள்',     icon: faCubes },
+  { href: '/admin/orders',        label: 'கட்டளைகள்',        icon: faClipboardCheck },
+  { href: '/admin/prescriptions', label: 'மருந்துச் சீட்டுகள்', icon: faShieldHalved },
 ];
 
-export function AdminShell({ children, title = 'Admin' }: { children: ReactNode; title?: string }) {
+export function AdminShell({ children }: { children: ReactNode }) {
   const path = usePathname();
   const router = useRouter();
 
@@ -39,92 +34,92 @@ export function AdminShell({ children, title = 'Admin' }: { children: ReactNode;
     router.replace('/admin/login');
   };
 
+  const handleOpenAddModal = () => {
+    window.dispatchEvent(new CustomEvent('open-add-medicine-modal'));
+  };
+
   return (
     <div className="vt-admin-shell">
-      {/* ── Top Navigation Bar ────────────────────────────────────────── */}
-      <header className="vt-admin-topbar">
-        {/* Brand Logo */}
-        <Link href="/admin/dashboard" className="vt-admin-brand">
-          <span className="vt-admin-brand-mark">
-            <FontAwesomeIcon icon={faLeaf} style={{ width: 20, height: 20 }} />
-          </span>
-          <span>Vaithiyam <span style={{ fontWeight: 400, color: 'var(--vt-admin-green)', opacity: 0.75 }}>| Admin</span></span>
-        </Link>
+      {/* ── Vertical Left Sidebar ── */}
+      <aside className="vt-admin-sidebar">
+        {/* Brand Logo Header */}
+        <div className="vt-admin-sidebar-logo">
+          <Link href="/admin/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ color: '#3D8A5C', display: 'inline-flex' }}>
+              <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
+            </span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <h1>Vaithiyam</h1>
+              <p>நிர்வாகி</p>
+            </div>
+          </Link>
+        </div>
 
-        {/* Center Nav Links */}
-        <nav className="vt-admin-nav">
+        {/* Navigation Link List */}
+        <nav className="vt-admin-sidebar-nav">
           {nav.map((item) => {
             const active = path === item.href || (item.href !== '/admin/dashboard' && path.startsWith(item.href));
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`vt-admin-nav-link ${active ? 'active' : ''}`}
-                style={{
-                  borderBottom: active ? '2px solid #1E472E' : '2px solid transparent',
-                  borderRadius: '0px',
-                  padding: '6px 4px',
-                }}
+                className={`vt-admin-sidebar-link ${active ? 'active' : ''}`}
               >
-                {item.label}
+                <FontAwesomeIcon icon={item.icon} style={{ width: 16, height: 16 }} />
+                <span>{item.label}</span>
               </Link>
             );
           })}
-        </nav>
 
-        {/* Right Admin Badge & Logout */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          {/* Back to site */}
-          <Link
-            href="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              fontSize: '0.85rem',
-              color: '#5A665D',
-              fontWeight: 600,
-              textDecoration: 'none',
-              padding: '6px 10px',
-              borderRadius: 8,
-              transition: 'background 0.2s',
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(30, 71, 46, 0.05)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+          <div className="vt-admin-sidebar-divider" />
+
+          {/* Quick Action Button inside Sidebar */}
+          <button
+            type="button"
+            className="vt-admin-sidebar-btn"
+            onClick={handleOpenAddModal}
+            title="புதிய தயாரிப்பு (Add Product)"
           >
-            <FontAwesomeIcon icon={faHouse} style={{ width: 14, height: 14 }} />
-            Storefront
+            <FontAwesomeIcon icon={faPlus} style={{ width: 12, height: 12 }} />
+            <span>புதிய தயாரிப்பு</span>
+          </button>
+
+          <div style={{ flexGrow: 1 }} />
+
+          {/* Settings Link at the bottom */}
+          <Link
+            href="/admin/settings"
+            className={`vt-admin-sidebar-link ${path.startsWith('/admin/settings') ? 'active' : ''}`}
+            style={{ marginBottom: 4 }}
+          >
+            <FontAwesomeIcon icon={faGear} style={{ width: 16, height: 16 }} />
+            <span>அமைப்புகள்</span>
           </Link>
 
-          <div style={{ width: '1px', height: '20px', background: '#E4DACF' }} />
-
-          {/* Admin user Profile row with logout click */}
+          {/* Logout Button */}
           <button
             type="button"
             onClick={handleLogout}
-            className="vt-admin-user-badge"
-            title="வெளியேறு (Logout)"
+            className="vt-admin-sidebar-link"
             style={{
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
+              width: '100%',
+              textAlign: 'left',
               outline: 'none',
             }}
           >
-            <FontAwesomeIcon icon={faCircleUser} style={{ width: 18, height: 18, color: '#1E472E' }} />
-            <span style={{ color: '#1E3024', fontWeight: 600, fontSize: '0.94rem' }}>Admin User</span>
-            <FontAwesomeIcon icon={faSignOutAlt} style={{ width: 12, height: 12, color: '#6B7A70', marginLeft: 4 }} />
+            <FontAwesomeIcon icon={faSignOutAlt} style={{ width: 16, height: 16 }} />
+            <span>வெளியேறு</span>
           </button>
-        </div>
-      </header>
+        </nav>
+      </aside>
 
-      {/* Main Content Area */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      {/* ── Main Panel Content (on the right) ── */}
+      <div className="vt-admin-main">
         {children}
-      </main>
+      </div>
     </div>
   );
 }

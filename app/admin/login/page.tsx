@@ -3,19 +3,17 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLeaf, faLock } from '@fortawesome/free-solid-svg-icons';
 
-// ─── Design Tokens (matches register palette) ──────────────────────────────
 const T = {
-  creamBg:      '#F4EDE4',        // light warm cream sand background
-  forestDark:    '#1E472E',        // deep forest green primary
-  leafGreen:     '#3D8A5C',        // standard botanical leaf green
-  borderGreen:   '#A4BAAD',        // soft light border green
-  textDark:      '#102A1A',        // dark forest ink text
-  textMuted:     '#6B7A70',        // muted gray-green
-  errorRed:      '#C43E2C',        // warm terracotta red
+  bgDark:        '#030C07',        // dark luxury green-black background
+  panelDark:     '#0D1A10',        // slightly lighter green panel
+  gold:          '#c9a84c',        // gold accent/button
+  borderGold:    'rgba(201, 168, 76, 0.25)',
+  textCream:     '#f5f0e8',        // cream text
+  textMuted:     'rgba(245, 240, 232, 0.45)',
+  errorRed:      '#dc5050',
 };
 
 const FONT = {
@@ -29,8 +27,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Focus States
   const [focusedField, setFocusedField] = useState('');
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -50,7 +46,7 @@ export default function AdminLoginPage() {
       localStorage.setItem('vt_token', data.token ?? '');
       router.push('/admin/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'உள்நுழைவு தோல்வி.');
+      setError('தவறான மின்னஞ்சல் அல்லது கடவுச்சொல்');
     } finally {
       setLoading(false);
     }
@@ -58,14 +54,14 @@ export default function AdminLoginPage() {
 
   const inputStyle = (fieldName: string) => ({
     width: '100%',
-    padding: '12px 14px 12px 36px', // left padding leaves space for icon
+    padding: '12px 14px 12px 36px',
     border: 'none',
-    borderBottom: `1.5px solid ${focusedField === fieldName ? T.forestDark : T.borderGreen}`,
+    borderBottom: `1.5px solid ${focusedField === fieldName ? T.gold : T.borderGold}`,
     background: 'transparent',
     outline: 'none',
     fontFamily: FONT.body,
     fontSize: '0.96rem',
-    color: T.textDark,
+    color: T.textCream,
     transition: 'border-color 0.2s',
   });
 
@@ -83,7 +79,7 @@ export default function AdminLoginPage() {
     <div
       style={{
         minHeight: '100dvh',
-        background: T.creamBg,
+        background: T.bgDark,
         display: 'grid',
         placeItems: 'center',
         padding: '24px 16px',
@@ -97,7 +93,7 @@ export default function AdminLoginPage() {
               fontFamily: FONT.display,
               fontSize: '2.5rem',
               fontWeight: 700,
-              color: T.forestDark,
+              color: T.gold,
               margin: 0,
               display: 'flex',
               alignItems: 'center',
@@ -107,8 +103,8 @@ export default function AdminLoginPage() {
           >
             Vaithiyam
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: T.textDark, marginTop: 12 }}>
-            <span style={{ color: T.leafGreen, display: 'inline-flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: T.textCream, marginTop: 12 }}>
+            <span style={{ color: T.gold, display: 'inline-flex' }}>
               <FontAwesomeIcon icon={faLeaf} style={{ width: 32, height: 32 }} />
             </span>
             <span
@@ -116,14 +112,14 @@ export default function AdminLoginPage() {
                 fontFamily: FONT.display,
                 fontSize: '2rem',
                 fontWeight: 700,
-                color: T.textDark,
+                color: T.textCream,
               }}
             >
-              Admin Portal
+              நிர்வாகி உள்நுழைவு
             </span>
           </div>
           <p style={{ margin: '6px 0 0', fontFamily: FONT.body, fontSize: '0.86rem', color: T.textMuted }}>
-            நிர்வாகி உள்நுழைவு பக்கம்
+            Vaithiyam Admin Dashboard Portal
           </p>
         </div>
 
@@ -134,12 +130,16 @@ export default function AdminLoginPage() {
             display: 'grid',
             gap: 18,
             marginTop: 10,
+            backgroundColor: T.panelDark,
+            padding: 32,
+            borderRadius: 20,
+            border: '1px solid rgba(201, 168, 76, 0.15)',
           }}
         >
           {error && (
             <div
               style={{
-                background: 'rgba(196,62,44,0.08)',
+                background: 'rgba(220,80,80,0.08)',
                 border: `1px solid ${T.errorRed}40`,
                 borderRadius: 8,
                 padding: '10px 14px',
@@ -155,7 +155,7 @@ export default function AdminLoginPage() {
 
           {/* Email */}
           <div>
-            <label htmlFor="login-email" style={labelStyle}>Email Address</label>
+            <label htmlFor="login-email" style={labelStyle}>மின்னஞ்சல் முகவரி / Email Address</label>
             <div style={{ position: 'relative' }}>
               <FontAwesomeIcon
                 icon={faEnvelope}
@@ -165,14 +165,14 @@ export default function AdminLoginPage() {
                   top: 15,
                   width: 16,
                   height: 16,
-                  color: focusedField === 'email' ? T.forestDark : T.textMuted,
+                  color: focusedField === 'email' ? T.gold : T.textMuted,
                   transition: 'color 0.2s',
                 }}
               />
               <input
                 id="login-email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="admin@vaithiyam.com"
                 value={email}
                 disabled={loading}
                 onChange={(e) => setEmail(e.target.value)}
@@ -186,7 +186,7 @@ export default function AdminLoginPage() {
 
           {/* Password */}
           <div>
-            <label htmlFor="login-pass" style={labelStyle}>Password</label>
+            <label htmlFor="login-pass" style={labelStyle}>கடவுச்சொல் / Password</label>
             <div style={{ position: 'relative' }}>
               <FontAwesomeIcon
                 icon={faLock}
@@ -196,7 +196,7 @@ export default function AdminLoginPage() {
                   top: 15,
                   width: 16,
                   height: 16,
-                  color: focusedField === 'password' ? T.forestDark : T.textMuted,
+                  color: focusedField === 'password' ? T.gold : T.textMuted,
                   transition: 'color 0.2s',
                 }}
               />
@@ -221,38 +221,22 @@ export default function AdminLoginPage() {
             disabled={loading}
             style={{
               marginTop: 12,
-              background: T.forestDark,
-              color: '#FFFFFF',
+              background: T.gold,
+              color: '#030C07',
               border: 'none',
               borderRadius: 8,
               padding: '14px 24px',
-              fontFamily: FONT.display,
-              fontSize: '1.15rem',
+              fontFamily: FONT.body,
+              fontSize: '1.05rem',
               fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 14px rgba(30,71,46,0.25)',
+              boxShadow: '0 4px 14px rgba(201,168,76,0.25)',
               transition: 'background 0.2s, transform 0.1s',
               opacity: loading ? 0.75 : 1,
             }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'உள்நுழைகிறது...' : 'உள்நுழை'}
           </button>
-
-          {/* Register Link */}
-          <div style={{ marginTop: 14 }}>
-            <Link
-              href="/admin/register"
-              style={{
-                fontFamily: FONT.body,
-                fontSize: '0.88rem',
-                color: T.textDark,
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
-            >
-              Don't have an account? <span style={{ textDecoration: 'underline', color: T.leafGreen }}>Create one</span>
-            </Link>
-          </div>
         </form>
       </div>
     </div>
