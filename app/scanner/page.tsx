@@ -364,7 +364,7 @@ export default function ScannerPage() {
                 <h2 style={{ fontFamily: 'var(--vt-font-display)', fontSize: '1.3rem', fontWeight: 800, color: 'var(--vt-cream-50)', margin: '0 0 16px', letterSpacing: 0 }}>
                   Search results for &ldquo;{query}&rdquo;
                 </h2>
-                <div className="vt-grid">
+                <div className="vt-products-grid">
                   {results.map(product => (
                     <ProductCard key={product.id} product={product} onAddToCart={addToCart} onWishlist={addToWishlist} />
                   ))}

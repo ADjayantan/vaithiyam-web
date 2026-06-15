@@ -322,7 +322,7 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
             <p className="vt-muted" style={{ margin: 0 }}>இப்பொழுது தயாரிப்புகள் இல்லை.</p>
           </div>
         ) : (
-          <div className="vt-grid">
+          <div className="vt-products-grid">
             {products.map((product, i) => (
               <motion.div
                 key={product.id}
