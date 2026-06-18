@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -59,6 +60,16 @@ const S = {
 } as const;
 
 export default function PrescriptionsPage() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (!getToken()) {
+      router.replace('/auth/login?next=/prescriptions');
+    }
+  }, [router]);
+
   const [items, setItems] = useState<Prescription[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -149,6 +160,8 @@ export default function PrescriptionsPage() {
     approved: items.filter((i) => i.status === 'approved').length,
     rejected: items.filter((i) => i.status === 'rejected').length,
   }), [items]);
+
+  if (!mounted) return null;
 
   return (
     <div style={{ minHeight: '100dvh', background: S.bg, display: 'flex', flexDirection: 'column', paddingBottom: '80px' }}>

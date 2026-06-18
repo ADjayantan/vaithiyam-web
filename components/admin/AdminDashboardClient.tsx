@@ -477,7 +477,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
               className="vt-admin-panel"
               style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 240 }}
             >
-              <div style={{ textAlign: 'center', color: '#5A665D' }}>
+              <div style={{ textAlign: 'center', color: 'rgba(245,240,232,0.55)' }}>
                 <div style={{ marginBottom: 12 }}>Loading admin database and metrics...</div>
                 <div style={{ fontSize: '0.85rem', color: '#8A9990' }}>Please wait a moment</div>
               </div>
@@ -680,43 +680,71 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                     </div>
                   </div>
 
-                  {/* Bottom Banners */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 12 }}>
-                    <div
-                      style={{
-                        height: 180,
-                        borderRadius: 20,
-                        backgroundImage: 'linear-gradient(to right, rgba(3, 12, 7, 0.95), rgba(3, 12, 7, 0.4)), url(/catalogue-ref-2.png)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-end',
-                        padding: 24,
-                        border: '1px solid rgba(201, 168, 76, 0.15)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                      }}
-                    >
-                      <span style={{ fontSize: '0.72rem', letterSpacing: '0.15em', color: 'var(--vt-gold)', fontWeight: 700, textTransform: 'uppercase' }}>GLOBAL SOURCING</span>
-                      <h3 style={{ margin: '4px 0 0 0', fontFamily: 'var(--vt-font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Ethical Herbal Procurement</h3>
+                  {/* ── Platform Summary ── */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, marginTop: 4 }}>
+
+                    {/* Category Breakdown */}
+                    <div className="vt-admin-panel">
+                      <h3 style={{ margin: '0 0 16px 0', fontSize: '1.05rem', color: 'var(--vt-cream)', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>
+                        Category Breakdown
+                      </h3>
+                      <div className="vt-admin-table-wrap" style={{ maxHeight: 310, overflowY: 'auto' }}>
+                        <table className="vt-admin-table">
+                          <thead>
+                            <tr>
+                              <th>CATEGORY</th>
+                              <th>SKUs</th>
+                              <th>TRADITION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.categories.map(cat => {
+                              let skuCount = 0;
+                              if (cat.slug === 'siddha' || cat.slug === 'ayurveda') {
+                                skuCount = data.medicines.filter(m => m.tradition === cat.slug).length;
+                              } else if (cat.slug === 'natural-wellness') {
+                                skuCount = data.medicines.filter(m => m.tradition === 'natural').length;
+                              } else {
+                                skuCount = data.medicines.filter(m => m.categorySlug === cat.slug).length;
+                              }
+                              return (
+                                <tr key={cat.id}>
+                                  <td style={{ fontWeight: 600 }}>{cat.nameTa}</td>
+                                  <td style={{ fontWeight: 700, color: skuCount === 0 ? '#dc5050' : 'var(--vt-gold)' }}>{skuCount}</td>
+                                  <td style={{ fontSize: '0.78rem', color: 'rgba(245,240,232,0.50)' }}>{cat.nameEn}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        height: 180,
-                        borderRadius: 20,
-                        backgroundImage: 'linear-gradient(to right, rgba(3, 12, 7, 0.95), rgba(3, 12, 7, 0.4)), url(/catalogue-ref-3.png)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-end',
-                        padding: 24,
-                        border: '1px solid rgba(201, 168, 76, 0.15)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                      }}
-                    >
-                      <span style={{ fontSize: '0.72rem', letterSpacing: '0.15em', color: 'var(--vt-gold)', fontWeight: 700, textTransform: 'uppercase' }}>QUALITY ASSURANCE</span>
-                      <h3 style={{ margin: '4px 0 0 0', fontFamily: 'var(--vt-font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Modern Science, Ancient Wisdom</h3>
+
+                    {/* System Health */}
+                    <div className="vt-admin-panel" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                      <h3 style={{ margin: '0 0 4px 0', fontSize: '1.05rem', color: 'var(--vt-cream)', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>
+                        System Health
+                      </h3>
+                      {[
+                        { label: 'Total Products', value: data.stats.totalMedicines, icon: '📦', note: 'Active in catalogue' },
+                        { label: 'Low Stock Items', value: data.stats.lowStock, icon: '⚠', note: 'Below 15 units', warn: data.stats.lowStock > 0 },
+                        { label: 'Pending Orders', value: data.orders.filter(o => o.status === 'pending').length, icon: '🕐', note: 'Awaiting confirmation', warn: data.orders.filter(o => o.status === 'pending').length > 5 },
+                        { label: 'Prescription Queue', value: data.stats.pendingPrescriptions, icon: '📋', note: 'Pending review', warn: data.stats.pendingPrescriptions > 0 },
+                        { label: 'Registered Users', value: data.users.length, icon: '👤', note: 'All roles' },
+                      ].map(row => (
+                        <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <span style={{ fontSize: '1.1rem' }}>{row.icon}</span>
+                            <div>
+                              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--vt-ink)' }}>{row.label}</div>
+                              <div style={{ fontSize: '0.72rem', color: 'rgba(245,240,232,0.45)' }}>{row.note}</div>
+                            </div>
+                          </div>
+                          <span style={{ fontWeight: 800, fontSize: '1.15rem', color: row.warn ? 'var(--vt-gold)' : '#4abc4a' }}>
+                            {row.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </>
@@ -728,7 +756,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
                     <div>
                       <h1 style={{ fontFamily: 'var(--vt-font-display)', fontSize: '2.2rem', fontWeight: 700, margin: 0, color: 'var(--vt-cream)' }}>Orders | கட்டளைகள்</h1>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', color: 'rgba(245, 240, 232, 0.55)' }}>Manage and monitor all ancient herbal medicine orders through this centralized luxury dashboard.</p>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', color: 'rgba(245, 240, 232, 0.55)' }}>கட்டளைகளை நிர்வகிக்கவும் மற்றும் கண்காணிக்கவும் — Manage and monitor all orders.</p>
                     </div>
                     <div style={{ display: 'flex', gap: 12 }}>
                       <button type="button" onClick={handleExportOrdersCsv} className="vt-admin-btn vt-admin-btn-secondary">EXPORT CSV</button>
@@ -963,26 +991,51 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                     )}
                   </div>
 
-                  {/* Quality Control Banner */}
-                  <div
-                    style={{
-                      height: 200,
-                      borderRadius: 20,
-                      backgroundImage: 'linear-gradient(to right, rgba(3, 12, 7, 0.95), rgba(3, 12, 7, 0.4)), url(/catalogue-ref-4.png)',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      padding: 32,
-                      marginTop: 12,
-                      border: '1px solid rgba(201, 168, 76, 0.15)',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    <span style={{ fontSize: '0.72rem', letterSpacing: '0.15em', color: 'var(--vt-gold)', fontWeight: 700, textTransform: 'uppercase' }}>QUALITY CONTROL</span>
-                    <h3 style={{ margin: '4px 0 0 0', fontFamily: 'var(--vt-font-display)', fontSize: '1.6rem', fontWeight: 700, color: 'white' }}>Ensuring Purity in Every Prescription</h3>
-                    <p style={{ margin: '8px 0 0 0', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.7)', maxWidth: 600 }}>Your order management oversight guarantees that each botanical formula meets the ancient standards of Siddha healing before it reaches the customer's sanctuary.</p>
+                  {/* ── Order Analytics Summary ── */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginTop: 12 }}>
+                    {/* Fulfilment Rate */}
+                    <div className="vt-admin-panel" style={{ textAlign: 'center', padding: 24 }}>
+                      <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', color: 'rgba(245,240,232,0.50)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 8 }}>Fulfilment Rate</div>
+                      <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#4abc4a', fontFamily: 'var(--vt-font-display)' }}>
+                        {data.orders.length > 0
+                          ? `${Math.round((data.orders.filter(o => o.status === 'delivered' || o.status === 'shipped').length / data.orders.length) * 100)}%`
+                          : '—'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'rgba(245,240,232,0.45)', marginTop: 6 }}>
+                        {data.orders.filter(o => o.status === 'delivered' || o.status === 'shipped').length} shipped or delivered
+                      </div>
+                    </div>
+
+                    {/* Average Order Value */}
+                    <div className="vt-admin-panel" style={{ textAlign: 'center', padding: 24 }}>
+                      <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', color: 'rgba(245,240,232,0.50)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 8 }}>Avg Order Value</div>
+                      <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--vt-gold)', fontFamily: 'var(--vt-font-display)' }}>
+                        ₹{data.orders.length > 0 ? Math.round(data.stats.revenue / data.orders.length).toLocaleString('en-IN') : 0}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'rgba(245,240,232,0.45)', marginTop: 6 }}>
+                        across {data.orders.length} orders
+                      </div>
+                    </div>
+
+                    {/* Payment Split */}
+                    <div className="vt-admin-panel" style={{ padding: 24 }}>
+                      <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', color: 'rgba(245,240,232,0.50)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 12 }}>Payment Split</div>
+                      {(['online', 'cod', 'upi'] as const).map(method => {
+                        const count = data.orders.filter(o => o.paymentMethod.toLowerCase() === method).length;
+                        const pct = data.orders.length > 0 ? Math.round((count / data.orders.length) * 100) : 0;
+                        return (
+                          <div key={method} style={{ marginBottom: 8 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 4 }}>
+                              <span style={{ textTransform: 'uppercase', fontWeight: 700, color: 'var(--vt-ink)' }}>{method}</span>
+                              <span style={{ color: 'var(--vt-gold)', fontWeight: 700 }}>{pct}%</span>
+                            </div>
+                            <div style={{ height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.07)' }}>
+                              <div style={{ height: '100%', width: `${pct}%`, borderRadius: 999, background: 'linear-gradient(90deg, var(--vt-gold-500), var(--vt-emerald-600))' }} />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </>
               )}
@@ -1044,8 +1097,8 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                                     height: 48,
                                     borderRadius: 8,
                                     overflow: 'hidden',
-                                    border: '1px solid #E6DCD1',
-                                    background: '#FAF8F5',
+                                    border: '1px solid var(--vt-border)',
+                                    background: 'var(--vt-card-strong)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -1058,7 +1111,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                                   )}
                                 </div>
                               </td>
-                              <td style={{ fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: '#1E472E' }}>
+                              <td style={{ fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: 'var(--vt-ink)' }}>
                                 {item.nameTa}
                               </td>
                               <td style={{ fontWeight: 600 }}>{item.nameEn}</td>
@@ -1207,13 +1260,13 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                         {filteredCategories.map((cat) => (
                           <tr key={cat.id}>
                             <td style={{ fontSize: '1.2rem', paddingLeft: 20 }}>{cat.icon || '🍃'}</td>
-                            <td style={{ fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: '#1E472E' }}>
+                            <td style={{ fontFamily: 'var(--vt-font-display)', fontWeight: 700, color: 'var(--vt-ink)' }}>
                               {cat.nameTa}
                             </td>
                             <td style={{ fontWeight: 600 }}>{cat.nameEn}</td>
-                            <td style={{ fontFamily: 'monospace', color: '#5A665D' }}>{cat.slug}</td>
+                            <td style={{ fontFamily: 'monospace', color: 'rgba(245,240,232,0.55)' }}>{cat.slug}</td>
                             <td>
-                              <span style={{ fontSize: '0.8rem', background: '#E2F2E9', color: '#1E7040', padding: '3px 8px', borderRadius: 6, fontWeight: 600 }}>
+                              <span style={{ fontSize: '0.8rem', background: 'rgba(61,138,92,0.12)', color: 'var(--vt-emerald-600)', padding: '3px 8px', borderRadius: 6, fontWeight: 600 }}>
                                 Active
                               </span>
                             </td>
@@ -1412,14 +1465,54 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                     </div>
                   </div>
 
-                  {/* Pharmacist Guidelines */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 24, marginTop: 12 }}>
-                    <div className="vt-admin-panel" style={{ border: '1px solid rgba(201, 168, 76, 0.2)' }}>
-                      <h3 style={{ margin: '0 0 12px 0', fontSize: '1.05rem', color: 'var(--vt-gold)', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>Pharmacist Verification Guidelines</h3>
-                      <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.85rem', color: 'rgba(245, 240, 232, 0.75)', display: 'grid', gap: 8 }}>
-                        <li>மருத்தவரின் பதிவு எண்ணைச் சரிபார்க்கவும் (Registration No.)</li>
-                        <li>மருந்துச் சீட்டின் காலாவதி தேதியைச் சோதிக்கவும்</li>
-                        <li>நோயாளி பெயர் மற்றும் விண்ணப்பதாரர் பெயர் ஒத்துப்போவதை உறுதி செய்யவும்</li>
+                  {/* ── Pharmacist Verification Guidelines ── */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 24, marginTop: 16 }}>
+
+                    {/* Left: Verification Reference Image */}
+                    <div
+                      style={{
+                        borderRadius: 16,
+                        backgroundImage: 'linear-gradient(135deg, rgba(3,12,7,0.92) 0%, rgba(13,34,24,0.70) 100%), url(/catalogue-ref-2.png)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        minHeight: 200,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        padding: 24,
+                        border: '1px solid rgba(201,168,76,0.18)',
+                      }}
+                    >
+                      <span style={{ fontSize: '0.7rem', letterSpacing: '0.18em', color: 'var(--vt-gold)', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>
+                        AUTHENTICITY
+                      </span>
+                      <h3 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: '1.45rem', fontWeight: 700, color: 'var(--vt-cream)', lineHeight: 1.25 }}>
+                        உண்மைமை தன்மையை<br />உறுதிப்படுத்துதல்
+                      </h3>
+                    </div>
+
+                    {/* Right: Admin Guidelines */}
+                    <div className="vt-admin-panel" style={{ border: '1px solid rgba(201,168,76,0.20)' }}>
+                      <h3 style={{ margin: '0 0 16px 0', fontSize: '1.05rem', color: 'var(--vt-gold)', fontFamily: 'var(--vt-font-display)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <FontAwesomeIcon icon={faShieldHalved} style={{ width: 14, height: 14 }} />
+                        நிர்வாக வழிகாட்டிகள்
+                      </h3>
+                      <ul style={{ margin: 0, paddingLeft: 0, listStyle: 'none', display: 'grid', gap: 12 }}>
+                        {[
+                          { ta: 'மருத்தவரின் பதிவு எண்ணைச் சரிபார்க்கவும் (Registration No.).', en: 'Verify the doctor\'s registration number.' },
+                          { ta: 'மருந்துச் சீட்டின் காலாவதி தேதியைச் சோதிக்கவும்.', en: 'Check the prescription expiry date.' },
+                          { ta: 'நோயாளி பெயர் மற்றும் விண்ணப்பதாரர் பெயர் ஒத்துப்போவதை உறுதி செய்யவும்.', en: 'Confirm patient and applicant names match.' },
+                        ].map((item, i) => (
+                          <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                            <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                              <FontAwesomeIcon icon={faCheck} style={{ width: 10, height: 10, color: 'var(--vt-gold)' }} />
+                            </span>
+                            <div>
+                              <div style={{ fontSize: '0.87rem', color: 'var(--vt-ink)', lineHeight: 1.45 }}>{item.ta}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'rgba(245,240,232,0.45)', marginTop: 2 }}>{item.en}</div>
+                            </div>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </div>
@@ -1446,20 +1539,21 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                         {filteredUsers.map((user) => (
                           <tr key={user.id}>
                             <td>
-                              <FontAwesomeIcon icon={faCircleUser} style={{ width: 22, height: 22, color: '#A4BAAD' }} />
+                              <FontAwesomeIcon icon={faCircleUser} style={{ width: 22, height: 22, color: 'rgba(245,240,232,0.35)' }} />
                             </td>
-                            <td style={{ fontWeight: 700, color: '#1E472E' }}>{user.name}</td>
-                            <td style={{ fontWeight: 600 }}>{user.email}</td>
-                            <td style={{ fontFamily: 'monospace' }}>{user.mobile}</td>
+                            <td style={{ fontWeight: 700, color: 'var(--vt-ink)' }}>{user.name}</td>
+                            <td style={{ fontWeight: 600, color: 'rgba(245,240,232,0.75)' }}>{user.email}</td>
+                            <td style={{ fontFamily: 'monospace', color: 'rgba(245,240,232,0.65)' }}>{user.mobile}</td>
                             <td>
                               <span
                                 style={{
-                                  padding: '2px 8px',
+                                  padding: '3px 10px',
                                   borderRadius: 6,
                                   fontSize: '0.75rem',
                                   fontWeight: 700,
-                                  backgroundColor: user.role === 'admin' ? '#FFF6E0' : '#E2F2E9',
-                                  color: user.role === 'admin' ? '#B57F00' : '#1E7040',
+                                  backgroundColor: user.role === 'admin' ? 'rgba(201,168,76,0.14)' : 'rgba(61,138,92,0.14)',
+                                  color: user.role === 'admin' ? 'var(--vt-gold)' : '#4abc4a',
+                                  border: `1px solid ${user.role === 'admin' ? 'rgba(201,168,76,0.30)' : 'rgba(74,188,74,0.30)'}`,
                                 }}
                               >
                                 {user.role}
@@ -1490,7 +1584,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                       </thead>
                       <tbody>
                         <tr>
-                          <td style={{ fontWeight: 700, color: '#1E472E' }}>Total Sales / Revenue</td>
+                          <td style={{ fontWeight: 700, color: 'var(--vt-ink)' }}>Total Sales / Revenue</td>
                           <td style={{ fontWeight: 700 }}>₹{data.stats.revenue.toLocaleString()}</td>
                           <td>Cumulative sum of order receipts</td>
                           <td>
@@ -1515,7 +1609,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ fontWeight: 700, color: '#1E472E' }}>Average Order Value (AOV)</td>
+                          <td style={{ fontWeight: 700, color: 'var(--vt-ink)' }}>Average Order Value (AOV)</td>
                           <td style={{ fontWeight: 700 }}>
                             ₹{(data.orders.length > 0 ? data.stats.revenue / data.orders.length : 0).toFixed(2)}
                           </td>
@@ -1537,7 +1631,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ fontWeight: 700, color: '#1E472E' }}>Inventory Skus Count</td>
+                          <td style={{ fontWeight: 700, color: 'var(--vt-ink)' }}>Inventory Skus Count</td>
                           <td style={{ fontWeight: 700 }}>{data.stats.totalMedicines} Products</td>
                           <td>{data.stats.lowStock} item(s) low in stock</td>
                           <td>
@@ -1562,7 +1656,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                           </td>
                         </tr>
                         <tr>
-                          <td style={{ fontWeight: 700, color: '#1E472E' }}>Prescription Verification Requests</td>
+                          <td style={{ fontWeight: 700, color: 'var(--vt-ink)' }}>Prescription Verification Requests</td>
                           <td style={{ fontWeight: 700 }}>{data.stats.pendingPrescriptions} Pending Review</td>
                           <td>Total reviews queued for pharmacist</td>
                           <td>
@@ -1599,8 +1693,8 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
 
                   <div style={{ display: 'grid', gap: 16 }}>
                     <div>
-                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: '#1E472E' }}>Credential Information</h3>
-                      <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: '#5A665D', lineHeight: 1.5 }}>
+                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: 'var(--vt-ink)' }}>Credential Information</h3>
+                      <p style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'rgba(245,240,232,0.55)', lineHeight: 1.5 }}>
                         Credentials are managed via your Supabase dashboard and environment variables. See .env.local.example for required keys.
                       </p>
                       <button
@@ -1613,21 +1707,21 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                       </button>
                     </div>
 
-                    <div style={{ height: '1px', background: '#E6DCD1' }} />
+                    <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />
 
                     <div>
-                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: '#1E472E' }}>Database Connection Info</h3>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#5A665D', lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <FontAwesomeIcon icon={faDatabase} style={{ width: 14, height: 14, color: '#1E7040' }} />
+                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: 'var(--vt-ink)' }}>Database Connection Info</h3>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(245,240,232,0.55)', lineHeight: 1.5, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <FontAwesomeIcon icon={faDatabase} style={{ width: 14, height: 14, color: 'var(--vt-emerald-600)' }} />
                         <span>Supabase database and client config detected via environment variables. Sync active.</span>
                       </p>
                     </div>
 
-                    <div style={{ height: '1px', background: '#E6DCD1' }} />
+                    <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />
 
                     <div>
-                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: '#1E472E' }}>System Version</h3>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#5A665D', lineHeight: 1.5 }}>
+                      <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: 'var(--vt-ink)' }}>System Version</h3>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(245,240,232,0.55)', lineHeight: 1.5 }}>
                         Vaithiyam E-Commerce Admin Console — Version 2.4.0 (React 19, Next.js App Router).
                       </p>
                     </div>
@@ -1695,19 +1789,19 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
         >
           <div
             style={{
-              backgroundColor: '#FAF8F5',
+              backgroundColor: 'var(--vt-card-strong)',
               borderRadius: 16,
               padding: 24,
               maxWidth: 500,
               width: '100%',
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              border: '1px solid #E6DCD1',
+              border: '1px solid var(--vt-border)',
             }}
           >
-            <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: '#1E472E', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: 'var(--vt-ink)', fontFamily: 'var(--vt-font-display)', fontWeight: 700 }}>
               Environment Variables Required
             </h3>
-            <p style={{ fontSize: '0.88rem', color: '#5A665D', marginBottom: 16, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.88rem', color: 'rgba(245,240,232,0.55)', marginBottom: 16, lineHeight: 1.5 }}>
               Configure the following keys in your local environment file (e.g. <code>.env.local</code>):
             </p>
             <pre

@@ -1910,6 +1910,114 @@ input, select, textarea { font: inherit; }
   font-family: var(--vt-font-body);
 }
 
+/* ── Vertical Left Sidebar & Main Content ── */
+.vt-admin-sidebar {
+  width: 260px;
+  background-color: #07120a; /* Dark forest green-black */
+  border-right: 1px solid rgba(201, 168, 76, 0.15); /* Gold outline */
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.vt-admin-sidebar-logo {
+  margin-bottom: 32px;
+  padding: 0 8px;
+}
+.vt-admin-sidebar-logo h1 {
+  font-family: var(--vt-font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--vt-gold, #c9a84c);
+  margin: 0;
+}
+.vt-admin-sidebar-logo p {
+  font-family: var(--vt-font-body);
+  font-size: 0.75rem;
+  color: rgba(245, 240, 232, 0.4);
+  margin: 2px 0 0 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.vt-admin-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+}
+
+.vt-admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(245, 240, 232, 0.65);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+.vt-admin-sidebar-link:hover {
+  color: var(--vt-gold, #c9a84c);
+  background: rgba(201, 168, 76, 0.08);
+}
+.vt-admin-sidebar-link.active {
+  color: #030C07;
+  background: var(--vt-gold, #c9a84c);
+  font-weight: 700;
+}
+
+.vt-admin-sidebar-divider {
+  height: 1px;
+  background: rgba(201, 168, 76, 0.15);
+  margin: 16px 8px;
+}
+
+.vt-admin-sidebar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(61, 138, 92, 0.15);
+  border: 1px solid rgba(61, 138, 92, 0.3);
+  color: #3D8A5C;
+  font-family: var(--vt-font-body);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+.vt-admin-sidebar-btn:hover {
+  background: rgba(61, 138, 92, 0.25);
+  border-color: #3D8A5C;
+}
+
+.vt-admin-main {
+  flex-grow: 1;
+  margin-left: 260px; /* Offset by the sidebar width */
+  min-height: 100vh;
+  background-color: #030C07;
+  display: flex;
+  flex-direction: column;
+}
+
 .vt-admin-topbar {
   display: flex;
   justify-content: space-between;

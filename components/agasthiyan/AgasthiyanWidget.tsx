@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguageStore } from '@/stores/languageStore';
 
@@ -24,6 +25,7 @@ interface Message {
 }
 
 export default function AgasthiyanWidget() {
+  const pathname = usePathname();
   const { language } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -123,6 +125,10 @@ export default function AgasthiyanWidget() {
       setIsLoading(false);
     }
   };
+
+  // The customer-facing AI shopping assistant has no place in the admin
+  // portal — it floats over dashboard panels and tables there.
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <>
