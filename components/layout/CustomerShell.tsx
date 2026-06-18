@@ -207,6 +207,16 @@ export function CustomerHeader({
         )}
 
         <nav className="vt-nav-actions" aria-label="Customer navigation">
+          {/* Admin shortcut button */}
+          <Link
+            href={isLoggedIn && isAdmin ? "/admin/dashboard" : "/admin/login"}
+            className="vt-admin-shortcut-btn"
+            aria-label="Admin Dashboard Login"
+          >
+            <FontAwesomeIcon icon={faShieldHalved} style={{ width: 12, height: 12 }} />
+            <span>{currentLang === 'ta' ? 'நிர்வாகி' : 'Admin'}</span>
+          </Link>
+
           {onSearchChange ? (
             <button
               type="button"

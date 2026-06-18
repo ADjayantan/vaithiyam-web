@@ -304,6 +304,45 @@ input, select, textarea { font: inherit; }
   margin-left: auto;            /* push to right when search is hidden */
 }
 
+.vt-admin-shortcut-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #c9a84c 0%, #a4822d 100%);
+  color: #030c07 !important;
+  font-family: var(--vt-font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(201,168,76,0.25);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.vt-admin-shortcut-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(201,168,76,0.40);
+}
+.vt-admin-shortcut-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 400px) {
+  .vt-admin-shortcut-btn span {
+    display: none;
+  }
+  .vt-admin-shortcut-btn {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+  }
+}
+
 .vt-icon-link {
   width: 36px;
   height: 36px;
