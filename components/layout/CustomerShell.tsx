@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBarcode, faCartShopping, faCircleUser, faHeart,
   faHouse, faLeaf, faMagnifyingGlass, faUpload,
-  faShieldHalved,
+  faShieldHalved, faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useCartStore } from '@/stores/cartStore';
@@ -73,6 +73,9 @@ export function CustomerHeader({
   const [searchActive, setSearchActive] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -90,6 +93,7 @@ export function CustomerHeader({
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('vt_token') ?? sessionStorage.getItem('vt_token')) : null;
+    setIsLoggedIn(!!token);
     if (!token) return;
     fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' })
       .then(res => res.ok ? res.json() : null)
@@ -109,6 +113,24 @@ export function CustomerHeader({
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('vt_token');
+      sessionStorage.removeItem('vt_token');
+    } catch { /* ignore */ }
+    window.location.href = '/auth/login';
+  };
 
   const pathname = usePathname();
   const isHomepage = pathname === '/';
@@ -133,15 +155,18 @@ export function CustomerHeader({
     <header className={`vt-app-header ${isHomepage && !isScrolled ? 'vt-header-transparent' : ''}`}>
       {/* ── Top row: brand | search | actions ── */}
       <div className="vt-header-inner">
-        <Link href="/" className="vt-brand" aria-label="Iyarkai Nala Maruthuvamanai home" style={{ textDecoration: 'none' }}>
+        <Link href="/" className="vt-brand" aria-label="Iyarkai Nala Maruthuvamanai home" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
           <span className="vt-brand-mark">
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
-          <span>
-            <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>
-              {currentLang === 'ta' ? 'இயற்கை நல மருத்துவமனை' : 'Iyarkai Nala Maruthuvamanai'}
+          <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.25rem', color: 'var(--vt-gold, #c9a84c)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+              {currentLang === 'ta' ? 'இயற்கை நல' : 'Iyarkai Nala'}
             </span>
-          </span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.25rem', color: 'var(--vt-gold, #c9a84c)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+              {currentLang === 'ta' ? 'மருத்துவமனை' : 'Maruthuvamanai'}
+            </span>
+          </div>
         </Link>
 
         {/* Center links OR active search input */}
@@ -203,24 +228,205 @@ export function CustomerHeader({
             </Link>
           )}
 
-          <Link className="vt-icon-link vt-icon-desktop-only" href="/prescriptions" aria-label="Upload prescription">
-            <FontAwesomeIcon icon={faUpload} style={{ width: 18, height: 18 }} />
-          </Link>
-          <Link className="vt-icon-link vt-icon-desktop-only" href="/scanner" aria-label="Barcode scanner">
-            <FontAwesomeIcon icon={faBarcode} style={{ width: 18, height: 18 }} />
-          </Link>
-          <Link className="vt-icon-link vt-icon-desktop-only" href="/account/wishlist" aria-label="Wishlist">
-            <FontAwesomeIcon icon={faHeart} style={{ width: 18, height: 18 }} />
-          </Link>
-          <Link className="vt-icon-link vt-icon-desktop-only" href="/account" aria-label="Account">
-            <FontAwesomeIcon icon={faCircleUser} style={{ width: 18, height: 18 }} />
-          </Link>
-          {isAdmin && (
-            <Link href="/admin/dashboard" className="vt-admin-badge" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
-              <FontAwesomeIcon icon={faShieldHalved} style={{ width: 12, height: 12 }} />
-              நிர்வாகி
-            </Link>
-          )}
+          {/* Consolidated User Dropdown */}
+          <div ref={dropdownRef} className="vt-profile-dropdown-container" style={{ position: 'relative' }}>
+            <button
+              type="button"
+              className={`vt-icon-link ${profileMenuOpen ? 'active' : ''}`}
+              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              aria-label="User Account Menu"
+              style={{
+                background: profileMenuOpen ? 'rgba(201,168,76,0.15)' : 'transparent',
+                borderColor: profileMenuOpen ? 'var(--vt-gold)' : 'rgba(61,138,92,0.16)',
+                color: profileMenuOpen ? 'var(--vt-gold)' : 'rgba(245,237,214,0.70)',
+                cursor: 'pointer',
+              }}
+            >
+              <FontAwesomeIcon icon={faCircleUser} style={{ width: 18, height: 18 }} />
+            </button>
+
+            {profileMenuOpen && (
+              <div
+                className="vt-profile-dropdown-menu"
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 10px)',
+                  right: 0,
+                  width: '240px',
+                  backgroundColor: 'rgba(10, 20, 15, 0.98)',
+                  backdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(201, 168, 76, 0.3)',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+                  padding: '8px 0',
+                  zIndex: 100,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '2px',
+                }}
+              >
+                {isAdmin && (
+                  <Link
+                    href="/admin/dashboard"
+                    onClick={() => setProfileMenuOpen(false)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '10px 16px',
+                      color: 'var(--vt-gold, #c9a84c)',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      fontFamily: "var(--vt-font-body)",
+                      fontWeight: 600,
+                      transition: 'background 0.2s',
+                    }}
+                    className="vt-dropdown-item"
+                  >
+                    <FontAwesomeIcon icon={faShieldHalved} style={{ width: 14, height: 14 }} />
+                    <span>{currentLang === 'ta' ? 'நிர்வாகப் பலகை' : 'Admin Panel'}</span>
+                  </Link>
+                )}
+
+                <Link
+                  href="/account"
+                  onClick={() => setProfileMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 16px',
+                    color: 'rgba(245, 237, 214, 0.85)',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem',
+                    fontFamily: "var(--vt-font-body)",
+                    transition: 'background 0.2s',
+                  }}
+                  className="vt-dropdown-item"
+                >
+                  <FontAwesomeIcon icon={faCircleUser} style={{ width: 14, height: 14 }} />
+                  <span>{currentLang === 'ta' ? 'எனது சுயவிவரம்' : 'My Profile'}</span>
+                </Link>
+
+                <Link
+                  href="/account/wishlist"
+                  onClick={() => setProfileMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 16px',
+                    color: 'rgba(245, 237, 214, 0.85)',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem',
+                    fontFamily: "var(--vt-font-body)",
+                    transition: 'background 0.2s',
+                  }}
+                  className="vt-dropdown-item"
+                >
+                  <FontAwesomeIcon icon={faHeart} style={{ width: 14, height: 14 }} />
+                  <span>{currentLang === 'ta' ? 'விருப்பப்பட்டியல்' : 'My Wishlist'}</span>
+                </Link>
+
+                <Link
+                  href="/prescriptions"
+                  onClick={() => setProfileMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 16px',
+                    color: 'rgba(245, 237, 214, 0.85)',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem',
+                    fontFamily: "var(--vt-font-body)",
+                    transition: 'background 0.2s',
+                  }}
+                  className="vt-dropdown-item"
+                >
+                  <FontAwesomeIcon icon={faUpload} style={{ width: 14, height: 14 }} />
+                  <span>{currentLang === 'ta' ? 'மருந்துச் சீட்டு பதிவேற்றம்' : 'Upload Prescription'}</span>
+                </Link>
+
+                <Link
+                  href="/scanner"
+                  onClick={() => setProfileMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 16px',
+                    color: 'rgba(245, 237, 214, 0.85)',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem',
+                    fontFamily: "var(--vt-font-body)",
+                    transition: 'background 0.2s',
+                  }}
+                  className="vt-dropdown-item"
+                >
+                  <FontAwesomeIcon icon={faBarcode} style={{ width: 14, height: 14 }} />
+                  <span>{currentLang === 'ta' ? 'பார்கோடு ஸ்கேனர்' : 'Barcode Scanner'}</span>
+                </Link>
+
+                {isLoggedIn ? (
+                  <>
+                    <div style={{ height: '1px', backgroundColor: 'rgba(201, 168, 76, 0.15)', margin: '4px 0' }} />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileMenuOpen(false);
+                        handleLogout();
+                      }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '10px 16px',
+                        color: '#dc5050',
+                        background: 'transparent',
+                        border: 'none',
+                        textAlign: 'left',
+                        width: '100%',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontFamily: "var(--vt-font-body)",
+                        transition: 'background 0.2s',
+                      }}
+                      className="vt-dropdown-item"
+                    >
+                      <FontAwesomeIcon icon={faSignOutAlt} style={{ width: 14, height: 14 }} />
+                      <span>{currentLang === 'ta' ? 'வெளியேறு' : 'Logout'}</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ height: '1px', backgroundColor: 'rgba(201, 168, 76, 0.15)', margin: '4px 0' }} />
+                    <Link
+                      href="/auth/login"
+                      onClick={() => setProfileMenuOpen(false)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '10px 16px',
+                        color: 'var(--vt-gold, #c9a84c)',
+                        textDecoration: 'none',
+                        fontSize: '0.9rem',
+                        fontFamily: "var(--vt-font-body)",
+                        fontWeight: 600,
+                        transition: 'background 0.2s',
+                      }}
+                      className="vt-dropdown-item"
+                    >
+                      <FontAwesomeIcon icon={faCircleUser} style={{ width: 14, height: 14 }} />
+                      <span>{currentLang === 'ta' ? 'உள்நுழைக' : 'Login'}</span>
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
           <Link className="vt-icon-link" href="/cart" aria-label="Cart" style={{ position: 'relative' }}>
             <FontAwesomeIcon icon={faCartShopping} style={{ width: 18, height: 18 }} />
             {localCartCount > 0 && (

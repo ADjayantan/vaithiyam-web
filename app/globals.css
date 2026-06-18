@@ -329,6 +329,15 @@ input, select, textarea { font: inherit; }
   color: white;
 }
 
+/* User profile dropdown item styles */
+.vt-dropdown-item {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.vt-dropdown-item:hover {
+  background-color: rgba(201, 168, 76, 0.12) !important;
+  color: var(--vt-gold, #c9a84c) !important;
+}
+
 /* Center nav links (desktop first, hidden on mobile) */
 .vt-header-nav-links {
   display: flex;
