@@ -244,21 +244,25 @@ export default function CartPage() {
         )}
 
         {items.length === 0 ? (
-          <section className="vt-card vt-empty-state" style={{ background: 'rgba(13, 26, 16, 0.65)', border: '1px solid rgba(201, 168, 76, 0.15)', backdropFilter: 'blur(24px)' }}>
-            <FontAwesomeIcon icon={faBoxOpen} style={{ width: 56, height: 56, color: "var(--vt-gold)" }} />
-            <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', color: 'var(--vt-cream-50)' }}>
-              {currentLang === 'ta' ? 'உங்கள் கூடை காலியாக உள்ளது' : 'Your cart is empty'}
-            </h2>
-            <p className="vt-muted" style={{ margin: 0, maxWidth: 520, textAlign: 'center' }}>
-              {currentLang === 'ta'
-                ? 'அங்கீகரிக்கப்பட்ட பாரம்பரிய மருந்துகளைக் கண்டறிந்து, பாதுகாப்பான தயாரிப்புகளை உங்கள் கூடையில் சேர்க்கவும்.'
-                : 'Browse verified traditional medicines and add safe educational products to your cart.'}
-            </p>
-            <ButtonLink href="/products" style={{ background: 'var(--vt-gold)', color: 'var(--vt-void, #030C07)', fontWeight: 700 }}>
-              <FontAwesomeIcon icon={faBagShopping} style={{ width: 18, height: 18 }} />{' '}
-              {currentLang === 'ta' ? 'மருந்துகள் வாங்க' : 'Shop medicines'}
-            </ButtonLink>
-          </section>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+            <section className="vt-cart-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '48px 32px', maxWidth: '480px', width: '100%', gap: '22px' }}>
+              <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(201, 168, 76, 0.1)', border: '1px solid rgba(201, 168, 76, 0.3)', display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center', color: 'var(--vt-gold)', marginBottom: '8px' }}>
+                <FontAwesomeIcon icon={faBoxOpen} style={{ width: 36, height: 36 }} />
+              </div>
+              <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', color: 'var(--vt-cream-50)', fontSize: '1.65rem', fontWeight: 600, letterSpacing: '0.01em' }}>
+                {currentLang === 'ta' ? 'உங்கள் கூடை காலியாக உள்ளது' : 'Your cart is empty'}
+              </h2>
+              <p className="vt-muted" style={{ margin: 0, lineHeight: 1.6, color: 'rgba(245, 237, 214, 0.7)', fontSize: '0.94rem' }}>
+                {currentLang === 'ta'
+                  ? 'அங்கீகரிக்கப்பட்ட பாரம்பரிய மருந்துகளைக் கண்டறிந்து, பாதுகாப்பான தயாரிப்புகளை உங்கள் கூடையில் சேர்க்கவும்.'
+                  : 'Browse verified traditional medicines and add safe educational products to your cart.'}
+              </p>
+              <ButtonLink href="/products" variant="gold" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px 28px', borderRadius: '30px', fontWeight: 700, fontSize: '0.95rem', textDecoration: 'none', marginTop: '8px' }}>
+                <FontAwesomeIcon icon={faBagShopping} style={{ width: 16, height: 16 }} />
+                <span>{currentLang === 'ta' ? 'மருந்துகள் வாங்க' : 'Shop medicines'}</span>
+              </ButtonLink>
+            </section>
+          </div>
         ) : (
           <section className="vt-cart-grid">
             <div style={{ display: 'grid', gap: 16 }}>
