@@ -522,7 +522,22 @@ function AddressForm({ initial, onSave, onCancel, isEdit = false }: AddressFormP
                     placeholder="9876543210"
                     value={f.mobile}
                     disabled={saving}
-                    onChange={(e) => setField('mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    onChange={(e) => {
+                      const rawCleaned = e.target.value.replace(/\D/g, '');
+                      let finalVal = rawCleaned;
+                      if (finalVal.startsWith('91') && finalVal.length > 10) {
+                        const withoutPrefix = finalVal.slice(2);
+                        if (/^[6-9]/.test(withoutPrefix)) {
+                          finalVal = withoutPrefix;
+                        }
+                      } else if (finalVal.startsWith('0') && finalVal.length > 10) {
+                        const withoutPrefix = finalVal.slice(1);
+                        if (/^[6-9]/.test(withoutPrefix)) {
+                          finalVal = withoutPrefix;
+                        }
+                      }
+                      setField('mobile', finalVal.slice(0, 10));
+                    }}
                     onFocus={() => setFocusedField('mobile')}
                     onBlur={() => setFocusedField('')}
                     style={{ ...inputSt(focusedField === 'mobile', !!errs.mobile), letterSpacing: '0.06em' }}

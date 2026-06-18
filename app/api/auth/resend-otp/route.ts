@@ -3,7 +3,12 @@ import { db } from '@/lib/mockDb';
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as { mobile?: string };
-  const mobile = body.mobile?.replace(/\D/g, '');
+  let mobile = body.mobile?.replace(/\D/g, '') ?? '';
+  if (mobile.startsWith('91') && mobile.length === 12 && /^[6-9]/.test(mobile.slice(2))) {
+    mobile = mobile.slice(2);
+  } else if (mobile.startsWith('0') && mobile.length === 11 && /^[6-9]/.test(mobile.slice(1))) {
+    mobile = mobile.slice(1);
+  }
 
   if (!mobile || mobile.length !== 10) {
     return NextResponse.json({ message: 'தவறான மொபைல் எண்.' }, { status: 400 });

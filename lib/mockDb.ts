@@ -3,6 +3,32 @@
  * fallback so local development keeps working without environment variables.
  */
 import { SEED_PRODUCTS, MEDICINE_CATEGORIES, type SeedMedicine, type MedicineCategory } from '@/lib/medicineData';
+import fs from 'fs';
+import path from 'path';
+
+function watchMap<K, V>(map: Map<K, V>, onChange: () => void): Map<K, V> {
+  const originalSet = map.set.bind(map);
+  const originalDelete = map.delete.bind(map);
+  const originalClear = map.clear.bind(map);
+
+  map.set = function(key: K, value: V) {
+    const res = originalSet(key, value);
+    onChange();
+    return res;
+  };
+  map.delete = function(key: K) {
+    const res = originalDelete(key);
+    onChange();
+    return res;
+  };
+  map.clear = function() {
+    originalClear();
+    onChange();
+  };
+
+  return map;
+}
+
 
 export interface DbUser {
   id: string;
@@ -215,23 +241,96 @@ const SEED_ORDERS: DbOrder[] = [
 ];
 
 class MockDb {
-  users: Map<string, DbUser> = new Map();
-  addresses: Map<string, DbAddress> = new Map();
-  wishlist: Map<string, DbWishlistItem> = new Map();
-  cart: Map<string, DbCartItem> = new Map();
-  orders: Map<string, DbOrder> = new Map();
-  prescriptions: Map<string, DbPrescription> = new Map();
+  users: Map<string, DbUser>;
+  addresses: Map<string, DbAddress>;
+  wishlist: Map<string, DbWishlistItem>;
+  cart: Map<string, DbCartItem>;
+  orders: Map<string, DbOrder>;
+  prescriptions: Map<string, DbPrescription>;
   products: SeedMedicine[] = [...SEED_PRODUCTS];
   categories: MedicineCategory[] = [...MEDICINE_CATEGORIES];
   reviews: DbReview[] = [];
+  private isSavingDisabled = false;
+
+  private saveToFile() {
+    if (this.isSavingDisabled || process.env.NEXT_PHASE === 'phase-production-build') return;
+    try {
+      const dbPath = path.join(process.cwd(), '.iyarkai_db.json');
+      const data = {
+        users: Array.from(this.users.entries()),
+        addresses: Array.from(this.addresses.entries()),
+        wishlist: Array.from(this.wishlist.entries()),
+        cart: Array.from(this.cart.entries()),
+        orders: Array.from(this.orders.entries()),
+        prescriptions: Array.from(this.prescriptions.entries()),
+        reviews: this.reviews,
+      };
+      fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (e) {
+      console.error('Failed to save mock DB to file', e);
+    }
+  }
+
+  private loadFromFile() {
+    if (process.env.NEXT_PHASE === 'phase-production-build') return;
+    try {
+      const dbPath = path.join(process.cwd(), '.iyarkai_db.json');
+      if (!fs.existsSync(dbPath)) {
+        this.saveToFile();
+        return;
+      }
+      const raw = fs.readFileSync(dbPath, 'utf-8').trim();
+      if (!raw) return;
+      const data = JSON.parse(raw);
+
+      this.isSavingDisabled = true;
+
+      this.users.clear();
+      data.users.forEach(([k, v]: any) => this.users.set(k, v));
+
+      this.addresses.clear();
+      data.addresses.forEach(([k, v]: any) => this.addresses.set(k, v));
+
+      this.wishlist.clear();
+      data.wishlist.forEach(([k, v]: any) => this.wishlist.set(k, v));
+
+      this.cart.clear();
+      data.cart.forEach(([k, v]: any) => this.cart.set(k, v));
+
+      this.orders.clear();
+      data.orders.forEach(([k, v]: any) => this.orders.set(k, v));
+
+      this.prescriptions.clear();
+      data.prescriptions.forEach(([k, v]: any) => this.prescriptions.set(k, v));
+
+      this.reviews = data.reviews || [];
+
+      this.isSavingDisabled = false;
+    } catch (e) {
+      this.isSavingDisabled = false;
+      // If it's a JSON parse syntax error, ignore it during builds or re-initialize
+      if (!(e instanceof SyntaxError)) {
+        console.error('Failed to load mock DB from file', e);
+      }
+    }
+  }
 
   constructor() {
+    this.users = watchMap(new Map(), () => this.saveToFile());
+    this.addresses = watchMap(new Map(), () => this.saveToFile());
+    this.wishlist = watchMap(new Map(), () => this.saveToFile());
+    this.cart = watchMap(new Map(), () => this.saveToFile());
+    this.orders = watchMap(new Map(), () => this.saveToFile());
+    this.prescriptions = watchMap(new Map(), () => this.saveToFile());
+
     this.users.set(SEED_USER.id, SEED_USER);
     this.users.set(SEED_ADMIN.id, SEED_ADMIN);
     this.addresses.set(SEED_ADDRESS.id, SEED_ADDRESS);
     SEED_WISHLIST.forEach((item) => this.wishlist.set(item.id, item));
     SEED_CART.forEach((item) => this.cart.set(item.id, item));
     SEED_ORDERS.forEach((order) => this.orders.set(order.id, order));
+
+    this.loadFromFile();
   }
 
   getUserByMobile(mobile: string): DbUser | undefined {

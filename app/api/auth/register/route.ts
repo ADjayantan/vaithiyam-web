@@ -10,7 +10,13 @@ export async function POST(req: NextRequest) {
       password: string;
     };
 
-    const mobile = body.mobile?.replace(/\D/g, '');
+    let mobile = body.mobile?.replace(/\D/g, '') ?? '';
+    if (mobile.startsWith('91') && mobile.length === 12 && /^[6-9]/.test(mobile.slice(2))) {
+      mobile = mobile.slice(2);
+    } else if (mobile.startsWith('0') && mobile.length === 11 && /^[6-9]/.test(mobile.slice(1))) {
+      mobile = mobile.slice(1);
+    }
+
     if (!body.fullName || !mobile || !body.password) {
       return NextResponse.json({ message: 'அனைத்து தகவல்களும் தேவை.' }, { status: 400 });
     }
@@ -47,8 +53,9 @@ export async function POST(req: NextRequest) {
     // In dev: log OTP to console
     console.log(`[Iyarkai Nala] OTP for ${mobile}: ${otp}`);
 
+    const isDev = process.env.NODE_ENV === 'development';
     return NextResponse.json({
-      message: `OTP ${mobile}-க்கு அனுப்பப்பட்டது.`,
+      message: `OTP ${mobile}-க்கு அனுப்பப்பட்டது.${isDev ? ` (Dev: ${otp})` : ''}`,
     });
   } catch {
     return NextResponse.json({ message: 'சர்வர் பிழை.' }, { status: 500 });

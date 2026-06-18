@@ -15,8 +15,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'அனைத்து தகவல்களும் தேவை.' }, { status: 400 });
     }
 
+    let identifierClean = identifier;
+    if (mode === 'mobile') {
+      let cleaned = identifier.replace(/\D/g, '');
+      if (cleaned.startsWith('91') && cleaned.length === 12 && /^[6-9]/.test(cleaned.slice(2))) {
+        cleaned = cleaned.slice(2);
+      } else if (cleaned.startsWith('0') && cleaned.length === 11 && /^[6-9]/.test(cleaned.slice(1))) {
+        cleaned = cleaned.slice(1);
+      }
+      identifierClean = cleaned;
+    }
+
     const user = mode === 'mobile'
-      ? db.getUserByMobile(identifier.replace(/\D/g, ''))
+      ? db.getUserByMobile(identifierClean)
       : db.getUserByEmail(identifier.toLowerCase().trim());
 
     if (!user || user.password !== password) {
