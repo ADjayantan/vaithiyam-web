@@ -437,7 +437,7 @@ input, select, textarea { font: inherit; }
   transition: color 160ms ease;
 }
 .vt-bottom-nav a.active,
-.vt-bottom-nav a:hover { color: var(--vt-forest-600); }
+.vt-bottom-nav a:hover { color: var(--vt-gold, #c9a84c); }
 .vt-nav-mobile-only { display: flex; }
 .vt-header-primary  { display: none; }
 @media (min-width: 760px) {
@@ -447,6 +447,14 @@ input, select, textarea { font: inherit; }
   .vt-desktop-nav      { display: block; }
   .vt-mobile-search    { display: none; }
   .vt-page-shell       { padding-bottom: 0; }
+}
+
+/* Ensure mobile buttons have a minimum touch target height of 48px */
+@media (max-width: 760px) {
+  .vt-button {
+    min-height: 48px;
+    padding: 14px 28px !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════

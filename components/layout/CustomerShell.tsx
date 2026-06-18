@@ -178,7 +178,7 @@ export function CustomerHeader({
                 ref={searchInputRef}
                 value={searchValue}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search Tamil or English medicine name…"
+                placeholder={currentLang === 'ta' ? 'தமிழ் அல்லது ஆங்கிலத்தில் மருந்துகளைத் தேடுக…' : 'Search Tamil or English medicine name…'}
                 aria-label="Search medicines"
               />
             </div>
@@ -444,7 +444,7 @@ export function CustomerHeader({
             <input
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search medicines…"
+              placeholder={currentLang === 'ta' ? 'மருந்துகளைத் தேடுக…' : 'Search medicines…'}
               aria-label="Search medicines"
             />
           </div>
@@ -456,13 +456,29 @@ export function CustomerHeader({
 
 export function MobileBottomNav() {
   const path = usePathname();
+  const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
+  const storeItems = useCartStore((state) => state.items);
+  const storeItemCount = storeItems.reduce((s, i) => s + i.qty, 0);
 
-  const tabs = [
-    { href: '/',                  icon: faHouse,          label: 'Home'    },
-    { href: '/products',          icon: faMagnifyingGlass, label: 'Search' },
-    { href: '/cart',              icon: faCartShopping,   label: 'Cart'    },
-    { href: '/account/wishlist',  icon: faHeart,          label: 'Saved'   },
-    { href: '/account',           icon: faCircleUser,     label: 'Account' },
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'ta';
+
+  const tabs = currentLang === 'ta' ? [
+    { href: '/',                  icon: faHouse,          label: 'முகப்பு'    },
+    { href: '/products',          icon: faMagnifyingGlass, label: 'தேடுக'    },
+    { href: '/cart',              icon: faCartShopping,   label: 'கூடை',    count: storeItemCount },
+    { href: '/account/wishlist',  icon: faHeart,          label: 'விருப்பம்'  },
+    { href: '/account',           icon: faCircleUser,     label: 'கணக்கு'    },
+  ] : [
+    { href: '/',                  icon: faHouse,          label: 'Home'     },
+    { href: '/products',          icon: faMagnifyingGlass, label: 'Search'   },
+    { href: '/cart',              icon: faCartShopping,   label: 'Cart',     count: storeItemCount },
+    { href: '/account/wishlist',  icon: faHeart,          label: 'Saved'    },
+    { href: '/account',           icon: faCircleUser,     label: 'Account'  },
   ];
 
   return (
@@ -475,9 +491,32 @@ export function MobileBottomNav() {
             href={tab.href}
             className={active ? 'active' : ''}
             aria-current={active ? 'page' : undefined}
+            style={{ position: 'relative' }}
           >
             <FontAwesomeIcon icon={tab.icon} style={{ width: 18, height: 18 }} />
-            {tab.label}
+            <span>{tab.label}</span>
+            {tab.count !== undefined && tab.count > 0 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '4px',
+                  right: 'calc(50% - 22px)',
+                  background: 'var(--vt-gold, #c9a84c)',
+                  color: 'var(--vt-void, #030C07)',
+                  borderRadius: '50%',
+                  width: '15px',
+                  height: '15px',
+                  fontSize: '0.55rem',
+                  fontWeight: 900,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 5,
+                }}
+              >
+                {tab.count > 99 ? '99+' : tab.count}
+              </span>
+            )}
           </Link>
         );
       })}
