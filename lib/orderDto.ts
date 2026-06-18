@@ -82,7 +82,7 @@ export function toOrderData(order: DbOrder) {
     paymentMethod: mapPaymentMethod(order.paymentMethod),
     items,
     address: {
-      name: user?.name ?? 'Vaithiyam Customer',
+      name: user?.name ?? 'Iyarkai Nala Customer',
       phone: user?.mobile ?? '9876543210',
       line1: address?.line1 ?? 'முகவரி கிடைக்கவில்லை',
       line2: address?.line2,

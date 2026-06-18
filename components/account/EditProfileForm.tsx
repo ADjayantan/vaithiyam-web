@@ -3,7 +3,7 @@
 /**
  * apps/web/components/account/EditProfileForm.tsx
  *
- * Vaithiyam — Edit Profile Form
+ * Iyarkai Nala Maruthuvamanai — Edit Profile Form
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ import type { UserProfile } from './ProfileCard';
 // ─── Re-export UserProfile so consumers can import from one place ─────────────
 export type { UserProfile };
 
-// ─── Design tokens (mirrors all Vaithiyam modules exactly) ────────────────────
+// ─── Design tokens (mirrors all Iyarkai Nala modules exactly) ────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

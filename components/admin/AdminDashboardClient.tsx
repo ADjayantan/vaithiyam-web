@@ -309,7 +309,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
       new Date(order.createdAt).toLocaleString(),
       order.status,
     ]);
-    downloadCsv('vaithiyam-orders.csv', [headers, ...rows]);
+    downloadCsv('iyarkai-nala-orders.csv', [headers, ...rows]);
   };
 
   const handleExportPrescriptionsCsv = () => {
@@ -323,7 +323,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
       rx.status,
       rx.notes ?? '',
     ]);
-    downloadCsv('vaithiyam-prescriptions.csv', [headers, ...rows]);
+    downloadCsv('iyarkai-nala-prescriptions.csv', [headers, ...rows]);
   };
 
   // Search logic depending on active view
@@ -1722,7 +1722,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                     <div>
                       <h3 style={{ margin: '0 0 6px', fontSize: '1rem', color: 'var(--vt-ink)' }}>System Version</h3>
                       <p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(245,240,232,0.55)', lineHeight: 1.5 }}>
-                        Vaithiyam E-Commerce Admin Console — Version 2.4.0 (React 19, Next.js App Router).
+                        இயற்கை நல மருத்துவமனை Admin Console — Version 2.4.0 (React 19, Next.js App Router).
                       </p>
                     </div>
                   </div>

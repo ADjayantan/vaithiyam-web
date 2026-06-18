@@ -3,7 +3,7 @@
 /**
  * apps/web/app/order/failure/page.tsx
  *
- * Vaithiyam — Order Failure Page
+ * Iyarkai Nala Maruthuvamanai — Order Failure Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ───────────────────────────────────────────────────────────────────

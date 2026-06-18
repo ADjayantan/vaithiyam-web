@@ -3,7 +3,7 @@
 /**
  * apps/web/app/account/wishlist/page.tsx
  *
- * Vaithiyam — My Wishlist Page
+ * Iyarkai Nala Maruthuvamanai — My Wishlist Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ────────────────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ import { CustomerHeader, CustomerFooter, MobileBottomNav } from '@/components/la
 
 import WishlistGrid from '../../../components/wishlist/WishlistGrid';
 
-// ─── Design tokens (mirrors all Vaithiyam modules exactly) ────────────────────
+// ─── Design tokens (mirrors all Iyarkai Nala modules exactly) ────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-800)',
   forestDark:    'var(--vt-deep)',

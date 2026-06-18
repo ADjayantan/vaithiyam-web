@@ -84,8 +84,8 @@ export async function addProduct(
         answer: 'This page is educational only. Please consult a qualified doctor or pharmacist before use.',
       },
       {
-        question: 'Does Vaithiyam provide dosage guidance?',
-        answer: 'No. Vaithiyam does not provide diagnosis, dosage, or self-medication recommendations.',
+        question: 'Does Iyarkai Nala Maruthuvamanai provide dosage guidance?',
+        answer: 'No. Iyarkai Nala Maruthuvamanai does not provide diagnosis, dosage, or self-medication recommendations.',
       },
     ],
   };

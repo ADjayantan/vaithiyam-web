@@ -3,7 +3,7 @@
 /**
  * apps/web/components/orders/OrderHistoryCard.tsx
  *
- * Vaithiyam — Order History Card
+ * Iyarkai Nala Maruthuvamanai — Order History Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -37,7 +37,7 @@ import {
 import type { IconDefinition }   from '@fortawesome/fontawesome-svg-core';
 import type { OrderStatus }      from '../order/OrderSummary';
 
-// ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
+// ─── Design tokens (identical to all Iyarkai Nala modules) ───────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

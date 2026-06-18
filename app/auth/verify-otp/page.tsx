@@ -3,7 +3,7 @@
 /**
  * apps/web/app/auth/verify-otp/page.tsx
  *
- * Vaithiyam — OTP Verification Page
+ * Iyarkai Nala Maruthuvamanai — OTP Verification Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ────────────────────────────────────────────────────────────────────

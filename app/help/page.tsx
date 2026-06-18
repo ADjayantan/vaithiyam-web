@@ -268,8 +268,8 @@ export default function HelpPage() {
               </div>
               <h3 style={{ margin: 0, fontFamily: FONT.display, fontSize: '1.25rem', fontWeight: 600 }}>Email</h3>
               <div>
-                <a href="mailto:support@vaithiyam.in" style={{ color: T.gold, fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px', textDecoration: 'underline' }}>
-                  support@vaithiyam.in
+                <a href="mailto:support@iyarkainalam.in" style={{ color: T.gold, fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px', textDecoration: 'underline' }}>
+                  support@iyarkainalam.in
                 </a>
                 <div style={{ color: T.muted, fontSize: '0.8rem' }}>Reply within 24 hours</div>
               </div>

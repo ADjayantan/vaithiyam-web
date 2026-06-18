@@ -1,6 +1,6 @@
 /**
  * types/order.ts
- * Shared order & payment types (replaces @vaithiyam/shared monorepo package).
+ * Shared order & payment types (replaces @iyarkai-nala/shared monorepo package).
  */
 
 export type PaymentMethod = 'razorpay' | 'upi' | 'cod' | 'card' | 'netbanking';

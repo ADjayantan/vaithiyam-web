@@ -3,7 +3,7 @@
 /**
  * apps/web/components/auth/OtpVerification.tsx
  *
- * Vaithiyam — OTP Verification Component
+ * Iyarkai Nala Maruthuvamanai — OTP Verification Component
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

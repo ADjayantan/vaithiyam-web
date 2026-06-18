@@ -3,11 +3,11 @@
 /**
  * apps/web/app/order/success/page.tsx
  *
- * Vaithiyam — Order Success Page
+ * Iyarkai Nala Maruthuvamanai — Order Success Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ───────────────────────────────────────────────────────────────────
- *   /order/success?orderId=<vaithiyam-order-id>
+ *   /order/success?orderId=<iyarkai-nala-order-id>
  *
  * ─── Flow ────────────────────────────────────────────────────────────────────
  *   1. Reads orderId from search params

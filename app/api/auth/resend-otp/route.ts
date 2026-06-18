@@ -21,6 +21,6 @@ export async function POST(req: NextRequest) {
     otpExpiry: Date.now() + 10 * 60 * 1000,
   });
 
-  console.log(`[Vaithiyam] Resent OTP for ${mobile}: ${otp}`);
+  console.log(`[Iyarkai Nala] Resent OTP for ${mobile}: ${otp}`);
   return NextResponse.json({ message: `OTP மீண்டும் அனுப்பப்பட்டது. (Dev: ${otp})` });
 }

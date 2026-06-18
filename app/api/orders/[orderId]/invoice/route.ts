@@ -1,7 +1,7 @@
 /**
  * GET /api/orders/[orderId]/invoice
  *
- * Generates a branded Vaithiyam PDF invoice using pdfkit.
+ * Generates a branded Iyarkai Nala Maruthuvamanai PDF invoice using pdfkit.
  * Returns a real application/pdf binary response for download.
  */
 import { NextRequest, NextResponse } from 'next/server';
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ orde
   return new NextResponse(body, {
     headers: {
       'Content-Type':        'application/pdf',
-      'Content-Disposition': `attachment; filename="vaithiyam-invoice-${dto.orderId}.pdf"`,
+      'Content-Disposition': `attachment; filename="iyarkai-nala-invoice-${dto.orderId}.pdf"`,
       'Content-Length':       String(bytes.byteLength),
     },
   });
@@ -55,8 +55,8 @@ async function generatePdf(dto: ReturnType<typeof toOrderData>): Promise<Uint8Ar
       size:    'A4',
       margins: { top: 48, bottom: 48, left: 48, right: 48 },
       info: {
-        Title:  `Vaithiyam Invoice ${dto.orderId}`,
-        Author: 'Vaithiyam',
+        Title:  `Iyarkai Nala Invoice ${dto.orderId}`,
+        Author: 'Iyarkai Nala Maruthuvamanai',
       },
     });
 
@@ -73,7 +73,7 @@ async function generatePdf(dto: ReturnType<typeof toOrderData>): Promise<Uint8Ar
 
     // Brand name
     doc.fontSize(24).fillColor(C.white).font('Helvetica-Bold')
-      .text('Vaithiyam', M, 24, { continued: false });
+      .text('Iyarkai Nala', M, 24, { continued: false });
 
     // Tagline
     doc.fontSize(9).fillColor('rgba(255,255,255,0.65)').font('Helvetica')
@@ -218,14 +218,14 @@ async function generatePdf(dto: ReturnType<typeof toOrderData>): Promise<Uint8Ar
         'This invoice is computer-generated and does not require a signature. ' +
         'Product information on this invoice is for identification purposes only and does not constitute medical advice. ' +
         'Always consult a qualified doctor or pharmacist before using any medicine. ' +
-        'Vaithiyam is not liable for self-medication decisions made based on this invoice.',
+        'Iyarkai Nala Maruthuvamanai is not liable for self-medication decisions made based on this invoice.',
         M + 8, y + 8, { width: CW - 16, lineBreak: true },
       );
 
     y += 60;
 
     doc.fontSize(8).fillColor(C.muted).font('Helvetica')
-      .text('Vaithiyam · GSTIN: 33AAAAA0000A1Z5 · support@vaithiyam.in · +91 88000 00000', M, y, { width: CW, align: 'center' });
+      .text('Iyarkai Nala Maruthuvamanai · GSTIN: 33AAAAA0000A1Z5 · support@iyarkainalam.in · +91 88000 00000', M, y, { width: CW, align: 'center' });
 
     doc.end();
   });

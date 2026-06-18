@@ -24,7 +24,7 @@ export default function TermsPage() {
     {
       title: 'ஒப்புதல் (Acceptance of Terms)',
       tamil: 'எங்கள் இணையதளத்தைப் பயன்படுத்துவதன் மூலம், இந்த விதிமுறைகள் மற்றும் நிபந்தனைகளை நீங்கள் முழுமையாக ஏற்றுக்கொள்கிறீர்கள்.',
-      english: 'By accessing and using Vaithiyam, you fully accept and agree to comply with these terms of service.',
+      english: 'By accessing and using Iyarkai Nala Maruthuvamanai, you fully accept and agree to comply with these terms of service.',
     },
     {
       title: 'ஆர்டர் & கட்டணம் (Orders & Payment)',
@@ -48,7 +48,7 @@ export default function TermsPage() {
     },
     {
       title: 'மாற்றங்கள் (Amendments & Changes)',
-      tamil: 'இந்த சேவை விதிமுறைகளை முன்னறிவிப்பின்றி எப்போது வேண்டுமானாலும் மாற்றுவதற்கு வைத்தியம் நிர்வாகத்திற்கு முழு உரிமை உண்டு.',
+      tamil: 'இந்த சேவை விதிமுறைகளை முன்னறிவிப்பின்றி எப்போது வேண்டுமானாலும் மாற்றுவதற்கு இயற்கை நல மருத்துவமனை நிர்வாகத்திற்கு முழு உரிமை உண்டு.',
       english: 'We reserve the right to update or modify these terms and conditions at any time without prior notification.',
     },
   ];

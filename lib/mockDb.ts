@@ -114,9 +114,9 @@ const SEED_USER: DbUser = {
 
 const SEED_ADMIN: DbUser = {
   id: 'usr_admin_001',
-  name: 'Vaithiyam Admin',
+  name: 'Iyarkai Nala Admin',
   mobile: '9000000000',
-  email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@vaithiyam.local',
+  email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@iyarkainalam.local',
   password: 'admin1234',
   role: 'admin',
   createdAt: new Date().toISOString(),
@@ -303,9 +303,9 @@ class MockDb {
   }
 }
 
-const globalForDb = globalThis as unknown as { __vaithiyamDb?: MockDb };
-if (!globalForDb.__vaithiyamDb) {
-  globalForDb.__vaithiyamDb = new MockDb();
+const globalForDb = globalThis as unknown as { __iyarkaiNalaDb?: MockDb };
+if (!globalForDb.__iyarkaiNalaDb) {
+  globalForDb.__iyarkaiNalaDb = new MockDb();
 }
 
-export const db = globalForDb.__vaithiyamDb;
+export const db = globalForDb.__iyarkaiNalaDb;

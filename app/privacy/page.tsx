@@ -43,8 +43,8 @@ export default function PrivacyPage() {
     },
     {
       title: 'தொடர்பு (Contact Support)',
-      tamil: 'தனியுரிமை கொள்கை குறித்து ஏதேனும் கேள்விகள் இருந்தால், support@vaithiyam.in என்ற மின்னஞ்சல் முகவரியில் எங்களைத் தொடர்பு கொள்ளவும்.',
-      english: 'If you have questions regarding this privacy policy, please reach out to support@vaithiyam.in.',
+      tamil: 'தனியுரிமை கொள்கை குறித்து ஏதேனும் கேள்விகள் இருந்தால், support@iyarkainalam.in என்ற மின்னஞ்சல் முகவரியில் எங்களைத் தொடர்பு கொள்ளவும்.',
+      english: 'If you have questions regarding this privacy policy, please reach out to support@iyarkainalam.in.',
     },
   ];
 

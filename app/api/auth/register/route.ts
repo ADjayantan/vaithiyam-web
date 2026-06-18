@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     db.users.set(userId, user);
 
     // In dev: log OTP to console
-    console.log(`[Vaithiyam] OTP for ${mobile}: ${otp}`);
+    console.log(`[Iyarkai Nala] OTP for ${mobile}: ${otp}`);
 
     return NextResponse.json({
       message: `OTP ${mobile}-க்கு அனுப்பப்பட்டது.`,

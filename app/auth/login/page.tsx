@@ -3,7 +3,7 @@
 /**
  * apps/web/app/auth/login/page.tsx
  *
- * Vaithiyam — Login Page
+ * Iyarkai Nala Maruthuvamanai — Login Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Flow ─────────────────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ import { faLeaf, faHandsPraying }                      from '@fortawesome/free-s
 import LoginForm, { type LoginCredentials }            from '../../../components/auth/LoginForm';
 import { useCartStore }                                from '../../../stores/cartStore';
 
-// ─── Design tokens (mirrors all existing Vaithiyam modules) ───────────────────
+// ─── Design tokens (mirrors all existing Iyarkai Nala modules) ───────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

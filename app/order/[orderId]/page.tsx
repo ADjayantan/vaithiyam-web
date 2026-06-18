@@ -3,7 +3,7 @@
 /**
  * apps/web/app/order/[orderId]/page.tsx
  *
- * Vaithiyam — Order Detail Page
+ * Iyarkai Nala Maruthuvamanai — Order Detail Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ───────────────────────────────────────────────────────────────────

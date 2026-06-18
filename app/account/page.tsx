@@ -3,7 +3,7 @@
 /**
  * apps/web/app/account/page.tsx
  *
- * Vaithiyam — My Account Page
+ * Iyarkai Nala Maruthuvamanai — My Account Page
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Route ────────────────────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ import AddressBook, {
   type Address,
 } from '../../components/account/AddressBook';
 
-// ─── Design tokens (mirrors all Vaithiyam modules exactly) ────────────────────
+// ─── Design tokens (mirrors all Iyarkai Nala modules exactly) ────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-800)',
   forestDark:    'var(--vt-deep)',

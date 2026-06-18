@@ -1,8 +1,8 @@
-# வைத்தியம் — Vaithiyam Web
+# இயற்கை நல மருத்துவமனை — Iyarkai Nala Maruthuvamanai Web
 
 <div align="center">
 
-![Vaithiyam Banner](public/design.html)
+![Iyarkai Nala Banner](public/design.html)
 
 **Premium Siddha · Ayurveda · Natural Medicine E-Commerce**
 
@@ -18,7 +18,7 @@
 
 ## 📖 About
 
-Vaithiyam is a safety-first traditional medicine e-commerce platform with **Tamil-first** product labels and a premium **Antigravity dark design system**.
+Iyarkai Nala Maruthuvamanai is a safety-first traditional medicine e-commerce platform with **Tamil-first** product labels and a premium **Antigravity dark design system**.
 
 - **Siddha · Ayurveda · Natural** medicine catalogue with 24+ demo products
 - **Prescription-aware checkout** — Rx-gated products require upload before purchase
@@ -66,14 +66,14 @@ Open **[http://localhost:3001](http://localhost:3001)**
 | Role | Credential | Password |
 |---|---|---|
 | Customer | Mobile `9876543210` | `demo1234` |
-| Admin | Email `admin@vaithiyam.local` | `admin1234` |
+| Admin | Email `admin@iyarkainalam.local` | `admin1234` |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-vaithiyam-web/
+iyarkainala-web/
 │
 ├── app/                        # Next.js App Router pages
 │   ├── globals.css             # Antigravity dark design system
@@ -264,5 +264,5 @@ MIT — free to use for personal and commercial projects.
 ---
 
 <div align="center">
-Made with 🌿 for Tamil traditional medicine · வைத்தியம்
+Made with 🌿 for Tamil traditional medicine · இயற்கை நல மருத்துவமனை
 </div>

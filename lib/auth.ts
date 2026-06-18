@@ -5,7 +5,7 @@
 import { SignJWT, jwtVerify } from 'jose';
 
 const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'vaithiyam-dev-secret-change-in-production'
+  process.env.JWT_SECRET ?? 'iyarkai-nala-dev-secret-change-in-production'
 );
 
 export interface JwtPayload {

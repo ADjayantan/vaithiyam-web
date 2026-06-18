@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         otpExpiry: Date.now() + 10 * 60 * 1000,
       });
 
-      console.log(`[Vaithiyam Reset Password] OTP generated for ${identifier}: ${generatedOtp}`);
+      console.log(`[Iyarkai Nala Reset Password] OTP generated for ${identifier}: ${generatedOtp}`);
       // Return success but do not return OTP in body for security
       return NextResponse.json({ success: true, message: 'OTP sent successfully.' });
     }
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         otpExpiry: undefined,
       });
 
-      console.log(`[Vaithiyam Reset Password] Password successfully reset for ${identifier}`);
+      console.log(`[Iyarkai Nala Reset Password] Password successfully reset for ${identifier}`);
       return NextResponse.json({ success: true, message: 'Password reset successful.' });
     }
 

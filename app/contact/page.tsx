@@ -319,8 +319,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.82rem', color: T.muted }}>மின்னஞ்சல் (Email)</div>
-                  <a href="mailto:support@vaithiyam.in" style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F5EDD6', textDecoration: 'underline' }}>
-                    support@vaithiyam.in
+                  <a href="mailto:support@iyarkainalam.in" style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F5EDD6', textDecoration: 'underline' }}>
+                    support@iyarkainalam.in
                   </a>
                 </div>
               </motion.div>

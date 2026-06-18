@@ -3,7 +3,7 @@
 /**
  * apps/web/components/wishlist/WishlistGrid.tsx
  *
- * Vaithiyam — Wishlist Product Grid
+ * Iyarkai Nala Maruthuvamanai — Wishlist Product Grid
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ import WishlistCard  from './WishlistCard';
 import EmptyWishlist from './EmptyWishlist';
 import type { WishlistItem } from './WishlistCard';
 
-// ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
+// ─── Design tokens (identical to all Iyarkai Nala modules) ───────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

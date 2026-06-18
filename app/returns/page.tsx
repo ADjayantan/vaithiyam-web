@@ -33,8 +33,8 @@ export default function ReturnsPage() {
     },
     {
       title: 'செயல்முறை (Return Process)',
-      tamil: 'திரும்பப் பெற விரும்பினால் support@vaithiyam.in என்ற மின்னஞ்சலுக்கு ஆர்டர் எண் மற்றும் காரணத்துடன் மின்னஞ்சல் அனுப்பவும். எங்கள் குழு 24-48 மணி நேரத்திற்குள் உங்களைத் தொடர்பு கொள்ளும்.',
-      english: 'To initiate a return, email support@vaithiyam.in with your Order ID and reason. Our team will review and respond within 24-48 hours.',
+      tamil: 'திரும்பப் பெற விரும்பினால் support@iyarkainalam.in என்ற மின்னஞ்சலுக்கு ஆர்டர் எண் மற்றும் காரணத்துடன் மின்னஞ்சல் அனுப்பவும். எங்கள் குழு 24-48 மணி நேரத்திற்குள் உங்களைத் தொடர்பு கொள்ளும்.',
+      english: 'To initiate a return, email support@iyarkainalam.in with your Order ID and reason. Our team will review and respond within 24-48 hours.',
     },
     {
       title: 'திரும்ப செலுத்தல் காலம் (Refund Processing Window)',

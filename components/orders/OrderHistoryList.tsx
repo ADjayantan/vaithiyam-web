@@ -3,7 +3,7 @@
 /**
  * apps/web/components/orders/OrderHistoryList.tsx
  *
- * Vaithiyam — Order History List
+ * Iyarkai Nala Maruthuvamanai — Order History List
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

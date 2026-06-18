@@ -3,7 +3,7 @@
 /**
  * apps/web/components/order/OrderSummary.tsx
  *
- * Vaithiyam — Order Summary
+ * Iyarkai Nala Maruthuvamanai — Order Summary
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

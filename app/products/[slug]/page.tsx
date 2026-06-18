@@ -605,7 +605,7 @@ export default function ProductDetailPage() {
             }}>
               <FontAwesomeIcon icon={faShieldHalved} style={{ width: 18, height: 18, color: '#3D8A5C', flexShrink: 0, marginTop: 2 }} />
               <span>
-                Information is educational only. Consult qualified doctor or pharmacist before use. Vaithiyam does not provide dosage, diagnosis, or self-medication guidance.
+                Information is educational only. Consult qualified doctor or pharmacist before use. Iyarkai Nala Maruthuvamanai does not provide dosage, diagnosis, or self-medication guidance.
               </span>
             </div>
 

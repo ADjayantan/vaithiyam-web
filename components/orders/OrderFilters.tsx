@@ -9,7 +9,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 /**
  * apps/web/components/orders/OrderFilters.tsx
  *
- * Vaithiyam — Order Filters Bar
+ * Iyarkai Nala Maruthuvamanai — Order Filters Bar
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

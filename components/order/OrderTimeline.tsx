@@ -3,7 +3,7 @@
 /**
  * apps/web/components/order/OrderTimeline.tsx
  *
- * Vaithiyam — Order Progress Timeline
+ * Iyarkai Nala Maruthuvamanai — Order Progress Timeline
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Statuses (in progression order) ──────────────────────────────────────────

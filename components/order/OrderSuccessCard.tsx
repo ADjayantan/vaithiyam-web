@@ -3,7 +3,7 @@
 /**
  * apps/web/components/order/OrderSuccessCard.tsx
  *
- * Vaithiyam — Order Success Card
+ * Iyarkai Nala Maruthuvamanai — Order Success Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -120,7 +120,7 @@ export default function OrderSuccessCard({
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       a.href     = url;
-      a.download = `vaithiyam-${orderId}.pdf`;
+      a.download = `iyarkai-nala-${orderId}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

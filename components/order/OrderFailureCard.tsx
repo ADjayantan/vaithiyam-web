@@ -3,7 +3,7 @@
 /**
  * apps/web/components/order/OrderFailureCard.tsx
  *
- * Vaithiyam — Order Failure Card
+ * Iyarkai Nala Maruthuvamanai — Order Failure Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ const ERROR_HINTS: Record<string, string> = {
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 export interface OrderFailureCardProps {
-  /** Vaithiyam order ID that was attempted */
+  /** Iyarkai Nala order ID that was attempted */
   orderId?:      string;
   /** Tamil error message from useRazorpay / verifyPayment */
   errorMessage?: string;

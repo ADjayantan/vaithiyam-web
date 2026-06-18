@@ -3,12 +3,12 @@
 /**
  * apps/web/components/wishlist/EmptyWishlist.tsx
  *
- * Vaithiyam — Empty Wishlist State
+ * Iyarkai Nala Maruthuvamanai — Empty Wishlist State
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
  *   • Inline botanical SVG illustration — potted herb with floating heart
- *     Uses Vaithiyam design tokens directly; no external images or deps
+ *     Uses Iyarkai Nala design tokens directly; no external images or deps
  *   • Gentle float animation on illustration (mirrors EmptyState in OrderHistoryList)
  *   • Tamil-first heading + body copy
  *   • Primary CTA  — "தொடர் கடைபிடி"   → /
@@ -21,7 +21,7 @@ import Link               from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faLeaf, faStar } from '@fortawesome/free-solid-svg-icons';
 
-// ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
+// ─── Design tokens (identical to all Iyarkai Nala modules) ───────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

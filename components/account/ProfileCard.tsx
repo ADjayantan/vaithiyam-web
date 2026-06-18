@@ -3,7 +3,7 @@
 /**
  * apps/web/components/account/ProfileCard.tsx
  *
- * Vaithiyam — User Profile Card
+ * Iyarkai Nala Maruthuvamanai — User Profile Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -18,7 +18,7 @@
 
 import { useState } from 'react';
 
-// ─── Design tokens (mirrors all existing Vaithiyam modules exactly) ────────────
+// ─── Design tokens (mirrors all existing Iyarkai Nala modules exactly) ────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

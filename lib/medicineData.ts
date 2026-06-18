@@ -77,8 +77,8 @@ function medicine(
         answer: 'This page is educational only. Please consult a qualified doctor or pharmacist before use.',
       },
       {
-        question: 'Does Vaithiyam provide dosage guidance?',
-        answer: 'No. Vaithiyam does not provide diagnosis, dosage, or self-medication recommendations.',
+        question: 'Does Iyarkai Nala Maruthuvamanai provide dosage guidance?',
+        answer: 'No. Iyarkai Nala Maruthuvamanai does not provide diagnosis, dosage, or self-medication recommendations.',
       },
     ],
   };
@@ -217,7 +217,7 @@ export const SEED_PRODUCTS: SeedMedicine[] = [
     artTone: 'leaf',
     overview: 'A Siddha classical preparation listed for educational awareness with prescription verification.',
     ingredients: 'Traditional herbal composition associated with nilavembu and companion herbs.',
-    generalUses: 'Fever-care category education only. Vaithiyam does not diagnose fever or recommend treatment.',
+    generalUses: 'Fever-care category education only. Iyarkai Nala Maruthuvamanai does not diagnose fever or recommend treatment.',
     safetyNotes: 'Prescription verification is required. Seek medical care for fever or worsening symptoms.',
   }),
   medicine(8, {

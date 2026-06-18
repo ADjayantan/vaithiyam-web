@@ -3,7 +3,7 @@
 /**
  * apps/web/components/wishlist/WishlistCard.tsx
  *
- * Vaithiyam — Wishlist Product Card
+ * Iyarkai Nala Maruthuvamanai — Wishlist Product Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeaf, faSeedling, faMortarPestle } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
-// ─── Design tokens (identical to all Vaithiyam modules) ───────────────────────
+// ─── Design tokens (identical to all Iyarkai Nala modules) ───────────────────────
 const T = {
   forestPrimary: 'var(--vt-forest-700)',
   forestDark:    'var(--vt-forest-900)',

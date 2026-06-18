@@ -3,7 +3,7 @@
 /**
  * apps/web/components/account/AddressBook.tsx
  *
- * Vaithiyam — Address Book
+ * Iyarkai Nala Maruthuvamanai — Address Book
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

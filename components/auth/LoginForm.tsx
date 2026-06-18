@@ -3,7 +3,7 @@
 /**
  * apps/web/components/auth/LoginForm.tsx
  *
- * Vaithiyam — Login Form
+ * Iyarkai Nala Maruthuvamanai — Login Form
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────

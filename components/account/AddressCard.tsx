@@ -3,7 +3,7 @@
 /**
  * apps/web/components/account/AddressCard.tsx
  *
- * Vaithiyam — Address Card
+ * Iyarkai Nala Maruthuvamanai — Address Card
  * Next.js 14 App Router · TypeScript strict · Tamil-first · Mobile-first
  *
  * ─── Features ──────────────────────────────────────────────────────────────────
