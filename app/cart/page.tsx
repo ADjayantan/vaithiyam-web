@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faBagShopping, faBoxOpen, faMinus, faPlus, faShieldHalved, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import type { CartItem } from '@/types/order';
 import { useCartStore } from '@/stores/cartStore';
+import { useLanguageStore } from '@/stores/languageStore';
 import { CustomerFooter, CustomerHeader, MobileBottomNav } from '@/components/layout/CustomerShell';
 import { MedicineArt } from '@/components/ui/MedicineArt';
 import { ButtonLink } from '@/components/ui/Button';
@@ -52,12 +53,20 @@ function authHeaders(): HeadersInit {
 
 export default function CartPage() {
   const router = useRouter();
+  const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
   const setStoreItems = useCartStore((state) => state.setItems);
   const [items, setItems] = useState<CartItem[]>([]);
   const [totals, setTotals] = useState<CartTotals>(emptyTotals);
   const [loading, setLoading] = useState(true);
   const [busyItemId, setBusyItemId] = useState<string | null>(null);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'ta';
 
   const applySnapshot = useCallback((snapshot: CartSnapshot) => {
     setItems(snapshot.items);
@@ -214,10 +223,18 @@ export default function CartPage() {
       <main className="vt-container" style={{ padding: '30px 0 0' }}>
         <div className="vt-section-heading">
           <div>
-            <h1 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--vt-cream-50)' }}>My cart</h1>
-            <p>{totals.itemCount} items ready for verified checkout.</p>
+            <h1 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', fontSize: 'clamp(2rem, 5vw, 3.4rem)', color: 'var(--vt-cream-50)' }}>
+              {currentLang === 'ta' ? 'எனது கூடை' : 'My cart'}
+            </h1>
+            <p>
+              {currentLang === 'ta'
+                ? `${totals.itemCount} பொருட்கள் சரிபார்க்கப்பட்ட கட்டணத்திற்கு தயாராக உள்ளன.`
+                : `${totals.itemCount} items ready for verified checkout.`}
+            </p>
           </div>
-          <ButtonLink href="/products" variant="ghost">Continue shopping</ButtonLink>
+          <ButtonLink href="/products" variant="ghost">
+            {currentLang === 'ta' ? 'தொடர்ந்து தேடவும்' : 'Continue shopping'}
+          </ButtonLink>
         </div>
 
         {error && (
@@ -227,42 +244,53 @@ export default function CartPage() {
         )}
 
         {items.length === 0 ? (
-          <section className="vt-card vt-empty-state">
-            <FontAwesomeIcon icon={faBoxOpen} style={{width: 56, height: 56, color: "var(--vt-emerald-600)"}} />
-            <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)' }}>Your cart is empty</h2>
-            <p className="vt-muted" style={{ margin: 0, maxWidth: 520 }}>Browse verified traditional medicines and add safe educational products to your cart.</p>
-            <ButtonLink href="/products"><FontAwesomeIcon icon={faBagShopping} style={{width: 18, height: 18}} /> Shop medicines</ButtonLink>
+          <section className="vt-card vt-empty-state" style={{ background: 'rgba(13, 26, 16, 0.65)', border: '1px solid rgba(201, 168, 76, 0.15)', backdropFilter: 'blur(24px)' }}>
+            <FontAwesomeIcon icon={faBoxOpen} style={{ width: 56, height: 56, color: "var(--vt-gold)" }} />
+            <h2 style={{ margin: 0, fontFamily: 'var(--vt-font-display)', color: 'var(--vt-cream-50)' }}>
+              {currentLang === 'ta' ? 'உங்கள் கூடை காலியாக உள்ளது' : 'Your cart is empty'}
+            </h2>
+            <p className="vt-muted" style={{ margin: 0, maxWidth: 520, textAlign: 'center' }}>
+              {currentLang === 'ta'
+                ? 'அங்கீகரிக்கப்பட்ட பாரம்பரிய மருந்துகளைக் கண்டறிந்து, பாதுகாப்பான தயாரிப்புகளை உங்கள் கூடையில் சேர்க்கவும்.'
+                : 'Browse verified traditional medicines and add safe educational products to your cart.'}
+            </p>
+            <ButtonLink href="/products" style={{ background: 'var(--vt-gold)', color: 'var(--vt-void, #030C07)', fontWeight: 700 }}>
+              <FontAwesomeIcon icon={faBagShopping} style={{ width: 18, height: 18 }} />{' '}
+              {currentLang === 'ta' ? 'மருந்துகள் வாங்க' : 'Shop medicines'}
+            </ButtonLink>
           </section>
         ) : (
-          <section style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 18 }}>
-            <div style={{ display: 'grid', gap: 12 }}>
+          <section className="vt-cart-grid">
+            <div style={{ display: 'grid', gap: 16 }}>
               {items.map((item) => (
-                <article key={item.id} className="vt-card vt-card-solid" style={{ padding: 14, display: 'grid', gridTemplateColumns: '104px minmax(0, 1fr)', gap: 14, alignItems: 'center' }}>
-                  <div style={{ borderRadius: 16, overflow: 'hidden' }}>
+                <article key={item.id} className="vt-cart-card" style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '104px minmax(0, 1fr)', gap: 18, alignItems: 'center' }}>
+                  <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(201, 168, 76, 0.15)' }}>
                     <MedicineArt product={{ nameEn: item.nameEn, prescriptionRequired: item.requiresPrescription }} compact />
                   </div>
-                  <div style={{ display: 'grid', gap: 8, minWidth: 0 }}>
+                  <div style={{ display: 'grid', gap: 10, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 12 }}>
                       <div>
-                        <h2 style={{ margin: 0, color: 'var(--vt-cream-50)', fontFamily: 'var(--vt-font-display)', lineHeight: 1.2 }}>{item.nameTa}</h2>
-                        <p className="vt-muted" style={{ margin: '3px 0 0' }}>{item.nameEn}</p>
+                        <h2 style={{ margin: 0, color: 'var(--vt-cream-50)', fontFamily: 'var(--vt-font-display)', fontSize: '1.25rem', lineHeight: 1.2 }}>{item.nameTa}</h2>
+                        <p className="vt-muted" style={{ margin: '3px 0 0', fontSize: '0.88rem' }}>{item.nameEn}</p>
                       </div>
-                      {item.requiresPrescription && <span className="vt-badge vt-badge-danger">Rx</span>}
+                      {item.requiresPrescription && <span className="vt-badge vt-badge-danger" style={{ padding: '4px 10px', fontSize: '0.75rem', fontWeight: 700 }}>Rx</span>}
                     </div>
-                    <div className="vt-price-row">
-                      <span className="vt-price">₹{item.price}</span>
-                      {item.mrp && <span className="vt-mrp">₹{item.mrp}</span>}
+                    <div className="vt-price-row" style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                      <span className="vt-price" style={{ color: 'var(--vt-gold, #c9a84c)', fontSize: '1.25rem', fontWeight: 700 }}>₹{item.price}</span>
+                      {item.mrp && <span className="vt-mrp" style={{ color: 'var(--vt-muted)', textDecoration: 'line-through', fontSize: '0.9rem' }}>₹{item.mrp}</span>}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <button className="vt-icon-button" type="button" disabled={busyItemId === item.id || item.qty <= 1} onClick={() => void updateQty(item.id, item.qty - 1)} aria-label={`Decrease ${item.nameEn}`} style={{ color: 'var(--vt-forest-800)', background: 'var(--vt-cream-50)', borderColor: 'var(--vt-border)' }}>
-                        <FontAwesomeIcon icon={faMinus} style={{width: 16, height: 16}} />
-                      </button>
-                      <span style={{ minWidth: 28, textAlign: 'center', fontWeight: 900 }}>{item.qty}</span>
-                      <button className="vt-icon-button" type="button" disabled={busyItemId === item.id} onClick={() => void updateQty(item.id, item.qty + 1)} aria-label={`Increase ${item.nameEn}`} style={{ color: 'var(--vt-forest-800)', background: 'var(--vt-cream-50)', borderColor: 'var(--vt-border)' }}>
-                        <FontAwesomeIcon icon={faPlus} style={{width: 16, height: 16}} />
-                      </button>
-                      <button className="vt-button vt-button-danger" type="button" disabled={busyItemId === item.id} onClick={() => void removeItem(item.id)} style={{ marginLeft: 'auto', minHeight: 38 }}>
-                        <FontAwesomeIcon icon={faTrashCan} style={{width: 16, height: 16}} /> Remove
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'rgba(255, 255, 255, 0.02)', padding: '4px 8px', borderRadius: '30px', border: '1px solid rgba(201, 168, 76, 0.1)' }}>
+                        <button className="vt-cart-quantity-btn" type="button" disabled={busyItemId === item.id || item.qty <= 1} onClick={() => void updateQty(item.id, item.qty - 1)} aria-label={`Decrease ${item.nameEn}`}>
+                          <FontAwesomeIcon icon={faMinus} style={{ width: 12, height: 12 }} />
+                        </button>
+                        <span style={{ minWidth: 20, textAlign: 'center', fontWeight: 700, color: 'var(--vt-cream-50)' }}>{item.qty}</span>
+                        <button className="vt-cart-quantity-btn" type="button" disabled={busyItemId === item.id} onClick={() => void updateQty(item.id, item.qty + 1)} aria-label={`Increase ${item.nameEn}`}>
+                          <FontAwesomeIcon icon={faPlus} style={{ width: 12, height: 12 }} />
+                        </button>
+                      </div>
+                      <button className="vt-cart-remove-btn" type="button" disabled={busyItemId === item.id} onClick={() => void removeItem(item.id)} style={{ marginLeft: 'auto' }}>
+                        <FontAwesomeIcon icon={faTrashCan} style={{ width: 13, height: 13 }} /> {currentLang === 'ta' ? 'நீக்கு' : 'Remove'}
                       </button>
                     </div>
                   </div>
@@ -270,32 +298,44 @@ export default function CartPage() {
               ))}
             </div>
 
-            <aside className="vt-card" style={{ padding: 18 }}>
-              <h2 style={{ margin: '0 0 12px', fontFamily: 'var(--vt-font-display)' }}>Price summary</h2>
-              <div style={{ display: 'grid', gap: 10 }}>
-                <SummaryRow label={`Subtotal (${totals.itemCount} items)`} value={`₹${totals.subtotal}`} />
-                {totals.discount > 0 && <SummaryRow label="Savings" value={`-₹${totals.discount}`} accent />}
-                <SummaryRow label="Delivery" value={totals.deliveryFee === 0 ? 'Free' : `₹${totals.deliveryFee}`} accent={totals.deliveryFee === 0} />
-                <div style={{ height: 1, background: 'var(--vt-border)' }} />
-                <SummaryRow label="Total" value={`₹${totals.total}`} strong />
-                <div style={{ display: 'grid', gap: 7 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, color: 'var(--vt-muted)', fontSize: '0.9rem' }}>
-                    <span>Free delivery progress</span>
-                    <span>{freeDeliveryProgress}%</span>
+            <aside className="vt-cart-summary-card" style={{ padding: 24 }}>
+              <h2 style={{ margin: '0 0 16px', fontFamily: 'var(--vt-font-display)', color: 'var(--vt-gold, #c9a84c)', fontSize: '1.45rem', borderBottom: '1px solid rgba(201, 168, 76, 0.15)', paddingBottom: '12px' }}>
+                {currentLang === 'ta' ? 'விலை விவரம்' : 'Price summary'}
+              </h2>
+              <div style={{ display: 'grid', gap: 14 }}>
+                <SummaryRow label={currentLang === 'ta' ? `துணைத் தொகை (${totals.itemCount} பொருட்கள்)` : `Subtotal (${totals.itemCount} items)`} value={`₹${totals.subtotal}`} />
+                {totals.discount > 0 && <SummaryRow label={currentLang === 'ta' ? 'சேமிப்பு' : 'Savings'} value={`-₹${totals.discount}`} accent />}
+                <SummaryRow label={currentLang === 'ta' ? 'டெலிவரி' : 'Delivery'} value={totals.deliveryFee === 0 ? (currentLang === 'ta' ? 'இலவசம்' : 'Free') : `₹${totals.deliveryFee}`} accent={totals.deliveryFee === 0} />
+                <div style={{ height: 1, background: 'rgba(201, 168, 76, 0.15)', margin: '4px 0' }} />
+                <SummaryRow label={currentLang === 'ta' ? 'மொத்தம்' : 'Total'} value={`₹${totals.total}`} strong />
+                <div style={{ display: 'grid', gap: 8, marginTop: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, color: 'var(--vt-muted)', fontSize: '0.88rem' }}>
+                    <span>{currentLang === 'ta' ? 'இலவச டெலிவரி முன்னேற்றம்' : 'Free delivery progress'}</span>
+                    <span style={{ fontWeight: 600, color: totals.subtotal >= 500 ? 'var(--vt-emerald-500)' : 'var(--vt-gold)' }}>{freeDeliveryProgress}%</span>
                   </div>
-                  <div style={{ height: 9, borderRadius: 999, background: 'rgba(20,60,43,0.1)', overflow: 'hidden' }}>
-                    <div style={{ width: `${freeDeliveryProgress}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(135deg, var(--vt-emerald-600), var(--vt-teal-500))' }} />
+                  <div style={{ height: 8, borderRadius: 999, background: 'rgba(20,60,43,0.15)', overflow: 'hidden' }}>
+                    <div style={{ width: `${freeDeliveryProgress}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(135deg, var(--vt-gold), #e8a820)' }} />
                   </div>
-                  {deliveryHint > 0 && <p className="vt-muted" style={{ margin: 0 }}>Add ₹{deliveryHint} more for free delivery.</p>}
+                  {deliveryHint > 0 && (
+                    <p className="vt-muted" style={{ margin: 0, fontSize: '0.85rem' }}>
+                      {currentLang === 'ta'
+                        ? `இலவச டெலிவரிக்கு இன்னும் ₹${deliveryHint} சேர்க்கவும்.`
+                        : `Add ₹${deliveryHint} more for free delivery.`}
+                    </p>
+                  )}
                 </div>
                 {hasPrescriptionItems && (
-                  <div className="vt-safe-note">
-                    <FontAwesomeIcon icon={faShieldHalved} style={{width: 19, height: 19}} />
-                    <span>Your cart includes prescription-required products. Checkout will require upload or pending verification.</span>
+                  <div className="vt-safe-note" style={{ display: 'flex', gap: 10, alignItems: 'start', padding: 12, borderRadius: 10, background: 'rgba(198,91,71,0.06)', border: '1px solid rgba(198,91,71,0.2)', color: '#ffb4ab', fontSize: '0.85rem', lineHeight: 1.4 }}>
+                    <FontAwesomeIcon icon={faShieldHalved} style={{ width: 16, height: 16, marginTop: 2, flexShrink: 0, color: 'var(--vt-gold)' }} />
+                    <span>
+                      {currentLang === 'ta'
+                        ? 'உங்கள் கூடையில் மருத்துவச் சீட்டு தேவைப்படும் தயாரிப்புகள் உள்ளன. பணம் செலுத்தும்போது மருத்துவச் சீட்டைப் பதிவேற்ற வேண்டும்.'
+                        : 'Your cart includes prescription-required products. Checkout will require upload or pending verification.'}
+                    </span>
                   </div>
                 )}
-                <Link className="vt-button vt-button-primary" href="/checkout" style={{ marginTop: 6 }}>
-                  Checkout <FontAwesomeIcon icon={faArrowRight} style={{width: 18, height: 18}} />
+                <Link className="vt-button vt-checkout-btn" href="/checkout" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'var(--vt-gold)', color: 'var(--vt-void, #030C07)', fontWeight: 700, fontSize: '1rem', padding: '14px', borderRadius: '8px', transition: 'opacity 0.2s', marginTop: 12, textDecoration: 'none' }}>
+                  {currentLang === 'ta' ? 'பணம் செலுத்த' : 'Checkout'} <FontAwesomeIcon icon={faArrowRight} style={{ width: 16, height: 16 }} />
                 </Link>
               </div>
             </aside>
@@ -311,8 +351,8 @@ export default function CartPage() {
 function SummaryRow({ label, value, strong = false, accent = false }: { label: string; value: string; strong?: boolean; accent?: boolean }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
-      <span className="vt-muted">{label}</span>
-      <strong style={{ color: accent ? 'var(--vt-emerald-500)' : 'var(--vt-cream-50)', fontFamily: strong ? 'var(--vt-font-serif)' : 'inherit', fontSize: strong ? '1.55rem' : '1rem' }}>{value}</strong>
+      <span className="vt-muted" style={{ fontSize: strong ? '1.05rem' : '0.95rem', color: strong ? 'var(--vt-cream-50)' : 'var(--vt-muted)', fontWeight: strong ? 600 : 400 }}>{label}</span>
+      <strong style={{ color: accent ? 'var(--vt-emerald-500)' : (strong ? 'var(--vt-gold, #c9a84c)' : 'var(--vt-cream-50)'), fontFamily: strong ? 'var(--vt-font-serif)' : 'inherit', fontSize: strong ? '1.45rem' : '1rem', fontWeight: strong ? 700 : 500 }}>{value}</strong>
     </div>
   );
 }

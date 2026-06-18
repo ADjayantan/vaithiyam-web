@@ -2498,3 +2498,81 @@ input, select, textarea { font: inherit; }
   transition: opacity 0.2s;
 }
 .vt-admin-badge:hover { opacity: 0.85; }
+
+/* ── Premium Cart Page Styles ────────────────────────────────────── */
+.vt-cart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .vt-cart-grid {
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+  }
+}
+
+.vt-cart-card {
+  background: rgba(13, 26, 16, 0.65) !important;
+  border: 1px solid rgba(201, 168, 76, 0.15) !important;
+  backdrop-filter: blur(24px) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.vt-cart-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 76, 0.35) !important;
+}
+
+.vt-cart-summary-card {
+  background: rgba(13, 26, 16, 0.8) !important;
+  border: 1px solid rgba(201, 168, 76, 0.3) !important;
+  backdrop-filter: blur(24px) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5) !important;
+}
+
+.vt-cart-quantity-btn {
+  color: var(--vt-gold, #c9a84c) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(201, 168, 76, 0.25) !important;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease !important;
+}
+.vt-cart-quantity-btn:hover:not(:disabled) {
+  background: rgba(201, 168, 76, 0.12) !important;
+  border-color: var(--vt-gold, #c9a84c) !important;
+  transform: scale(1.05);
+}
+.vt-cart-quantity-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.vt-cart-remove-btn {
+  background: transparent !important;
+  border: 1px solid rgba(220, 80, 80, 0.35) !important;
+  color: #ffb4ab !important;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.vt-cart-remove-btn:hover {
+  background: rgba(220, 80, 80, 0.15) !important;
+  border-color: #dc5050 !important;
+}
+
