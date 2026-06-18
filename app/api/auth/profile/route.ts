@@ -3,11 +3,20 @@ import { db } from '@/lib/mockDb';
 import { verifyToken, extractBearerToken } from '@/lib/auth';
 
 async function getUser(req: NextRequest) {
-  const token = extractBearerToken(req.headers.get('authorization'));
-  if (!token) return null;
+  const authHeader = req.headers.get('authorization');
+  const token = extractBearerToken(authHeader);
+  if (!token) {
+    console.log('[GET USER] No token found in authorization header:', authHeader);
+    return null;
+  }
   const payload = await verifyToken(token);
-  if (!payload) return null;
-  return db.getUserById(payload.sub);
+  if (!payload) {
+    console.log('[GET USER] Token verification failed for token:', token);
+    return null;
+  }
+  const user = db.getUserById(payload.sub);
+  console.log('[GET USER] Token verified successfully. Payload sub:', payload.sub, 'User in DB:', user ? 'yes' : 'no');
+  return user;
 }
 
 export async function GET(req: NextRequest) {

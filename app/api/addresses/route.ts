@@ -3,10 +3,19 @@ import { db, DbAddress } from '@/lib/mockDb';
 import { verifyToken, extractBearerToken } from '@/lib/auth';
 
 async function getUserId(req: NextRequest): Promise<string | null> {
-  const token = extractBearerToken(req.headers.get('authorization'));
-  if (!token) return null;
+  const authHeader = req.headers.get('authorization');
+  const token = extractBearerToken(authHeader);
+  if (!token) {
+    console.log('[GET USERID ADDRESSES] No token found in authorization header:', authHeader);
+    return null;
+  }
   const p = await verifyToken(token);
-  return p?.sub ?? null;
+  if (!p) {
+    console.log('[GET USERID ADDRESSES] Token verification failed for token:', token);
+    return null;
+  }
+  console.log('[GET USERID ADDRESSES] Token verified successfully. Payload sub:', p.sub);
+  return p.sub;
 }
 
 export async function GET(req: NextRequest) {
