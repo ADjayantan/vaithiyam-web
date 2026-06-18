@@ -95,6 +95,17 @@ export function CustomerHeader({
     const token = typeof window !== 'undefined' ? (localStorage.getItem('vt_token') ?? sessionStorage.getItem('vt_token')) : null;
     setIsLoggedIn(!!token);
     if (!token) return;
+
+    try {
+      const storedUserStr = localStorage.getItem('vt_user') ?? sessionStorage.getItem('vt_user');
+      if (storedUserStr) {
+        const u = JSON.parse(storedUserStr);
+        if (u?.role === 'admin') {
+          setIsAdmin(true);
+        }
+      }
+    } catch (_) {}
+
     fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' })
       .then(res => res.ok ? res.json() : null)
       .then((data: { items?: CartItem[] } | null) => {
@@ -109,6 +120,8 @@ export function CustomerHeader({
       .then((user: { role?: string } | null) => {
         if (user?.role === 'admin') {
           setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
         }
       })
       .catch(() => {});
@@ -127,7 +140,9 @@ export function CustomerHeader({
   const handleLogout = () => {
     try {
       localStorage.removeItem('vt_token');
+      localStorage.removeItem('vt_user');
       sessionStorage.removeItem('vt_token');
+      sessionStorage.removeItem('vt_user');
     } catch { /* ignore */ }
     window.location.href = '/auth/login';
   };
@@ -207,15 +222,17 @@ export function CustomerHeader({
         )}
 
         <nav className="vt-nav-actions" aria-label="Customer navigation">
-          {/* Admin shortcut button */}
-          <Link
-            href={isLoggedIn && isAdmin ? "/admin/dashboard" : "/admin/login"}
-            className="vt-admin-shortcut-btn"
-            aria-label="Admin Dashboard Login"
-          >
-            <FontAwesomeIcon icon={faShieldHalved} style={{ width: 12, height: 12 }} />
-            <span>{currentLang === 'ta' ? 'நிர்வாகி' : 'Admin'}</span>
-          </Link>
+          {/* Admin shortcut button (only visible after admin logs in) */}
+          {isLoggedIn && isAdmin && (
+            <Link
+              href="/admin/dashboard"
+              className="vt-admin-shortcut-btn"
+              aria-label="Admin Dashboard"
+            >
+              <FontAwesomeIcon icon={faShieldHalved} style={{ width: 12, height: 12 }} />
+              <span>{currentLang === 'ta' ? 'நிர்வாகி' : 'Admin'}</span>
+            </Link>
+          )}
 
           {onSearchChange ? (
             <button

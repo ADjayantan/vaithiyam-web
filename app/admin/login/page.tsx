@@ -39,11 +39,14 @@ export default function AdminLoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'email', identifier: email, password }),
       });
-      const data = await res.json().catch(() => ({})) as { token?: string; user?: { role?: string }; message?: string };
+      const data = await res.json().catch(() => ({})) as { token?: string; user?: { id?: string; name?: string; role?: string; mobile?: string; email?: string }; message?: string };
       if (!res.ok) throw new Error(data.message ?? 'Login failed.');
       if (data.user?.role !== 'admin') throw new Error('உங்களுக்கு இந்த பக்கத்தை அணுக அனுமதி இல்லை.');
       
       localStorage.setItem('vt_token', data.token ?? '');
+      if (data.user) {
+        localStorage.setItem('vt_user', JSON.stringify(data.user));
+      }
       router.push('/admin/dashboard');
     } catch (err) {
       setError('தவறான மின்னஞ்சல் அல்லது கடவுச்சொல்');

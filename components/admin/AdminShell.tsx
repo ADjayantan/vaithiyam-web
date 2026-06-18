@@ -29,7 +29,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const handleLogout = () => {
     try {
       localStorage.removeItem('vt_token');
+      localStorage.removeItem('vt_user');
       sessionStorage.removeItem('vt_token');
+      sessionStorage.removeItem('vt_user');
     } catch { /* ignore */ }
     router.replace('/admin/login');
   };
