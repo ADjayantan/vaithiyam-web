@@ -380,7 +380,7 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
                 textDecoration: 'none',
                 background: 'rgba(10,20,15,0.90)',
                 border: '1px solid rgba(61,138,92,0.16)',
-                borderRadius: 4, overflow: 'hidden',
+                borderRadius: 0, overflow: 'hidden',
                 transition: 'transform 0.3s ease, border-color 0.3s ease',
               }}>
                 {/* Product image */}
@@ -398,7 +398,7 @@ function CollectionsSection({ products, onAddToCart, onWishlist }: { products: S
                       border: '1px solid rgba(255,255,255,0.12)',
                       color: 'rgba(245,237,214,0.70)',
                       fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em',
-                      padding: '4px 10px', borderRadius: 2, textTransform: 'uppercase',
+                      padding: '4px 10px', borderRadius: 0, textTransform: 'uppercase',
                     }}>
                       {p.badge}
                     </span>
