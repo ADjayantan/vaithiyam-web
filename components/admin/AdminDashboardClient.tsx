@@ -489,7 +489,7 @@ export function AdminDashboardClient({ view }: { view: AdminView }) {
                 <>
                   <div style={{ marginBottom: 16 }}>
                     <h1 style={{ fontFamily: 'var(--vt-font-display)', fontSize: '2.2rem', fontWeight: 700, margin: 0, color: 'var(--vt-cream)' }}>Dashboard Overview</h1>
-                    <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', color: 'rgba(245, 240, 232, 0.55)' }}>நிர்வாக கண்ணோட்டம் மற்றும் புள்ளிவிவரங்கள்</p>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '0.9rem', color: 'rgba(245, 240, 232, 0.55)' }}>இயற்கை நல மருத்துவமனை - நிர்வாக கண்ணோட்டம் மற்றும் புள்ளிவிவரங்கள்</p>
                   </div>
 
                   <div className="vt-admin-kpi-row" style={{ padding: '0 0 24px 0' }}>

@@ -133,13 +133,13 @@ export function CustomerHeader({
     <header className={`vt-app-header ${isHomepage && !isScrolled ? 'vt-header-transparent' : ''}`}>
       {/* ── Top row: brand | search | actions ── */}
       <div className="vt-header-inner">
-        <Link href="/" className="vt-brand" aria-label="Vaithiyam home" style={{ textDecoration: 'none' }}>
+        <Link href="/" className="vt-brand" aria-label="Iyarkai Nala Maruthuvamanai home" style={{ textDecoration: 'none' }}>
           <span className="vt-brand-mark">
             <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
           </span>
           <span>
             <span className="vt-brand-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em', color: '#F5EDD6' }}>
-              {currentLang === 'ta' ? 'வைத்தியம் (Vaithiyam)' : 'Vaithiyam'}
+              {currentLang === 'ta' ? 'இயற்கை நல மருத்துவமனை' : 'Iyarkai Nala Maruthuvamanai'}
             </span>
           </span>
         </Link>
@@ -280,6 +280,15 @@ export function MobileBottomNav() {
 }
 
 export function CustomerFooter() {
+  const { language } = useLanguageStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? language : 'ta';
+
   return (
     <footer className="vt-footer">
       <div className="vt-container vt-footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '30px' }}>
@@ -289,7 +298,7 @@ export function CustomerFooter() {
               <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
             </span>
             <span>
-              <span className="vt-brand-title" style={{ color: 'var(--vt-ink)', fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em' }}>Vaithiyam</span>
+              <span className="vt-brand-title" style={{ color: 'var(--vt-ink)', fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: '1.45rem', letterSpacing: '0.02em' }}>{currentLang === 'ta' ? 'இயற்கை நல மருத்துவமனை' : 'Iyarkai Nala Maruthuvamanai'}</span>
             </span>
           </Link>
           <p className="vt-muted" style={{ marginTop: 14, lineHeight: 1.7, maxWidth: 520, color: 'var(--vt-muted)', fontSize: '0.85rem' }}>
@@ -302,7 +311,7 @@ export function CustomerFooter() {
             <Link href="/">முகப்பு</Link>
             <Link href="/products">மருந்துகள்</Link>
             <Link href="/help">உதவி</Link>
-            <Link href="/about">வைத்தியம் பற்றி</Link>
+            <Link href="/about">இயற்கை நல மருத்துவமனை பற்றி</Link>
             <Link href="/contact">எங்களைத் தொடர்பு கொள்ள</Link>
           </div>
         </div>
@@ -318,7 +327,7 @@ export function CustomerFooter() {
       </div>
       <div className="vt-container" style={{ borderTop: '1px solid rgba(61,138,92,0.1)', marginTop: '30px', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
         <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--vt-muted)' }}>
-          © 2023 VAITHIYAM, DEFINING MEDICAL COUTURE.
+          {currentLang === 'ta' ? '© 2024 இயற்கை நல மருத்துவமனை. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.' : '© 2024 Iyarkai Nala Maruthuvamanai. All rights reserved.'}
         </p>
       </div>
     </footer>

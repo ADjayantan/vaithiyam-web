@@ -42,15 +42,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="vt-admin-shell">
       {/* ── Vertical Left Sidebar ── */}
       <aside className="vt-admin-sidebar">
-        {/* Brand Logo Header */}
         <div className="vt-admin-sidebar-logo">
           <Link href="/admin/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ color: '#3D8A5C', display: 'inline-flex' }}>
               <FontAwesomeIcon icon={faLeaf} style={{ width: 22, height: 22 }} />
             </span>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <h1>Vaithiyam</h1>
-              <p>நிர்வாகி</p>
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+              <h1 style={{ fontSize: '1.05rem', margin: 0, color: 'var(--vt-gold, #c9a84c)' }}>இயற்கை நல</h1>
+              <h1 style={{ fontSize: '1.05rem', margin: 0, color: 'var(--vt-gold, #c9a84c)' }}>மருத்துவமனை</h1>
+              <p style={{ margin: '2px 0 0 0' }}>நிர்வாகி</p>
             </div>
           </Link>
         </div>
@@ -117,8 +117,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* ── Main Panel Content (on the right) ── */}
-      <div className="vt-admin-main">
-        {children}
+      <div className="vt-admin-main" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div style={{ flexGrow: 1 }}>
+          {children}
+        </div>
+        <footer style={{ padding: '24px 40px', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', fontSize: '0.82rem', color: 'rgba(245, 240, 232, 0.4)' }}>
+          © 2024 இயற்கை நல மருத்துவமனை. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.
+        </footer>
       </div>
     </div>
   );

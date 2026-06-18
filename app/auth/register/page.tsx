@@ -206,7 +206,7 @@ export default function RegisterPage() {
                 letterSpacing: '0.02em', textDecoration: 'none', lineHeight: 1.2,
               }}
             >
-              வைத்தியம்
+              இயற்கை நல மருத்துவமனை
             </Link>
             <span
               style={{

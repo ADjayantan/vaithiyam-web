@@ -134,7 +134,7 @@ export default function AdminRegisterPage() {
               gap: 8,
             }}
           >
-            Vaithiyam
+            இயற்கை நல மருத்துவமனை
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: T.textDark, marginTop: 12 }}>
             <span style={{ color: T.leafGreen, display: 'inline-flex' }}>

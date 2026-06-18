@@ -75,7 +75,7 @@ export default function Loading() {
           </svg>
         </motion.div>
 
-        {/* Pulsing Vaithiyam text */}
+        {/* Pulsing Brand text */}
         <motion.div
           animate={{
             opacity: [0.5, 1, 0.5],
@@ -87,13 +87,13 @@ export default function Loading() {
           }}
           style={{
             fontFamily: FONT.display,
-            fontSize: '1.6rem',
+            fontSize: '1.45rem',
             color: '#F5EDD6',
-            letterSpacing: '0.05em',
+            letterSpacing: '0.03em',
             marginTop: '8px',
           }}
         >
-          வைத்தியம்
+          இயற்கை நல மருத்துவமனை
         </motion.div>
       </div>
     </div>

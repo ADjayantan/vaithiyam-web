@@ -143,7 +143,7 @@ export default function ForgotPasswordPage() {
               <FontAwesomeIcon icon={faLeaf} style={{ width: 18 }} />
             </span>
             <div>
-              <span style={{ display: 'block', fontFamily: 'var(--vt-font-display)', fontSize: '1.2rem', fontWeight: 800, color: 'var(--vt-gold-300)', lineHeight: 1, letterSpacing: 0 }}>வைத்தியம்</span>
+              <span style={{ display: 'block', fontFamily: 'var(--vt-font-display)', fontSize: '1.2rem', fontWeight: 800, color: 'var(--vt-gold-300)', lineHeight: 1, letterSpacing: 0 }}>இயற்கை நல மருத்துவமனை</span>
               <span style={{ display: 'block', fontSize: '0.65rem', fontWeight: 600, color: 'rgba(240,201,110,0.55)', letterSpacing: '.06em' }}>SINCE 2024</span>
             </div>
           </div>
@@ -345,7 +345,7 @@ export default function ForgotPasswordPage() {
         {/* safety note */}
         <p style={{ marginTop: 18, maxWidth: 440, textAlign: 'center', fontSize: 'var(--vt-text-xs)', color: 'var(--vt-muted)', lineHeight: 1.55 }}>
           <FontAwesomeIcon icon={faShieldHalved} style={{ width: 11, marginRight: 4 }} />
-          Vaithiyam will never ask for your password via phone or WhatsApp.
+          இயற்கை நல மருத்துவமனை will never ask for your password via phone or WhatsApp.
         </p>
       </main>
     </div>

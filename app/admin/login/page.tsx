@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
               gap: 8,
             }}
           >
-            Vaithiyam
+            இயற்கை நல மருத்துவமனை
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: T.textCream, marginTop: 12 }}>
             <span style={{ color: T.gold, display: 'inline-flex' }}>
@@ -119,7 +119,7 @@ export default function AdminLoginPage() {
             </span>
           </div>
           <p style={{ margin: '6px 0 0', fontFamily: FONT.body, fontSize: '0.86rem', color: T.textMuted }}>
-            Vaithiyam Admin Dashboard Portal
+            இயற்கை நல மருத்துவமனை Admin Dashboard Portal
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
               <input
                 id="login-email"
                 type="email"
-                placeholder="admin@vaithiyam.com"
+                placeholder="admin@iyarkainalam.com"
                 value={email}
                 disabled={loading}
                 onChange={(e) => setEmail(e.target.value)}

@@ -28,7 +28,7 @@ export default function TermsPage() {
     },
     {
       title: 'ஆர்டர் & கட்டணம் (Orders & Payment)',
-      tamil: 'வைத்தியம் இணையதளத்தில் செய்யப்படும் அனைத்து ஆர்டர்களும் எங்கள் கையிருப்பு மற்றும் கட்டண சரிபார்ப்புக்கு உட்பட்டவை. தவறான விவரங்கள் இருந்தால் ஆர்டரை ரத்து செய்ய எங்களுக்கு உரிமை உண்டு.',
+      tamil: 'இயற்கை நல மருத்துவமனை இணையதளத்தில் செய்யப்படும் அனைத்து ஆர்டர்களும் எங்கள் கையிருப்பு மற்றும் கட்டண சரிபார்ப்புக்கு உட்பட்டவை. தவறான விவரங்கள் இருந்தால் ஆர்டரை ரத்து செய்ய எங்களுக்கு உரிமை உண்டு.',
       english: 'All orders placed are subject to stock availability and payment verification. We reserve the right to cancel orders with incorrect information.',
     },
     {

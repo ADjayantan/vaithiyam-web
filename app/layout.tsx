@@ -5,8 +5,8 @@ import AgasthiyanWidget from '@/components/agasthiyan/AgasthiyanWidget';
 import SideFloats from '@/components/ui/SideFloats';
 
 export const metadata: Metadata = {
-  title: 'வைத்தியம் | Vaithiyam — Traditional Medicine',
-  description: 'Authentic Siddha, Ayurveda & Natural products — வைத்தியம்',
+  title: 'இயற்கை நல மருத்துவமனை | Iyarkai Nala Maruthuvamanai — Traditional Medicine',
+  description: 'Authentic Siddha, Ayurveda & Natural products — இயற்கை நல மருத்துவமனை',
   icons: { icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='%233D8A5C' d='M50 5C27 5 10 25 10 50c0 15 7 28 18 37 3-12 9-22 18-29-6 10-9 21-9 33h6c0-10 3-19 7-27 4 8 7 17 7 27h6c0-12-3-23-9-33 9 7 15 17 18 29 11-9 18-22 18-37C90 25 73 5 50 5z'/></svg>" },
 };
 
