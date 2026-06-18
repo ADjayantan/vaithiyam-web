@@ -59,13 +59,19 @@ export async function POST(req: NextRequest) {
     }
 
     if (!photoUrl) {
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'profiles');
-      await fs.mkdir(uploadDir, { recursive: true });
+      try {
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'profiles');
+        await fs.mkdir(uploadDir, { recursive: true });
 
-      const filepath = path.join(uploadDir, filename);
-      await fs.writeFile(filepath, buffer);
+        const filepath = path.join(uploadDir, filename);
+        await fs.writeFile(filepath, buffer);
 
-      photoUrl = `/uploads/profiles/${filename}`;
+        photoUrl = `/uploads/profiles/${filename}`;
+      } catch (fsError) {
+        console.warn('Local filesystem write failed, falling back to base64 Data URL:', fsError);
+        const base64Data = buffer.toString('base64');
+        photoUrl = `data:${file.type};base64,${base64Data}`;
+      }
     }
 
     const updated = { ...user, photoUrl };
