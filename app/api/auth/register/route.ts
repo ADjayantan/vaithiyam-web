@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/mockDb';
+import { sendOtpEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,6 +50,13 @@ export async function POST(req: NextRequest) {
     };
 
     db.users.set(userId, user);
+
+    // Send verification email if email is provided
+    if (user.email) {
+      sendOtpEmail(user.email, otp, user.name).catch((err) => {
+        console.error('Failed to send registration OTP email:', err);
+      });
+    }
 
     // In dev: log OTP to console
     console.log(`[Iyarkai Nala] OTP for ${mobile}: ${otp}`);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/mockDb';
+import { sendPasswordResetOtpEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,13 @@ export async function POST(req: NextRequest) {
         otp: generatedOtp,
         otpExpiry: Date.now() + 10 * 60 * 1000,
       });
+
+      // Send verification email if user has email set
+      if (user.email) {
+        sendPasswordResetOtpEmail(user.email, generatedOtp, user.name).catch((err) => {
+          console.error('Failed to send password reset OTP email:', err);
+        });
+      }
 
       console.log(`[Iyarkai Nala Reset Password] OTP generated for ${identifier}: ${generatedOtp}`);
       // Return success but do not return OTP in body for security

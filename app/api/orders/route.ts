@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, type DbOrder } from '@/lib/mockDb';
 import { getAuthenticatedUserId, unauthorized } from '@/lib/apiAuth';
 import { toOrderHistorySummary } from '@/lib/orderDto';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function GET(req: NextRequest) {
   const userId = await getAuthenticatedUserId(req);
@@ -87,6 +88,14 @@ export async function POST(req: NextRequest) {
   // Clear cart after order
   for (const item of cartItems) {
     db.cart.delete(item.id);
+  }
+
+  // Send order confirmation email
+  const user = db.getUserById(userId);
+  if (user && user.email) {
+    sendOrderConfirmationEmail(user.email, orderId, order.total, order.items, user.name).catch((err) => {
+      console.error('Failed to send order confirmation email:', err);
+    });
   }
 
   return NextResponse.json({ orderId }, { status: 201 });
