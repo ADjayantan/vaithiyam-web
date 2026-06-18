@@ -8,50 +8,96 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-
-    if (!apiKey) {
-      console.warn('ANTHROPIC_API_KEY is not defined. Falling back to local mock response.');
-      // Local fallback simulator
-      await new Promise((resolve) => setTimeout(resolve, 800)); // Simulate latency
-      return NextResponse.json({ reply: getFallbackResponse(message) });
-    }
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
     const systemPrompt = `You are அகஸ்தியன் (Agasthiyan), a knowledgeable AI assistant for Vaithiyam, specializing in Siddha medicine, Ayurveda, and traditional Tamil herbal remedies. Respond in simple Tamil or Tamil-English mix. Keep responses brief (2-3 sentences). Do not diagnose diseases or replace doctors. When asked about a specific herb or medicine, give its Tamil name, tradition (Siddha/Ayurveda), and main uses.`;
 
-    // Map roles to anthropic compatible structures
-    const formattedMessages = (history || []).map((h: { role: string; content: string }) => ({
-      role: h.role === 'assistant' ? 'assistant' : 'user',
-      content: h.content,
-    }));
+    // ─── 1. Try Google Gemini API if key is present ──────────────────────────
+    if (geminiKey) {
+      try {
+        const contents = (history || []).map((h: { role: string; content: string }) => ({
+          role: h.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: h.content }],
+        }));
+        contents.push({ role: 'user', parts: [{ text: message }] });
 
-    // Add current message if not already present
-    formattedMessages.push({ role: 'user', content: message });
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: {
+                parts: [{ text: systemPrompt }],
+              },
+              generationConfig: {
+                maxOutputTokens: 300,
+                temperature: 0.7,
+              },
+            }),
+          }
+        );
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 300,
-        system: systemPrompt,
-        messages: formattedMessages,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Anthropic API error response:', errorText);
-      return NextResponse.json({ reply: getFallbackResponse(message) });
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (reply) {
+            return NextResponse.json({ reply });
+          }
+        } else {
+          const errText = await response.text();
+          console.error('Gemini API error response:', errText);
+        }
+      } catch (err) {
+        console.error('Failed to query Gemini API:', err);
+      }
     }
 
-    const data = await response.json();
-    const reply = data.content?.[0]?.text || 'மன்னிக்கவும், என்னால் இப்போது பதிலளிக்க முடியவில்லை.';
-    return NextResponse.json({ reply });
+    // ─── 2. Try Anthropic API if key is present ──────────────────────────────
+    if (anthropicKey) {
+      try {
+        const formattedMessages = (history || []).map((h: { role: string; content: string }) => ({
+          role: h.role === 'assistant' ? 'assistant' : 'user',
+          content: h.content,
+        }));
+        formattedMessages.push({ role: 'user', content: message });
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': anthropicKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 300,
+            system: systemPrompt,
+            messages: formattedMessages,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const reply = data.content?.[0]?.text;
+          if (reply) {
+            return NextResponse.json({ reply });
+          }
+        } else {
+          const errorText = await response.text();
+          console.error('Anthropic API error response:', errorText);
+        }
+      } catch (err) {
+        console.error('Failed to query Anthropic API:', err);
+      }
+    }
+
+    // ─── 3. Fallback to Local Mock Simulator ─────────────────────────────────
+    console.warn('No active AI API key resolved or queries failed. Falling back to local mock response.');
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    return NextResponse.json({ reply: getFallbackResponse(message) });
   } catch (error) {
     console.error('Agasthiyan API error:', error);
     return NextResponse.json({ reply: 'ஏதோ பிழை ஏற்பட்டுள்ளது. மீண்டும் முயலவும்.' });
