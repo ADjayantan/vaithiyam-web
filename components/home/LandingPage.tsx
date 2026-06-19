@@ -66,7 +66,7 @@ export function LandingPage() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/products?sort=rating&limit=3', { cache: 'no-store' })
+    fetch('/api/products?sort=rating&limit=4', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then((d: { products?: SeedMedicine[] } | null) => setBestsellers(d?.products ?? []))
       .catch(() => {});
