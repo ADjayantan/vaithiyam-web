@@ -74,8 +74,15 @@ export default function AgasthiyanWidget() {
     const handleOpenWidget = () => {
       setIsOpen(true);
     };
+    const handleToggleWidget = () => {
+      setIsOpen((prev) => !prev);
+    };
     window.addEventListener('open-agasthiyan', handleOpenWidget);
-    return () => window.removeEventListener('open-agasthiyan', handleOpenWidget);
+    window.addEventListener('toggle-agasthiyan', handleToggleWidget);
+    return () => {
+      window.removeEventListener('open-agasthiyan', handleOpenWidget);
+      window.removeEventListener('toggle-agasthiyan', handleToggleWidget);
+    };
   }, []);
 
   // Auto scroll to bottom
@@ -132,38 +139,6 @@ export default function AgasthiyanWidget() {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={currentLang === 'ta' ? 'அகஸ்தியன் AI உதவியாளர்' : 'Agasthiyan AI Assistant'}
-        style={{
-          position: 'fixed',
-          bottom: isMobile ? 'calc(84px + env(safe-area-inset-bottom, 0px))' : '24px',
-          right: '20px',
-          width: '52px',
-          height: '52px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3D8A5C, #2E6845)',
-          border: 'none',
-          boxShadow: '0 0 16px rgba(212, 137, 10, 0.4), 0 4px 10px rgba(0,0,0,0.3)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 130,
-          transition: 'transform 0.2s ease',
-        }}
-        onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
-        onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-      >
-        {/* Custom Leaf + Sparkle SVG */}
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EDD6" strokeWidth="2">
-          <path d="M12 20c-4.4 0-8-3.6-8-8c0-5.4 7-10 8-10s8 4.6 8 10c0 4.4-3.6 8-8 8Z" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12 2c0 8-4 12-8 16" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M18 5.5l1.5.5.5 1.5.5-1.5 1.5-.5-1.5-.5-.5-1.5-.5 1.5z" fill="#E8A820" stroke="none" />
-        </svg>
-      </button>
-
       {/* Chat Window Panel */}
       <AnimatePresence>
         {isOpen && (
@@ -174,7 +149,7 @@ export default function AgasthiyanWidget() {
             transition={{ duration: 0.25, ease: 'easeOut' }}
             style={{
               position: 'fixed',
-              bottom: isMobile ? 'calc(96px + env(safe-area-inset-bottom, 0px))' : '148px',
+              bottom: isMobile ? 'calc(84px + env(safe-area-inset-bottom, 0px))' : '190px',
               right: '20px',
               width: isMobile ? 'calc(100vw - 32px)' : '340px',
               height: '480px',

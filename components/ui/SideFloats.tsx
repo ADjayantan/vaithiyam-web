@@ -31,7 +31,7 @@ export default function SideFloats() {
   };
 
   const triggerBot = () => {
-    window.dispatchEvent(new CustomEvent('open-agasthiyan'));
+    window.dispatchEvent(new CustomEvent('toggle-agasthiyan'));
   };
 
   const navigateProducts = () => {
@@ -61,13 +61,20 @@ export default function SideFloats() {
         title={language === 'en' ? 'Agasthiyan AI' : 'அகஸ்தியன் AI'}
         aria-label={language === 'en' ? 'Agasthiyan AI' : 'அகஸ்தியன் AI'}
         style={{
-          background: 'linear-gradient(135deg, #4A154B, #6B1D70)',
-          color: '#fff',
-          border: '1px solid rgba(107, 29, 112, 0.4)',
+          background: 'linear-gradient(135deg, #3D8A5C, #2E6845)',
+          border: 'none',
+          boxShadow: '0 0 16px rgba(212, 137, 10, 0.35), 0 4px 10px rgba(0,0,0,0.3)',
+          width: '52px',
+          height: '52px',
         }}
         className="vt-float-btn"
       >
-        <FontAwesomeIcon icon={faRobot} style={{ width: 18, height: 18 }} />
+        {/* Custom Leaf + Sparkle SVG */}
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F5EDD6" strokeWidth="2">
+          <path d="M12 20c-4.4 0-8-3.6-8-8c0-5.4 7-10 8-10s8 4.6 8 10c0 4.4-3.6 8-8 8Z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 2c0 8-4 12-8 16" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18 5.5l1.5.5.5 1.5.5-1.5 1.5-.5-1.5-.5-.5-1.5-.5 1.5z" fill="#E8A820" stroke="none" />
+        </svg>
       </button>
     </div>
   );
