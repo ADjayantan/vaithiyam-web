@@ -138,7 +138,7 @@ export default function AgasthiyanWidget() {
         aria-label={currentLang === 'ta' ? 'அகஸ்தியன் AI உதவியாளர்' : 'Agasthiyan AI Assistant'}
         style={{
           position: 'fixed',
-          bottom: isMobile ? '84px' : '24px',
+          bottom: isMobile ? 'calc(84px + env(safe-area-inset-bottom, 0px))' : '24px',
           right: '20px',
           width: '52px',
           height: '52px',
@@ -174,7 +174,7 @@ export default function AgasthiyanWidget() {
             transition={{ duration: 0.25, ease: 'easeOut' }}
             style={{
               position: 'fixed',
-              bottom: isMobile ? '96px' : '148px',
+              bottom: isMobile ? 'calc(96px + env(safe-area-inset-bottom, 0px))' : '148px',
               right: '20px',
               width: isMobile ? 'calc(100vw - 32px)' : '340px',
               height: '480px',

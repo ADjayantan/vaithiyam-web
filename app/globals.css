@@ -2625,3 +2625,61 @@ input, select, textarea { font: inherit; }
   border-color: #dc5050 !important;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   iOS / SAFARI MOBILE VIEWS & SAFE AREA FIXES
+   ───────────────────────────────────────────────────────────────── */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .vt-app-header {
+    padding-top: env(safe-area-inset-top, 0px) !important;
+  }
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .vt-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+  .vt-page-shell {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Fix iOS Safari 100vh toolbar overlapping issues using dynamic vh */
+.vt-hero {
+  min-height: 100dvh !important;
+}
+.vt-admin-shell {
+  min-height: 100dvh !important;
+}
+.vt-admin-main {
+  min-height: 100dvh !important;
+}
+
+/* Prevent auto-zooming on iOS Safari when tapping input fields */
+@media (max-width: 760px) {
+  .vt-input,
+  .vt-select,
+  .vt-header-search input,
+  .vt-admin-search-input,
+  .vt-admin-input,
+  .vt-admin-select,
+  .vt-search-panel input,
+  textarea,
+  input[type="text"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="email"] {
+    font-size: 16px !important;
+  }
+}
+
+/* Remove default iOS Safari input shadow/gray appearance reset */
+input[type="text"],
+input[type="tel"],
+input[type="password"],
+input[type="email"],
+textarea {
+  -webkit-appearance: none;
+  border-radius: var(--vt-radius-sm, 6px);
+}
+
+
