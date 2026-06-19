@@ -52,3 +52,7 @@ coverage/
 # ── Local Database ────────────────────────────────────────────
 .iyarkai_db.json
 
+# Begin: ritual init — scaffolded skill dirs (regenerated on every init)
+.claude/skills/ritual/
+.gemini/skills/ritual/
+# End: ritual init
