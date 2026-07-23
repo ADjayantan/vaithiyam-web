@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -17,7 +19,7 @@
     "@supabase/supabase-js": "^2.107.0",
     "framer-motion": "^12.40.0",
     "jose": "^5.9.3",
-    "next": "16.2.7",
+    "next": "16.2.11",
     "pdfkit": "^0.15.0",
     "postcss": "8.5.15",
     "react": "19.2.4",
@@ -30,8 +32,9 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.1",
-    "eslint-config-next": "16.2.7",
-    "typescript": "^5"
+    "eslint-config-next": "16.2.11",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   },
   "overrides": {
     "postcss": "8.5.15"
