@@ -1824,7 +1824,9 @@ JWT_SECRET
 NEXT_PUBLIC_RAZORPAY_KEY_ID
 RAZORPAY_KEY_SECRET
 NEXT_PUBLIC_ADMIN_EMAIL
-ANTHROPIC_API_KEY`}
+GROQ_API_KEY
+GROQ_MODEL
+AI_RATE_LIMIT_SALT`}
             </pre>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button

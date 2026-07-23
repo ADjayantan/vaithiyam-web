@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSliders, faLanguage, faGrip, faRobot } from '@fortawesome/free-solid-svg-icons';
+import { faLanguage, faGrip } from '@fortawesome/free-solid-svg-icons';
 import { useLanguageStore } from '@/stores/languageStore';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ export default function SideFloats() {
   const pathname = usePathname();
   const { language, setLanguage } = useLanguageStore();
   const [mounted, setMounted] = useState(false);
+  const [isBotOpen, setIsBotOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -19,6 +20,15 @@ export default function SideFloats() {
       setLanguage(saved);
     }
   }, [setLanguage]);
+
+  useEffect(() => {
+    const handleBotState = (event: Event) => {
+      const detail = (event as CustomEvent<{ isOpen?: unknown }>).detail;
+      setIsBotOpen(detail?.isOpen === true);
+    };
+    window.addEventListener('agasthiyan-state', handleBotState);
+    return () => window.removeEventListener('agasthiyan-state', handleBotState);
+  }, []);
 
   // Customer-facing language toggle / "Browse Products" / AI assistant
   // shortcuts don't belong in the admin portal.
@@ -39,7 +49,16 @@ export default function SideFloats() {
   };
 
   return (
-    <div className="vt-side-floats">
+    <div
+      className="vt-side-floats"
+      aria-hidden={isBotOpen}
+      style={{
+        opacity: isBotOpen ? 0 : 1,
+        visibility: isBotOpen ? 'hidden' : 'visible',
+        pointerEvents: isBotOpen ? 'none' : 'auto',
+        transition: 'opacity 0.15s ease',
+      }}
+    >
       <button
         onClick={toggleLanguage}
         title={language === 'en' ? 'Switch to Tamil' : 'Switch to English'}
@@ -57,9 +76,12 @@ export default function SideFloats() {
         <FontAwesomeIcon icon={faGrip} style={{ width: 18, height: 18 }} />
       </button>
       <button
+        id="agasthiyan-trigger"
         onClick={triggerBot}
         title={language === 'en' ? 'Agasthiyan AI' : 'அகஸ்தியன் AI'}
         aria-label={language === 'en' ? 'Agasthiyan AI' : 'அகஸ்தியன் AI'}
+        aria-controls="agasthiyan-dialog"
+        aria-expanded={isBotOpen}
         className="vt-float-btn"
       >
         {/* Custom Leaf + Sparkle SVG */}

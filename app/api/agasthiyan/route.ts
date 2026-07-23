@@ -1,127 +1,180 @@
 import { NextResponse } from 'next/server';
+import { listProducts } from '@/lib/db/products';
+import {
+  ChatRequestError,
+  GroqServiceError,
+  MAX_REQUEST_CHARS,
+  buildAgasthiyanInstructions,
+  buildCatalogueContext,
+  consumeRateLimit,
+  createAnonymousIdentifier,
+  getDeterministicSafetyReply,
+  parseChatRequestBody,
+  requestGroqReply,
+  type RateLimitRecord,
+} from '@/lib/agasthiyan';
 
-export async function POST(request: Request) {
-  try {
-    const { message, history } = await request.json();
+export const runtime = 'nodejs';
 
-    if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
-    }
+const RATE_LIMIT = 10;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const MAX_RATE_LIMIT_KEYS = 5_000;
 
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+type GlobalWithAgasthiyanRateLimit = typeof globalThis & {
+  __agasthiyanRateLimit?: Map<string, RateLimitRecord>;
+};
 
-    const systemPrompt = `You are அகஸ்தியன் (Agasthiyan), a knowledgeable AI assistant for Iyarkai Nala Maruthuvamanai (இயற்கை நல மருத்துவமனை), specializing in Siddha medicine, Ayurveda, and traditional Tamil herbal remedies. Respond in simple Tamil or Tamil-English mix. Keep responses brief (2-3 sentences). Do not diagnose diseases or replace doctors. When asked about a specific herb or medicine, give its Tamil name, tradition (Siddha/Ayurveda), and main uses.`;
+const globalRateLimit = globalThis as GlobalWithAgasthiyanRateLimit;
+const rateLimitStore =
+  globalRateLimit.__agasthiyanRateLimit
+  ?? (globalRateLimit.__agasthiyanRateLimit = new Map<string, RateLimitRecord>());
 
-    // ─── 1. Try Google Gemini API if key is present ──────────────────────────
-    if (geminiKey) {
-      try {
-        const contents = (history || []).map((h: { role: string; content: string }) => ({
-          role: h.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: h.content }],
-        }));
-        contents.push({ role: 'user', parts: [{ text: message }] });
+function json(
+  body: Record<string, unknown>,
+  status = 200,
+  headers?: Record<string, string>,
+) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store',
+      ...headers,
+    },
+  });
+}
 
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents,
-              systemInstruction: {
-                parts: [{ text: systemPrompt }],
-              },
-              generationConfig: {
-                maxOutputTokens: 300,
-                temperature: 0.7,
-              },
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (reply) {
-            return NextResponse.json({ reply });
-          }
-        } else {
-          const errText = await response.text();
-          console.error('Gemini API error response:', errText);
-        }
-      } catch (err) {
-        console.error('Failed to query Gemini API:', err);
-      }
-    }
-
-    // ─── 2. Try Anthropic API if key is present ──────────────────────────────
-    if (anthropicKey) {
-      try {
-        const formattedMessages = (history || []).map((h: { role: string; content: string }) => ({
-          role: h.role === 'assistant' ? 'assistant' : 'user',
-          content: h.content,
-        }));
-        formattedMessages.push({ role: 'user', content: message });
-
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'x-api-key': anthropicKey,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 300,
-            system: systemPrompt,
-            messages: formattedMessages,
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const reply = data.content?.[0]?.text;
-          if (reply) {
-            return NextResponse.json({ reply });
-          }
-        } else {
-          const errorText = await response.text();
-          console.error('Anthropic API error response:', errorText);
-        }
-      } catch (err) {
-        console.error('Failed to query Anthropic API:', err);
-      }
-    }
-
-    // ─── 3. Fallback to Local Mock Simulator ─────────────────────────────────
-    console.warn('No active AI API key resolved or queries failed. Falling back to local mock response.');
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    return NextResponse.json({ reply: getFallbackResponse(message) });
-  } catch (error) {
-    console.error('Agasthiyan API error:', error);
-    return NextResponse.json({ reply: 'ஏதோ பிழை ஏற்பட்டுள்ளது. மீண்டும் முயலவும்.' });
+function pruneRateLimitStore(now: number) {
+  if (rateLimitStore.size < MAX_RATE_LIMIT_KEYS) return;
+  for (const [key, value] of rateLimitStore) {
+    if (now >= value.resetAt) rateLimitStore.delete(key);
+  }
+  if (rateLimitStore.size >= MAX_RATE_LIMIT_KEYS) {
+    rateLimitStore.delete(rateLimitStore.keys().next().value as string);
   }
 }
 
-function getFallbackResponse(msg: string): string {
-  const lowerMsg = msg.toLowerCase();
-  
-  if (lowerMsg.includes('நெல்லிக்காய்') || lowerMsg.includes('amla')) {
-    return 'நெல்லிக்காய் (Amla) என்பது ஒரு காயகல்ப மூலிகையாகும். இது வைட்டமின் சி மற்றும் ஆன்டி-ஆக்ஸிடன்ட்கள் நிறைந்தது, நோய் எதிர்ப்புச் சக்தியை அதிகரிக்கவும் கூந்தல் ஆரோக்கியத்திற்கும் பயன்படுகிறது.';
+export async function POST(request: Request) {
+  let body: unknown;
+  try {
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > MAX_REQUEST_CHARS) {
+      throw new ChatRequestError('Request body is too large.', 413);
+    }
+    body = JSON.parse(rawBody);
+  } catch (error) {
+    if (error instanceof ChatRequestError) {
+      return json({ error: error.message, code: 'INVALID_REQUEST' }, error.status);
+    }
+    return json({ error: 'Request body must be valid JSON.', code: 'INVALID_REQUEST' }, 400);
   }
-  if (lowerMsg.includes('கடுக்காய்') || lowerMsg.includes('haritaki')) {
-    return 'கடுக்காய் (Haritaki) திரிபலா சூரணத்தில் ஒரு முக்கிய மூலப்பொருள் ஆகும். இது சித்த மருத்துவத்தில் குடல் சுத்திகரிப்புக்கும், செரிமானம் மற்றும் மலச்சிக்கலைத் தீர்க்கவும் பயன்படுகிறது.';
+
+  let parsed;
+  try {
+    parsed = parseChatRequestBody(body);
+  } catch (error) {
+    if (error instanceof ChatRequestError) {
+      return json({ error: error.message, code: 'INVALID_REQUEST' }, error.status);
+    }
+    return json({ error: 'Request is invalid.', code: 'INVALID_REQUEST' }, 400);
   }
-  if (lowerMsg.includes('துளசி') || lowerMsg.includes('tulsi')) {
-    return 'துளசி (Holy Basil) காய்ச்சல், இருமல், மற்றும் சளித் தொல்லைகளுக்கு சிறந்த கிருமிநாசினியாகும். இது சுவாசப் பாதையை சீராக்க உதவுகிறது.';
+
+  const safetyReply = getDeterministicSafetyReply(parsed.message, parsed.language);
+  if (safetyReply) {
+    return json({ reply: safetyReply, safetyRedirect: true });
   }
-  if (lowerMsg.includes('இருமல்') || lowerMsg.includes('சளி') || lowerMsg.includes('cough') || lowerMsg.includes('cold')) {
-    return 'இருமல் மற்றும் சளிக்கு அதிமதுரம், துளசி, கற்பூரவல்லி மற்றும் ஆடாதோடை இலைச் சாறு சிறந்த பலன் தரும். சுடுதண்ணீரில் இவற்றை கஷாயமாக அருந்தலாம்.';
+
+  const apiKey = process.env.GROQ_API_KEY?.trim();
+  if (!apiKey) {
+    return json(
+      {
+        error: parsed.language === 'ta'
+          ? 'AI உதவியாளர் தற்போது அமைக்கப்படவில்லை.'
+          : 'The AI assistant is not configured yet.',
+        code: 'AI_NOT_CONFIGURED',
+      },
+      503,
+    );
   }
-  if (lowerMsg.includes('வணக்கம்') || lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
-    return 'வணக்கம்! நான் அகஸ்தியன் AI உதவியாளர். சித்த, ஆயுர்வேத மூலிகைகள் மற்றும் பாரம்பரிய ஆரோக்கிய வழிமுறைகள் குறித்து உங்களுக்கு உதவ நான் தயாராக உள்ளேன். எதைப் பற்றி அறிய விரும்புகிறீர்கள்?';
+
+  const forwardedFor = (
+    request.headers.get('x-vercel-forwarded-for')
+    ?? request.headers.get('x-forwarded-for')
+  )?.split(',')[0]?.trim();
+  const rawIdentifier = forwardedFor
+    ?? parsed.sessionId
+    ?? request.headers.get('user-agent')
+    ?? 'anonymous';
+  const anonymousIdentifier = createAnonymousIdentifier(
+    rawIdentifier,
+    process.env.AI_RATE_LIMIT_SALT?.trim() || apiKey,
+  );
+
+  const now = Date.now();
+  pruneRateLimitStore(now);
+  const rateLimit = consumeRateLimit(
+    rateLimitStore,
+    anonymousIdentifier,
+    now,
+    RATE_LIMIT,
+    RATE_LIMIT_WINDOW_MS,
+  );
+  if (!rateLimit.allowed) {
+    return json(
+      {
+        error: parsed.language === 'ta'
+          ? 'சற்று அதிகமான கேள்விகள் அனுப்பப்பட்டுள்ளன. ஒரு நிமிடம் கழித்து முயலவும்.'
+          : 'Too many messages were sent. Please try again in a minute.',
+        code: 'RATE_LIMITED',
+      },
+      429,
+      { 'Retry-After': String(rateLimit.retryAfterSeconds) },
+    );
   }
-  
-  return 'வணக்கம்! நான் சித்த மற்றும் ஆயுர்வேத மருத்துவத்தில் தேர்ச்சி பெற்ற அகஸ்தியன் AI. மூலிகைகள் அல்லது ஆரோக்கியக் குறிப்புகள் பற்றி என்னிடம் கேட்கலாம். அவசர மருத்துவக் கோளாறுகளுக்கு தகுதியான மருத்துவரை அணுகவும்.';
+
+  try {
+    const products = await listProducts();
+    const catalogueContext = buildCatalogueContext(products, parsed.message);
+    const instructions = buildAgasthiyanInstructions(catalogueContext, parsed.language);
+    const reply = await requestGroqReply({
+      apiKey,
+      model: process.env.GROQ_MODEL?.trim() || undefined,
+      instructions,
+      message: parsed.message,
+      history: parsed.history,
+    });
+
+    return json({ reply });
+  } catch (error) {
+    if (error instanceof GroqServiceError) {
+      console.error('Agasthiyan Groq request failed.', {
+        code: error.code,
+        upstreamStatus: error.upstreamStatus,
+      });
+      if (error.code === 'rate_limited') {
+        const retryAfterSeconds = error.retryAfterSeconds ?? 60;
+        return json(
+          {
+            error: parsed.language === 'ta'
+              ? 'இலவச AI பயன்பாட்டு வரம்பு தற்போது எட்டப்பட்டுள்ளது. சிறிது நேரம் கழித்து முயலவும்.'
+              : 'The free AI usage limit has been reached. Please try again shortly.',
+            code: 'RATE_LIMITED',
+          },
+          429,
+          { 'Retry-After': String(retryAfterSeconds) },
+        );
+      }
+    } else {
+      console.error('Agasthiyan catalogue or server error.');
+    }
+
+    return json(
+      {
+        error: parsed.language === 'ta'
+          ? 'AI உதவியாளர் தற்போது பதிலளிக்க முடியவில்லை. சிறிது நேரம் கழித்து முயலவும்.'
+          : 'The AI assistant cannot respond right now. Please try again later.',
+        code: 'AI_UNAVAILABLE',
+      },
+      502,
+    );
+  }
 }

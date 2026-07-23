@@ -205,9 +205,20 @@ RAZORPAY_KEY_SECRET=
 
 # Admin
 NEXT_PUBLIC_ADMIN_EMAIL=
+
+# Agasthiyan AI assistant (server only)
+GROQ_API_KEY=
+# Optional — defaults to openai/gpt-oss-120b
+GROQ_MODEL=
+# Optional — HMAC salt for anonymous rate-limit identifiers
+AI_RATE_LIMIT_SALT=
 ```
 
 > **Note:** If Supabase variables are missing, the app automatically falls back to `lib/mockDb.ts` — local development works out of the box without any backend.
+>
+> Create a Groq API key in the [Groq Console](https://console.groq.com/keys). The storefront still works without `GROQ_API_KEY`, but Agasthiyan AI returns an unavailable message. Never prefix this key with `NEXT_PUBLIC_` or expose it to browser code.
+>
+> Groq currently lists both GPT-OSS models on its free plan. The default `openai/gpt-oss-120b` prioritizes multilingual and health-related quality; use `openai/gpt-oss-20b` for lower latency. Check the [Groq rate-limit page](https://console.groq.com/docs/rate-limits) for the current limits on your account.
 
 ---
 
